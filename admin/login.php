@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/auth.php';
 
 if (current_admin()) {
-    header('Location: index.php');
+    header('Location: index.html');
     exit;
 }
 
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (attempt_login($username, $password)) {
         set_flash('success', 'Login admin berhasil.');
-        header('Location: index.php');
+        header('Location: index.html');
         exit;
     }
 
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <strong>Login awal:</strong> username <code>admin</code>, password <code>admin123</code>
       </div>
 
-      <a href="../index.php" class="back-link">Kembali ke website publik</a>
+      <a href="../index.html" class="back-link">Kembali ke website publik</a>
     </section>
   </main>
 </body>

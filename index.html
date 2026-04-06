@@ -2,14 +2,184 @@
 <html lang="id">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0; url=index.php">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rumah Makan Bu Jawa</title>
-  <script>
-    window.location.replace("index.php");
-  </script>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Rumah Makan Bu Jawa | Masakan Rumahan Khas Jawa</title>
+  <meta name="description" content="Website resmi Rumah Makan Bu Jawa. Lihat menu hari ini, menu besok, jam buka, dan informasi pemesanan.">
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
 </head>
-<body>
-  <p>Mengarahkan ke <a href="index.php">Rumah Makan Bu Jawa</a>...</p>
+<body data-page="publik">
+  <div class="site-shell">
+    <div class="topbar-custom">
+      <div class="container d-flex flex-column flex-lg-row justify-content-between gap-2">
+        <div class="d-flex flex-wrap gap-3">
+          <span><i class="bi bi-telephone"></i> 0895-4057-18033</span>
+          <span><i class="bi bi-clock"></i> Setiap hari, pukul 09.00 sampai 21.00 WIB</span>
+        </div>
+        <div class="d-flex gap-3">
+          <a href="https://maps.app.goo.gl/XNuEpTYSbn5omncMA" target="_blank" rel="noopener noreferrer">Lihat Lokasi</a>
+          <a href="admin.html">Login Admin</a>
+        </div>
+      </div>
+    </div>
+
+    <header class="main-header">
+      <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light p-0">
+          <a class="navbar-brand brand-mark" href="#beranda">Rumah Makan Bu Jawa</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUtama" aria-controls="navbarUtama" aria-expanded="false" aria-label="Buka navigasi">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarUtama">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+              <li class="nav-item"><a class="nav-link" href="#beranda">Beranda</a></li>
+              <li class="nav-item"><a class="nav-link" href="#tentang">Tentang Kami</a></li>
+              <li class="nav-item"><a class="nav-link" href="#menu-hari-ini">Menu Hari Ini</a></li>
+              <li class="nav-item"><a class="nav-link" href="#menu-besok">Menu Besok</a></li>
+              <li class="nav-item"><a class="nav-link" href="#kontak">Kontak & Lokasi</a></li>
+              <li class="nav-item ms-lg-3"><a class="btn btn-primary-custom" href="tel:0895405718033">Pesan Sekarang</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero-section" id="beranda">
+      <div class="container">
+        <div class="row align-items-center gy-5">
+          <div class="col-lg-7">
+            <span class="eyebrow">Masakan rumahan khas Jawa</span>
+            <h1>Rumah Makan Bu Jawa</h1>
+            <p class="hero-copy">Hidangan hangat, rasa akrab, dan menu harian yang dibuat untuk keluarga, kantor, dan pelanggan yang ingin makan enak tanpa ribet.</p>
+            <div class="hero-actions">
+              <a class="btn btn-primary-custom" href="#menu-hari-ini">Lihat Menu</a>
+              <a class="btn btn-outline-custom" href="tel:0895405718033">Pesan Sekarang</a>
+            </div>
+            <div class="hero-meta">
+              <div class="meta-card">
+                <span class="meta-label">Telepon Pemesanan</span>
+                <strong>0895-4057-18033</strong>
+              </div>
+              <div class="meta-card">
+                <span class="meta-label">Jam Buka</span>
+                <strong>Setiap hari, pukul 09.00 sampai 21.00 WIB</strong>
+              </div>
+              <div class="meta-card">
+                <span class="meta-label">Akses Lokasi</span>
+                <a href="https://maps.app.goo.gl/XNuEpTYSbn5omncMA" target="_blank" rel="noopener noreferrer">Buka Google Maps</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="hero-panel">
+              <div class="hero-panel-top">
+                <span class="panel-chip">Siap dipesan hari ini</span>
+                <span class="panel-chip muted" id="hero-menu-count">0 menu aktif</span>
+              </div>
+              <img src="assets/img/about.jpg" alt="Suasana Rumah Makan Bu Jawa" class="hero-image">
+              <div class="hero-panel-content">
+                <h2>Menu harian tersusun rapi</h2>
+                <p>Pelanggan bisa langsung melihat menu aktif untuk hari ini dan melihat preview menu berikutnya tanpa harus bertanya manual.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <section class="section-block" id="tentang">
+        <div class="container">
+          <div class="section-heading">
+            <span class="section-kicker">Tentang Kami</span>
+            <h2>Rumah makan yang mengutamakan rasa rumahan, kenyamanan, dan kejelasan menu</h2>
+          </div>
+          <div class="about-grid">
+            <div class="about-card">
+              <p>Rumah Makan Bu Jawa hadir dengan sajian khas Jawa yang hangat, akrab, dan cocok dinikmati bersama keluarga, rekan kerja, maupun pelanggan setia yang mencari masakan sehari-hari dengan rasa yang konsisten.</p>
+              <p>Kami menata menu secara jelas agar pelanggan mudah melihat pilihan makanan, minuman, lauk tambahan, hingga paket praktis yang tersedia hari ini maupun untuk hari berikutnya.</p>
+            </div>
+            <div class="about-points">
+              <div class="point-card">
+                <i class="bi bi-house-heart"></i>
+                <h3>Nuansa rumahan</h3>
+                <p>Rasa akrab dan menu yang dekat dengan selera makan harian keluarga Indonesia.</p>
+              </div>
+              <div class="point-card">
+                <i class="bi bi-basket2"></i>
+                <h3>Mudah dipesan</h3>
+                <p>Informasi menu, harga, status ketersediaan, dan kontak pemesanan tersaji dengan jelas.</p>
+              </div>
+              <div class="point-card">
+                <i class="bi bi-calendar-check"></i>
+                <h3>Terjadwal rapi</h3>
+                <p>Menu hari ini dan menu besok ditampilkan terpisah supaya pelanggan bisa merencanakan pesanan.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block menu-section" id="menu-hari-ini">
+        <div class="container">
+          <div class="section-heading">
+            <span class="section-kicker">Menu Hari Ini</span>
+            <h2>Daftar menu aktif yang siap dilihat pelanggan hari ini</h2>
+          </div>
+          <div class="row g-4" id="menu-hari-ini-list"></div>
+        </div>
+      </section>
+
+      <section class="section-block" id="menu-besok">
+        <div class="container">
+          <div class="section-heading">
+            <span class="section-kicker">Menu Besok</span>
+            <h2>Preview menu hari berikutnya untuk membantu pelanggan merencanakan pesanan</h2>
+          </div>
+          <div class="row g-4" id="menu-besok-list"></div>
+        </div>
+      </section>
+
+      <section class="section-block contact-section" id="kontak">
+        <div class="container">
+          <div class="section-heading">
+            <span class="section-kicker">Kontak & Lokasi</span>
+            <h2>Informasi pemesanan yang jelas dan mudah dihubungi</h2>
+          </div>
+          <div class="contact-grid">
+            <div class="contact-card">
+              <h3>Hubungi Rumah Makan Bu Jawa</h3>
+              <ul class="contact-list">
+                <li><i class="bi bi-telephone"></i> 0895-4057-18033</li>
+                <li><i class="bi bi-clock"></i> Setiap hari, pukul 09.00 sampai 21.00 WIB</li>
+                <li><i class="bi bi-geo-alt"></i> Lokasi tersedia di Google Maps</li>
+              </ul>
+              <div class="hero-actions">
+                <a class="btn btn-primary-custom" href="tel:0895405718033">Hubungi Sekarang</a>
+                <a class="btn btn-outline-custom" href="https://maps.app.goo.gl/XNuEpTYSbn5omncMA" target="_blank" rel="noopener noreferrer">Buka Google Maps</a>
+              </div>
+            </div>
+            <div class="contact-card contact-note">
+              <h3>Siap melayani setiap hari</h3>
+              <p>Kami membuka layanan setiap hari mulai pukul 09.00 sampai 21.00 WIB. Untuk pemesanan, pelanggan dapat langsung menghubungi nomor yang tersedia atau membuka lokasi melalui Google Maps.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+        <p class="mb-0">&copy; 2026 Rumah Makan Bu Jawa. Seluruh informasi disajikan untuk memudahkan pemesanan.</p>
+        <a href="admin.html">Akses Admin</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/app.js"></script>
 </body>
 </html>

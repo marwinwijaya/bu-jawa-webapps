@@ -45,8 +45,8 @@ $menuBesok = fetch_menu_for_date_group('besok');
         <a href="#ringkasan">Ringkasan</a>
         <a href="#daftar-menu">Daftar Menu</a>
         <a href="#jadwal">Menu Terjadwal</a>
-        <a href="../index.php" target="_blank" rel="noopener noreferrer">Buka Website Publik</a>
-        <a href="logout.php">Keluar</a>
+        <a href="../index.html" target="_blank" rel="noopener noreferrer">Buka Website Publik</a>
+        <a href="logout.html">Keluar</a>
       </nav>
     </aside>
 
@@ -56,7 +56,7 @@ $menuBesok = fetch_menu_for_date_group('besok');
           <h2>Halo, <?= e((string) $admin['username']); ?></h2>
           <p>Kelola katalog menu dan masukkan menu yang dipilih ke jadwal tampil.</p>
         </div>
-        <a href="menu_form.php" class="btn btn-primary-custom">Tambah Menu Baru</a>
+        <a href="menu-form.html" class="btn btn-primary-custom">Tambah Menu Baru</a>
       </header>
 
       <?php if ($flash): ?>
@@ -78,7 +78,7 @@ $menuBesok = fetch_menu_for_date_group('besok');
             <span class="section-kicker">Daftar Menu</span>
             <h3>Katalog menu utama yang bisa ditambah dan dipilih untuk dijadwalkan</h3>
           </div>
-          <a href="menu_form.php" class="btn btn-primary-custom">Tambah Menu Baru</a>
+          <a href="menu-form.html" class="btn btn-primary-custom">Tambah Menu Baru</a>
         </div>
 
         <form method="get" class="filter-grid">
@@ -114,7 +114,7 @@ $menuBesok = fetch_menu_for_date_group('besok');
           </div>
           <div class="filter-actions">
             <button type="submit" class="btn btn-primary-custom">Terapkan Filter</button>
-            <a href="index.php" class="btn btn-outline-custom">Reset</a>
+            <a href="index.html" class="btn btn-outline-custom">Reset</a>
           </div>
         </form>
 
@@ -145,20 +145,20 @@ $menuBesok = fetch_menu_for_date_group('besok');
                     <td><?= e($menu['tipe_hari']); ?></td>
                     <td>
                       <div class="table-actions">
-                        <a href="menu_form.php?id=<?= (int) $menu['id']; ?>">Edit</a>
-                        <form method="post" action="schedule_menu.php">
+                        <a href="menu-form.html?id=<?= (int) $menu['id']; ?>">Edit</a>
+                        <form method="post" action="schedule-menu.html">
                           <input type="hidden" name="csrf_token" value="<?= e(csrf_token()); ?>">
                           <input type="hidden" name="id" value="<?= (int) $menu['id']; ?>">
                           <input type="hidden" name="target_day" value="besok">
                           <button type="submit">Jadwalkan ke Besok</button>
                         </form>
-                        <form method="post" action="toggle_menu.php">
+                        <form method="post" action="toggle-menu.html">
                           <input type="hidden" name="csrf_token" value="<?= e(csrf_token()); ?>">
                           <input type="hidden" name="id" value="<?= (int) $menu['id']; ?>">
                           <input type="hidden" name="target_status" value="<?= (int) $menu['is_active'] === 1 ? '0' : '1'; ?>">
                           <button type="submit"><?= (int) $menu['is_active'] === 1 ? 'Nonaktifkan' : 'Aktifkan'; ?></button>
                         </form>
-                        <form method="post" action="delete_menu.php" onsubmit="return confirm('Hapus menu ini?');">
+                        <form method="post" action="delete-menu.html" onsubmit="return confirm('Hapus menu ini?');">
                           <input type="hidden" name="csrf_token" value="<?= e(csrf_token()); ?>">
                           <input type="hidden" name="id" value="<?= (int) $menu['id']; ?>">
                           <button type="submit" class="danger-link">Hapus</button>
@@ -189,7 +189,7 @@ $menuBesok = fetch_menu_for_date_group('besok');
               <h4>Tambah ke Jadwal</h4>
               <span>Atur cepat</span>
             </div>
-            <form method="post" action="schedule_menu.php" class="schedule-form">
+            <form method="post" action="schedule-menu.html" class="schedule-form">
               <input type="hidden" name="csrf_token" value="<?= e(csrf_token()); ?>">
               <div>
                 <label for="jadwal_id">Pilih menu dari Daftar Menu</label>
@@ -232,8 +232,8 @@ $menuBesok = fetch_menu_for_date_group('besok');
                       <small><?= e($item['nama_kategori']); ?></small>
                     </div>
                     <div class="schedule-actions-inline">
-                      <a href="menu_form.php?id=<?= (int) $item['id']; ?>">Edit</a>
-                      <form method="post" action="schedule_menu.php">
+                      <a href="menu-form.html?id=<?= (int) $item['id']; ?>">Edit</a>
+                      <form method="post" action="schedule-menu.html">
                         <input type="hidden" name="csrf_token" value="<?= e(csrf_token()); ?>">
                         <input type="hidden" name="id" value="<?= (int) $item['id']; ?>">
                         <input type="hidden" name="target_day" value="besok">
@@ -262,8 +262,8 @@ $menuBesok = fetch_menu_for_date_group('besok');
                       <small><?= e($item['tanggal_tampil']); ?> | <?= e($item['nama_kategori']); ?></small>
                     </div>
                     <div class="schedule-actions-inline">
-                      <a href="menu_form.php?id=<?= (int) $item['id']; ?>">Edit</a>
-                      <form method="post" action="schedule_menu.php">
+                      <a href="menu-form.html?id=<?= (int) $item['id']; ?>">Edit</a>
+                      <form method="post" action="schedule-menu.html">
                         <input type="hidden" name="csrf_token" value="<?= e(csrf_token()); ?>">
                         <input type="hidden" name="id" value="<?= (int) $item['id']; ?>">
                         <input type="hidden" name="target_day" value="hari_ini">

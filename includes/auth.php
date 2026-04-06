@@ -51,7 +51,7 @@ function attempt_login(string $username, string $password): bool
 function require_admin(): void
 {
     if (!current_admin()) {
-        header('Location: login.php');
+        header('Location: login.html');
         exit;
     }
 }

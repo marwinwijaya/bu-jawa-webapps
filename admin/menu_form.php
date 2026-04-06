@@ -12,7 +12,7 @@ $menu = $id ? fetch_menu_by_id($id) : null;
 
 if ($id && !$menu) {
     set_flash('error', 'Data menu tidak ditemukan.');
-    header('Location: index.php');
+    header('Location: index.html');
     exit;
 }
 
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$errors) {
         save_menu($_POST, $id);
         set_flash('success', $id ? 'Menu berhasil diperbarui.' : 'Menu baru berhasil ditambahkan.');
-        header('Location: index.php');
+        header('Location: index.html');
         exit;
     }
 
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <span class="section-kicker">Form Menu</span>
           <h1><?= $id ? 'Edit data menu' : 'Tambah menu baru'; ?></h1>
         </div>
-        <a href="index.php" class="btn btn-outline-custom">Kembali ke Dashboard</a>
+        <a href="index.html" class="btn btn-outline-custom">Kembali ke Dashboard</a>
       </div>
 
       <?php if ($errors): ?>
@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="full form-actions">
           <button type="submit" class="btn btn-primary-custom"><?= $id ? 'Simpan Perubahan' : 'Tambah Menu'; ?></button>
-          <a href="index.php" class="btn btn-outline-custom">Batal</a>
+          <a href="index.html" class="btn btn-outline-custom">Batal</a>
         </div>
       </form>
     </section>

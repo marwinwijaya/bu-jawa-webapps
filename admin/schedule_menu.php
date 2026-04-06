@@ -7,7 +7,7 @@ require_once __DIR__ . '/../includes/auth.php';
 require_admin();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: index.php');
+    header('Location: index.html');
     exit;
 }
 
@@ -19,7 +19,7 @@ $scheduleDate = trim((string) ($_POST['tanggal_tampil'] ?? ''));
 
 if ($id <= 0) {
     set_flash('error', 'Menu yang dipilih tidak valid.');
-    header('Location: index.php#jadwal');
+    header('Location: index.html#jadwal');
     exit;
 }
 
@@ -33,5 +33,5 @@ if ($targetDay === 'hari_ini') {
     set_flash('success', 'Menu berhasil ditambahkan ke Menu Terjadwal dan otomatis diaktifkan untuk besok.');
 }
 
-header('Location: index.php#jadwal');
+header('Location: index.html#jadwal');
 exit;

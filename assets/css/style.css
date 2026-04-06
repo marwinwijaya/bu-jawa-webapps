@@ -426,6 +426,10 @@ p {
   background: var(--danger);
 }
 
+.is-hidden {
+  display: none !important;
+}
+
 .admin-body {
   background: linear-gradient(180deg, #f5ecdd 0%, #efe4d1 100%);
 }
@@ -484,6 +488,10 @@ textarea.form-control {
   margin-top: 1.2rem;
 }
 
+.small {
+  font-size: 0.9rem;
+}
+
 .admin-shell {
   display: grid;
   grid-template-columns: 290px 1fr;
@@ -516,12 +524,32 @@ textarea.form-control {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.sidebar-button {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  color: #f8f1e5;
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
 .admin-nav a:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.sidebar-button:hover {
   background: rgba(255, 255, 255, 0.12);
 }
 
 .admin-main {
   padding: 2rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .admin-header,

@@ -7,7 +7,7 @@ require_once __DIR__ . '/../includes/auth.php';
 require_admin();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: index.php');
+    header('Location: index.html');
     exit;
 }
 
@@ -23,5 +23,5 @@ $stmt->execute([
 ]);
 
 set_flash('success', $targetStatus === 1 ? 'Menu berhasil diaktifkan.' : 'Menu berhasil dinonaktifkan.');
-header('Location: index.php');
+header('Location: index.html');
 exit;

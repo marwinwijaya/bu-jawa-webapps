@@ -1,0 +1,16 @@
+RewriteEngine On
+
+# Halaman publik
+RewriteRule ^index\.html$ index.php [L,QSA]
+RewriteRule ^inner-page\.html$ index.php [L,QSA]
+
+# Halaman admin
+RewriteRule ^admin/login\.html$ admin/login.php [L,QSA]
+RewriteRule ^admin/index\.html$ admin/index.php [L,QSA]
+RewriteRule ^admin/menu-form\.html$ admin/menu_form.php [L,QSA]
+
+# Endpoint aksi admin
+RewriteRule ^admin/toggle-menu\.html$ admin/toggle_menu.php [L,QSA]
+RewriteRule ^admin/delete-menu\.html$ admin/delete_menu.php [L,QSA]
+RewriteRule ^admin/schedule-menu\.html$ admin/schedule_menu.php [L,QSA]
+RewriteRule ^admin/logout\.html$ admin/logout.php [L,QSA]

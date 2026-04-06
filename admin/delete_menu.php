@@ -7,7 +7,7 @@ require_once __DIR__ . '/../includes/auth.php';
 require_admin();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: index.php');
+    header('Location: index.html');
     exit;
 }
 
@@ -19,5 +19,5 @@ $stmt = get_db()->prepare('DELETE FROM menu WHERE id = :id');
 $stmt->execute(['id' => $id]);
 
 set_flash('success', 'Menu berhasil dihapus.');
-header('Location: index.php');
+header('Location: index.html');
 exit;

@@ -1,45 +1,45 @@
 # Rumah Makan Bu Jawa
 
-Website custom ringan berbasis PHP dan SQLite untuk rumah makan berbahasa Indonesia.
+Versi ini disiapkan untuk hosting statis seperti GitHub Pages.
 
-## Fitur utama
+## Teknologi
 
-- Halaman publik untuk beranda, tentang kami, menu hari ini, menu besok, dan kontak.
-- Dashboard admin sederhana dengan login.
-- CRUD menu.
-- Pengaturan status aktif atau nonaktif.
-- Pengaturan status ketersediaan `tersedia` atau `habis`.
-- Penjadwalan menu berdasarkan `tanggal_tampil` dan `tipe_hari`.
-- Database SQLite lokal siap pakai.
+- HTML
+- CSS
+- JavaScript
+- Penyimpanan data lokal browser menggunakan `localStorage`
 
-## Struktur penting
+## Halaman utama
 
-- `index.php` : halaman publik.
-- `admin/login.php` : login admin.
-- `admin/index.php` : dashboard admin.
-- `admin/menu_form.php` : tambah dan edit menu.
-- `includes/` : konfigurasi, autentikasi, helper, dan koneksi database.
-- `database/schema.sql` : schema dan seed awal.
-- `data/rumah_makan_bu_jawa.sqlite` : file database SQLite.
+- [index.html](d:/Development/amal/bu-jawa-webapps/index.html) untuk website publik
+- [admin.html](d:/Development/amal/bu-jawa-webapps/admin.html) untuk dashboard admin
 
 ## Login awal admin
 
 - Username: `admin`
 - Password: `admin123`
 
-Password awal akan di-upgrade ke hash saat login pertama kali.
+## Cara kerja data
 
-## Menjalankan aplikasi
+- Semua data menu disimpan di browser yang membuka website
+- Perubahan dari admin hanya tersimpan di perangkat dan browser tersebut
+- Jika browser dibersihkan atau ganti perangkat, data tidak ikut berpindah
 
-Gunakan server PHP lokal atau hosting PHP yang mendukung SQLite, lalu buka `index.php`.
+## Cocok untuk
 
-Contoh dengan server bawaan PHP:
+- Demo
+- Prototype
+- Website statis di GitHub Pages
 
-```bash
-php -S localhost:8000
-```
+## Batasan penting
 
-Lalu akses:
+- Tidak ada backend server
+- Tidak ada SQLite saat live di GitHub Pages
+- Login admin bersifat frontend-only dan tidak aman untuk kebutuhan produksi multi-user
 
-- `http://localhost:8000/index.php`
-- `http://localhost:8000/admin/login.php`
+## Deploy ke GitHub Pages
+
+Upload isi repo ini ke branch GitHub Pages Anda, lalu gunakan:
+
+- `index.html` sebagai halaman publik
+- `admin.html` sebagai halaman admin
