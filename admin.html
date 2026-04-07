@@ -119,13 +119,28 @@
               <option value="aktif">Aktif</option>
               <option value="nonaktif">Nonaktif</option>
             </select>
+            <select id="filter-ketersediaan" class="form-select">
+              <option value="">Semua ketersediaan</option>
+              <option value="tersedia">Tersedia</option>
+              <option value="habis">Habis</option>
+            </select>
             <div class="bulk-actions">
               <button type="button" id="bulk-add-hari-ini" class="btn btn-outline-custom">Tambahkan Terpilih ke Hari Ini</button>
               <button type="button" id="bulk-add-besok" class="btn btn-outline-custom">Tambahkan Terpilih ke Besok</button>
             </div>
           </div>
 
-          <div class="master-grid" id="master-grid"></div>
+          <div class="list-shell master-list-shell">
+            <div class="list-header master-list-header">
+              <div>Menu</div>
+              <div>Kategori</div>
+              <div>Harga</div>
+              <div>Status</div>
+              <div>Penjadwalan</div>
+              <div>Aksi</div>
+            </div>
+            <div class="master-list" id="master-grid"></div>
+          </div>
         </div>
       </section>
 
@@ -141,7 +156,15 @@
                 <button type="button" id="clear-hari-ini" class="btn btn-outline-custom">Kosongkan Hari Ini</button>
               </div>
             </div>
-            <div class="schedule-card-list" id="hari-ini-list"></div>
+            <div class="list-shell schedule-list-shell">
+              <div class="list-header schedule-list-header">
+                <div>Menu</div>
+                <div>Status</div>
+                <div>Urutan</div>
+                <div>Aksi</div>
+              </div>
+              <div class="schedule-card-list" id="hari-ini-list"></div>
+            </div>
           </section>
 
           <section class="schedule-board">
@@ -154,7 +177,15 @@
                 <button type="button" id="download-json-besok-button" class="btn btn-outline-custom">Unduh JSON Besok</button>
               </div>
             </div>
-            <div class="schedule-card-list" id="besok-list"></div>
+            <div class="list-shell schedule-list-shell">
+              <div class="list-header schedule-list-header">
+                <div>Menu</div>
+                <div>Status</div>
+                <div>Urutan</div>
+                <div>Aksi</div>
+              </div>
+              <div class="schedule-card-list" id="besok-list"></div>
+            </div>
           </section>
         </div>
       </section>

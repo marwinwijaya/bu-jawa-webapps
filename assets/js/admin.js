@@ -208,6 +208,7 @@
     document.querySelector("#master-search")?.addEventListener("input", renderMasterMenu);
     document.querySelector("#filter-kategori")?.addEventListener("change", renderMasterMenu);
     document.querySelector("#filter-aktif")?.addEventListener("change", renderMasterMenu);
+    document.querySelector("#filter-ketersediaan")?.addEventListener("change", renderMasterMenu);
 
     document.querySelector("#open-create-modal")?.addEventListener("click", () => {
       resetForm();
@@ -279,12 +280,14 @@
     const search = (document.querySelector("#master-search")?.value || "").trim().toLowerCase();
     const kategori = document.querySelector("#filter-kategori")?.value || "";
     const aktif = document.querySelector("#filter-aktif")?.value || "";
+    const ketersediaan = document.querySelector("#filter-ketersediaan")?.value || "";
 
     const filtered = state.master_menu.filter((menu) => {
       const matchesSearch = !search || menu.nama_menu.toLowerCase().includes(search) || (menu.deskripsi || "").toLowerCase().includes(search);
       const matchesKategori = !kategori || menu.kategori === kategori;
       const matchesAktif = !aktif || (aktif === "aktif" ? menu.aktif : !menu.aktif);
-      return matchesSearch && matchesKategori && matchesAktif;
+      const matchesKetersediaan = !ketersediaan || menu.status_ketersediaan === ketersediaan;
+      return matchesSearch && matchesKategori && matchesAktif && matchesKetersediaan;
     });
 
     if (!filtered.length) {
@@ -300,7 +303,7 @@
 
     target.innerHTML = filtered
       .sort((a, b) => a.nama_menu.localeCompare(b.nama_menu))
-      .map((menu) => renderMasterCard(menu))
+      .map((menu) => renderMasterRow(menu))
       .join("");
 
     target.querySelectorAll("[data-master-action]").forEach((button) => {
@@ -319,41 +322,58 @@
     });
   }
 
-  function renderMasterCard(menu) {
+  function renderMasterRow(menu) {
     const selected = selectedMasterIds.has(menu.id);
     const inToday = state.menu_hari_ini.includes(menu.id);
     const inTomorrow = state.menu_besok.includes(menu.id);
+    const shortDescription = truncateText(menu.deskripsi || "Belum ada deskripsi menu.", 92);
 
     return `
-      <article class="master-card ${selected ? "is-selected" : ""}">
-        <div class="master-card-head">
-          <label class="checkbox-chip">
+      <article class="master-row ${selected ? "is-selected" : ""}">
+        <div class="master-row-menu">
+          <label class="checkbox-chip compact-checkbox" aria-label="Pilih ${escapeHtml(menu.nama_menu)}">
             <input type="checkbox" data-master-select="${menu.id}" ${selected ? "checked" : ""}>
-            <span>Pilih</span>
           </label>
-          <div class="status-pills">
-            <span class="soft-badge category-${slugify(menu.kategori)}">${escapeHtml(menu.kategori)}</span>
-            <span class="soft-badge ${menu.aktif ? "is-success" : "is-neutral"}">${menu.aktif ? "Aktif" : "Nonaktif"}</span>
-            <span class="soft-badge ${menu.status_ketersediaan === "habis" ? "is-danger" : "is-success"}">${menu.status_ketersediaan === "habis" ? "Habis" : "Tersedia"}</span>
-          </div>
-        </div>
-        <div class="master-card-body">
-          <img src="${escapeHtml(menu.gambar || DEFAULT_IMAGE)}" alt="${escapeHtml(menu.nama_menu)}" class="master-thumb">
-          <div>
+          <img src="${escapeHtml(menu.gambar || DEFAULT_IMAGE)}" alt="${escapeHtml(menu.nama_menu)}" class="master-row-thumb">
+          <div class="master-row-copy">
             <h4>${escapeHtml(menu.nama_menu)}</h4>
-            <p>${escapeHtml(menu.deskripsi || "Belum ada deskripsi menu.")}</p>
-            <div class="master-meta">
-              <strong>${formatRupiah(menu.harga)}</strong>
-              <span>${inToday ? "Sudah di Hari Ini" : "Belum di Hari Ini"}</span>
-              <span>${inTomorrow ? "Sudah di Besok" : "Belum di Besok"}</span>
-            </div>
+            <p>${escapeHtml(shortDescription)}</p>
           </div>
         </div>
-        <div class="master-actions">
-          <button type="button" data-master-action="add-today" data-id="${menu.id}">Tambahkan ke Hari Ini</button>
-          <button type="button" data-master-action="add-tomorrow" data-id="${menu.id}">Tambahkan ke Besok</button>
-          <button type="button" data-master-action="edit" data-id="${menu.id}">Edit</button>
-          <button type="button" data-master-action="delete" data-id="${menu.id}" class="danger-link">Hapus</button>
+        <div class="master-row-cell">
+          <span class="soft-badge category-${slugify(menu.kategori)}">${escapeHtml(menu.kategori)}</span>
+        </div>
+        <div class="master-row-price">
+          <strong>${formatRupiah(menu.harga)}</strong>
+        </div>
+        <div class="master-row-status">
+          <span class="soft-badge ${menu.aktif ? "is-success" : "is-neutral"}">${menu.aktif ? "Aktif" : "Nonaktif"}</span>
+          <span class="soft-badge ${menu.status_ketersediaan === "habis" ? "is-danger" : "is-success"}">${menu.status_ketersediaan === "habis" ? "Habis" : "Tersedia"}</span>
+        </div>
+        <div class="master-row-schedule">
+          ${inToday ? '<span class="soft-badge badge-outline-info">Hari Ini</span>' : ""}
+          ${inTomorrow ? '<span class="soft-badge badge-outline-warning">Besok</span>' : ""}
+          ${!inToday && !inTomorrow ? '<span class="soft-badge is-neutral">Belum dijadwalkan</span>' : ""}
+        </div>
+        <div class="master-row-actions">
+          <button type="button" class="action-chip action-primary" data-master-action="add-today" data-id="${menu.id}">
+            <i class="bi bi-sunrise"></i><span>Hari Ini</span>
+          </button>
+          <button type="button" class="action-chip action-warning" data-master-action="add-tomorrow" data-id="${menu.id}">
+            <i class="bi bi-moon-stars"></i><span>Besok</span>
+          </button>
+          <button type="button" class="action-chip" data-master-action="toggle-active" data-id="${menu.id}">
+            <i class="bi ${menu.aktif ? "bi-toggle-on" : "bi-toggle-off"}"></i><span>${menu.aktif ? "Nonaktifkan" : "Aktifkan"}</span>
+          </button>
+          <button type="button" class="action-chip" data-master-action="toggle-availability" data-id="${menu.id}">
+            <i class="bi ${menu.status_ketersediaan === "habis" ? "bi-bag-check" : "bi-bag-x"}"></i><span>${menu.status_ketersediaan === "habis" ? "Tersedia" : "Habis"}</span>
+          </button>
+          <button type="button" class="action-chip" data-master-action="edit" data-id="${menu.id}">
+            <i class="bi bi-pencil-square"></i><span>Edit</span>
+          </button>
+          <button type="button" class="action-chip action-danger" data-master-action="delete" data-id="${menu.id}">
+            <i class="bi bi-trash3"></i><span>Hapus</span>
+          </button>
         </div>
       </article>
     `;
@@ -386,8 +406,23 @@
       return;
     }
 
+    if (action === "toggle-active") {
+      menu.aktif = !menu.aktif;
+      showFlash("success", `Status aktif ${menu.nama_menu} diperbarui.`);
+      renderAll();
+      return;
+    }
+
+    if (action === "toggle-availability") {
+      menu.status_ketersediaan = menu.status_ketersediaan === "habis" ? "tersedia" : "habis";
+      showFlash("success", `Status ketersediaan ${menu.nama_menu} diperbarui.`);
+      renderAll();
+      return;
+    }
+
     if (action === "add-today") {
       addMenuToSchedule(id, "hari_ini");
+      return;
     }
 
     if (action === "add-tomorrow") {
@@ -451,30 +486,36 @@
 
     list.innerHTML = items
       .map((menu, index) => `
-        <article class="schedule-item-card">
-          <img src="${escapeHtml(menu.gambar || DEFAULT_IMAGE)}" alt="${escapeHtml(menu.nama_menu)}" class="schedule-thumb">
-          <div class="schedule-item-body">
-            <div class="schedule-item-top">
-              <div>
-                <h4>${escapeHtml(menu.nama_menu)}</h4>
-                <p>${escapeHtml(menu.kategori)} • ${formatRupiah(menu.harga)}</p>
-              </div>
-              <div class="status-pills">
-                <span class="soft-badge ${menu.aktif ? "is-success" : "is-neutral"}">${menu.aktif ? "Aktif" : "Nonaktif"}</span>
-                <span class="soft-badge ${menu.status_ketersediaan === "habis" ? "is-danger" : "is-success"}">${menu.status_ketersediaan === "habis" ? "Habis" : "Tersedia"}</span>
-              </div>
+        <article class="schedule-row">
+          <div class="schedule-row-menu">
+            <img src="${escapeHtml(menu.gambar || DEFAULT_IMAGE)}" alt="${escapeHtml(menu.nama_menu)}" class="schedule-row-thumb">
+            <div class="schedule-row-copy">
+              <h4>${escapeHtml(menu.nama_menu)}</h4>
+              <p>${escapeHtml(menu.kategori)} | ${formatRupiah(menu.harga)}</p>
             </div>
-            <div class="schedule-item-actions">
-              <button type="button" data-schedule-action="toggle-availability" data-target="${target}" data-id="${menu.id}">
-                ${menu.status_ketersediaan === "habis" ? "Tandai Tersedia" : "Tandai Habis"}
-              </button>
-              <button type="button" data-schedule-action="toggle-active" data-target="${target}" data-id="${menu.id}">
-                ${menu.aktif ? "Nonaktifkan" : "Aktifkan"}
-              </button>
-              <button type="button" data-schedule-action="move-up" data-target="${target}" data-id="${menu.id}" ${index === 0 ? "disabled" : ""}>Naik</button>
-              <button type="button" data-schedule-action="move-down" data-target="${target}" data-id="${menu.id}" ${index === items.length - 1 ? "disabled" : ""}>Turun</button>
-              <button type="button" data-schedule-action="remove" data-target="${target}" data-id="${menu.id}" class="danger-link">Hapus dari ${target === "hari_ini" ? "Hari Ini" : "Besok"}</button>
-            </div>
+          </div>
+          <div class="schedule-row-status">
+            <span class="soft-badge ${menu.aktif ? "is-success" : "is-neutral"}">${menu.aktif ? "Aktif" : "Nonaktif"}</span>
+            <span class="soft-badge ${menu.status_ketersediaan === "habis" ? "is-danger" : "is-success"}">${menu.status_ketersediaan === "habis" ? "Habis" : "Tersedia"}</span>
+          </div>
+          <div class="schedule-row-order">
+            <button type="button" class="action-chip action-order" data-schedule-action="move-up" data-target="${target}" data-id="${menu.id}" ${index === 0 ? "disabled" : ""}>
+              <i class="bi bi-arrow-up"></i><span>Naik</span>
+            </button>
+            <button type="button" class="action-chip action-order" data-schedule-action="move-down" data-target="${target}" data-id="${menu.id}" ${index === items.length - 1 ? "disabled" : ""}>
+              <i class="bi bi-arrow-down"></i><span>Turun</span>
+            </button>
+          </div>
+          <div class="schedule-row-actions">
+            <button type="button" class="action-chip" data-schedule-action="toggle-availability" data-target="${target}" data-id="${menu.id}">
+              <i class="bi ${menu.status_ketersediaan === "habis" ? "bi-bag-check" : "bi-bag-x"}"></i><span>${menu.status_ketersediaan === "habis" ? "Tersedia" : "Habis"}</span>
+            </button>
+            <button type="button" class="action-chip" data-schedule-action="toggle-active" data-target="${target}" data-id="${menu.id}">
+              <i class="bi ${menu.aktif ? "bi-toggle-on" : "bi-toggle-off"}"></i><span>${menu.aktif ? "Nonaktifkan" : "Aktifkan"}</span>
+            </button>
+            <button type="button" class="action-chip action-danger" data-schedule-action="remove" data-target="${target}" data-id="${menu.id}">
+              <i class="bi bi-x-circle"></i><span>Hapus</span>
+            </button>
           </div>
         </article>
       `)
@@ -652,9 +693,7 @@
       return;
     }
 
-    const confirmed = window.confirm(
-      "Semua Menu Besok akan menggantikan Menu Hari Ini. Setelah proses selesai, Menu Besok akan dikosongkan. Lanjutkan?"
-    );
+    const confirmed = window.confirm("Semua Menu Besok akan menggantikan Menu Hari Ini. Setelah proses selesai, Menu Besok akan dikosongkan. Lanjutkan?");
     if (!confirmed) {
       return;
     }
@@ -733,7 +772,7 @@
   function renderJsonInfo() {
     setText(
       "#json-info",
-      `Master Menu berisi ${state.master_menu.length} item. Menu Hari Ini ${state.menu_hari_ini.length} item. Menu Besok ${state.menu_besok.length} item.`
+      `Semua perubahan langsung tersimpan sebagai draft lokal. Setelah selesai, unduh JSON terbaru, ganti file data/menu.json di project lokal, lalu commit dan push lewat GitHub Desktop. Master Menu ${state.master_menu.length} item, Hari Ini ${state.menu_hari_ini.length} item, Besok ${state.menu_besok.length} item.`
     );
   }
 
@@ -848,6 +887,14 @@
 
   function slugify(value) {
     return String(value).toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  }
+
+  function truncateText(value, maxLength) {
+    const text = String(value || "").trim();
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return `${text.slice(0, Math.max(0, maxLength - 1)).trim()}...`;
   }
 
   function showFlash(type, message) {
