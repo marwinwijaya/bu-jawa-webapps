@@ -807,6 +807,7 @@ textarea.form-control {
   display: grid;
   grid-template-columns: 290px 1fr;
   min-height: 100vh;
+  align-items: stretch;
 }
 
 .admin-shell,
@@ -825,13 +826,19 @@ textarea.form-control {
 }
 
 .admin-sidebar {
-  padding: 2rem 1.35rem;
   background: #2f241b;
   color: #f8f1e5;
+  min-height: 100%;
+  align-self: stretch;
+}
+
+.admin-sidebar-inner {
   position: sticky;
   top: 0;
-  height: 100vh;
-  align-self: start;
+  min-height: 100vh;
+  padding: 2rem 1.35rem;
+  display: grid;
+  align-content: start;
   overflow-y: auto;
 }
 
@@ -1931,7 +1938,7 @@ body.modal-open {
     grid-template-columns: 248px 1fr;
   }
 
-  .admin-sidebar {
+  .admin-sidebar-inner {
     padding: 1.45rem 1rem;
   }
 
@@ -2060,9 +2067,13 @@ body.modal-open {
   }
 
   .admin-sidebar {
+    min-height: auto;
+  }
+
+  .admin-sidebar-inner {
     position: sticky;
     top: 0;
-    height: auto;
+    min-height: auto;
     max-height: 100vh;
     display: grid;
     gap: 1rem;
@@ -2126,9 +2137,13 @@ body.modal-open {
   }
 
   .admin-sidebar {
+    min-height: auto;
+  }
+
+  .admin-sidebar-inner {
     position: sticky;
     top: 0;
-    height: auto;
+    min-height: auto;
     max-height: 100vh;
     z-index: 35;
   }
@@ -2175,6 +2190,11 @@ body.modal-open {
 
   .admin-nav {
     grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar-inner {
+    position: relative;
+    max-height: none;
   }
 
   .login-page-shell {
