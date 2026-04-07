@@ -72,6 +72,7 @@
   }
 
   function renderMenuCard(menu, isTomorrow) {
+    const imageSrc = normalizeImagePath(menu.gambar) || "assets/img/about.jpg";
     const statusBadge = menu.status_ketersediaan === "habis"
       ? `<span class="menu-pill badge-danger">Habis</span>`
       : `<span class="menu-pill badge-success">Tersedia</span>`;
@@ -82,7 +83,7 @@
     return `
       <article class="menu-marquee-card ${isTomorrow ? "is-tomorrow-card" : ""}">
         <div class="menu-marquee-image-wrap">
-          <img src="${escapeHtml(menu.gambar || "assets/img/about.jpg")}" alt="${escapeHtml(menu.nama_menu)}" class="menu-marquee-image">
+          <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(menu.nama_menu)}" class="menu-marquee-image">
         </div>
         <div class="menu-marquee-body">
           <div class="menu-marquee-badges">
@@ -111,6 +112,19 @@
 
   function formatRupiah(value) {
     return `Rp ${Number(value || 0).toLocaleString("id-ID")}`;
+  }
+
+  function normalizeImagePath(value) {
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    if (raw.startsWith("data:") || raw.startsWith("blob:") || /^https?:\/\//i.test(raw)) return raw;
+
+    let normalized = raw.replace(/\\/g, "/").replace(/^\.?\//, "");
+    const assetsIndex = normalized.toLowerCase().indexOf("assets/img/");
+    if (assetsIndex >= 0) {
+      normalized = normalized.slice(assetsIndex);
+    }
+    return normalized;
   }
 
   function setText(selector, value) {

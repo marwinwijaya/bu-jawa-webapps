@@ -71,7 +71,7 @@
       kategori: app.normalizeCategory(item.kategori),
       deskripsi: String(item.deskripsi || "").trim(),
       harga: Number(item.harga || 0),
-      gambar: typeof item.gambar === "string" ? item.gambar : "",
+      gambar: app.normalizeImagePath(item.gambar),
       aktif: Boolean(item.aktif),
       status_ketersediaan: item.status_ketersediaan === "habis" ? "habis" : "tersedia",
     };
@@ -290,6 +290,19 @@
     return parts.length > 1 ? parts.pop().toLowerCase() : "jpg";
   };
 
+  app.normalizeImagePath = function normalizeImagePath(value) {
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    if (raw.startsWith("data:") || raw.startsWith("blob:") || /^https?:\/\//i.test(raw)) return raw;
+
+    let normalized = raw.replace(/\\/g, "/").replace(/^\.?\//, "");
+    const assetsIndex = normalized.toLowerCase().indexOf("assets/img/");
+    if (assetsIndex >= 0) {
+      normalized = normalized.slice(assetsIndex);
+    }
+    return normalized;
+  };
+
   app.slugify = function slugify(value) {
     return String(value || "")
       .toLowerCase()
@@ -428,8 +441,9 @@
   };
 
   app.renderThumb = function renderThumb(src, className) {
-    if (!src) return `<span class="${className} thumb-placeholder">Foto</span>`;
-    return `<img src="${app.escapeHtml(src)}" alt="" class="${className}">`;
+    const normalizedSrc = app.normalizeImagePath(src);
+    if (!normalizedSrc) return `<span class="${className} thumb-placeholder">Foto</span>`;
+    return `<img src="${app.escapeHtml(normalizedSrc)}" alt="" class="${className}">`;
   };
 
   app.renderEmpty = function renderEmpty(title, description, withButton) {
