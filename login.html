@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin | Rumah Makan Bu Jawa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body class="login-body">
+  <main class="login-page-shell">
+    <section class="login-surface">
+      <div class="login-showcase">
+        <span class="section-kicker">Login Admin</span>
+        <h1>Panel Admin Rumah Makan Bu Jawa</h1>
+        <p>Masuk untuk mengelola master menu, menyusun menu hari ini, dan menyiapkan menu besok dengan alur yang rapi dan cepat.</p>
+
+        <div class="login-feature-list">
+          <div class="login-feature-item">
+            <i class="bi bi-journal-check"></i>
+            <div>
+              <strong>Kelola Master Menu</strong>
+              <p>Tambah, edit, dan susun menu tanpa mengubah JSON manual.</p>
+            </div>
+          </div>
+          <div class="login-feature-item">
+            <i class="bi bi-calendar2-week"></i>
+            <div>
+              <strong>Atur Menu Harian</strong>
+              <p>Pindahkan menu ke Hari Ini atau Besok langsung dari dashboard.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="auth-card login-card login-card-premium">
+        <div class="login-card-head">
+          <span class="section-kicker">Akses Dashboard</span>
+          <h2>Login Admin</h2>
+          <p>Gunakan akun admin untuk masuk ke dashboard operasional.</p>
+        </div>
+
+        <form id="login-form" class="auth-form" novalidate>
+          <div class="login-field">
+            <label for="login-username">Username</label>
+            <input id="login-username" type="text" class="form-control" autocomplete="username" required>
+          </div>
+
+          <div class="login-field">
+            <label for="login-password">Password</label>
+            <input id="login-password" type="password" class="form-control" autocomplete="current-password" required>
+          </div>
+
+          <p id="login-error" class="login-error" aria-live="polite"></p>
+
+          <button type="submit" class="btn btn-primary-custom w-100">Masuk</button>
+        </form>
+
+        <div class="login-card-footer">
+          <a href="index.html" class="back-link">Kembali ke website publik</a>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="assets/js/admin-core.js"></script>
+  <script src="assets/js/admin-auth.js"></script>
+  <script src="assets/js/admin-main.js"></script>
+</body>
+</html>

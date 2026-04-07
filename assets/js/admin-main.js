@@ -40,11 +40,20 @@
 
   document.addEventListener("DOMContentLoaded", async () => {
     app.bindLogin();
-    if (!app.isLoggedIn()) {
-      app.showLogin();
+
+    const hasLoginForm = Boolean(document.querySelector("#login-form"));
+    const hasDashboard = Boolean(document.querySelector("#admin-shell"));
+
+    if (hasLoginForm) {
+      if (app.redirectIfLoggedIn()) return;
+      document.querySelector("#login-username")?.focus();
       return;
     }
-    app.showDashboard();
-    await app.initDashboard();
+
+    if (hasDashboard) {
+      if (!app.requireLogin()) return;
+      await app.initDashboard();
+      return;
+    }
   });
 })();

@@ -5,6 +5,7 @@ Website statis untuk GitHub Pages dengan admin lokal untuk mengelola menu dan me
 ## Struktur utama
 
 - `index.html` : website publik
+- `login.html` : halaman login admin
 - `admin.html` : admin lokal untuk kelola menu
 - `assets/css/` : styling
 - `assets/js/site.js` : logika website publik
@@ -14,7 +15,7 @@ Website statis untuk GitHub Pages dengan admin lokal untuk mengelola menu dan me
 ## Cara kerja
 
 1. Website publik membaca data dari `data/menu.json`.
-2. Admin membuka `admin.html` lalu login.
+2. Admin membuka `login.html` lalu login.
 3. Admin mengelola `master_menu`, lalu memilih menu ke `menu_hari_ini` atau `menu_besok`.
 4. Saat klik `Simpan`, admin memilih file `data/menu.json` lokal pada penyimpanan pertama.
 5. Perubahan berikutnya akan menulis ulang file JSON terbaru ke file yang sama selama sesi browser masih aktif.
@@ -55,7 +56,7 @@ Upload repository ini ke GitHub Pages. Halaman utama publik memakai `index.html`
 
 Untuk update menu:
 
-1. Buka `admin.html`
+1. Buka `login.html`
 2. Kelola menu
 3. Klik `Simpan`
 4. Pilih file `data/menu.json` pada penyimpanan pertama
