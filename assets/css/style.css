@@ -555,7 +555,7 @@ p {
   position: fixed;
   right: 20px;
   bottom: 20px;
-  z-index: 50;
+  z-index: 120;
   padding: 1rem 1.2rem;
   border-radius: 18px;
   color: #fff;
@@ -651,6 +651,17 @@ textarea.form-control {
 .form-help {
   margin-top: 0.5rem;
   font-size: 0.9rem;
+}
+
+.form-error {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  background: rgba(180, 83, 42, 0.1);
+  border: 1px solid rgba(180, 83, 42, 0.18);
+  color: var(--danger);
+  font-size: 0.94rem;
+  font-weight: 700;
 }
 
 .image-preview-wrap {
@@ -1234,6 +1245,28 @@ code {
   min-height: 88px;
 }
 
+.schedule-board-head-stacked {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(110, 79, 53, 0.08);
+}
+
+.schedule-board-title {
+  font-size: 1.45rem;
+  line-height: 1.2;
+}
+
+.schedule-board-description {
+  font-size: 0.95rem;
+  max-width: 54ch;
+}
+
+.schedule-board-actions {
+  padding-top: 0.15rem;
+}
+
 .schedule-card-list {
   display: grid;
   gap: 1rem;
@@ -1248,6 +1281,7 @@ code {
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-top: 1rem;
 }
 
 .schedule-board-equal .schedule-card-list {
@@ -1444,6 +1478,7 @@ body.modal-open {
   align-items: center;
   padding: 0.95rem 1.1rem;
   border-top: 1px solid rgba(110, 79, 53, 0.08);
+  min-height: 92px;
 }
 
 .master-row:first-child,
@@ -1475,8 +1510,8 @@ body.modal-open {
 
 .master-row-thumb,
 .schedule-row-thumb {
-  width: 54px;
-  height: 54px;
+  width: 72px;
+  height: 72px;
   border-radius: 16px;
   object-fit: cover;
   flex-shrink: 0;

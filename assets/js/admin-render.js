@@ -8,7 +8,7 @@
     const form = document.querySelector("#menu-kategori");
     const options = app.CATEGORIES.map((category) => `<option value="${category}">${category}</option>`).join("");
     if (filter) filter.innerHTML = `<option value="">Semua kategori</option>${options}`;
-    if (form) form.innerHTML = `<option value="">Pilih kategori</option>${options}`;
+    if (form) form.innerHTML = options;
   };
 
   app.renderAll = function renderAll() {

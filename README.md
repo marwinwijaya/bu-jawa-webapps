@@ -1,14 +1,14 @@
 # Rumah Makan Bu Jawa
 
-Website statis untuk GitHub Pages dengan admin lokal generator JSON.
+Website statis untuk GitHub Pages dengan admin lokal untuk mengelola menu dan memperbarui file JSON.
 
 ## Struktur utama
 
 - `index.html` : website publik
-- `admin.html` : admin lokal untuk kelola menu dan generate JSON
+- `admin.html` : admin lokal untuk kelola menu
 - `assets/css/` : styling
 - `assets/js/site.js` : logika website publik
-- `assets/js/admin.js` : logika admin generator JSON
+- `assets/js/admin-*.js` : modul logika admin
 - `data/menu.json` : sumber data publik
 
 ## Cara kerja
@@ -16,9 +16,9 @@ Website statis untuk GitHub Pages dengan admin lokal generator JSON.
 1. Website publik membaca data dari `data/menu.json`.
 2. Admin membuka `admin.html` lalu login.
 3. Admin mengelola `master_menu`, lalu memilih menu ke `menu_hari_ini` atau `menu_besok`.
-4. Admin dapat mempromosikan `menu_besok` menjadi `menu_hari_ini` dalam satu klik.
-5. Admin mengunduh file JSON hasil generate.
-6. File hasil unduhan digunakan untuk menggantikan `data/menu.json` di repository GitHub.
+4. Saat klik `Simpan`, admin memilih file `data/menu.json` lokal pada penyimpanan pertama.
+5. Perubahan berikutnya akan menulis ulang file JSON terbaru ke file yang sama selama sesi browser masih aktif.
+6. Setelah file lokal berubah, admin cukup commit dan push lewat GitHub Desktop.
 
 ## Format data
 
@@ -47,6 +47,7 @@ Struktur file JSON utama:
 - Halaman publik hanya membaca file JSON.
 - Admin lokal menyimpan draft otomatis di browser untuk memudahkan editing.
 - Data yang benar-benar dipakai website publik tetap berasal dari `data/menu.json`.
+- Penyimpanan langsung ke file membutuhkan browser yang mendukung File System Access API, seperti Chrome atau Edge terbaru.
 
 ## Deploy
 
@@ -56,6 +57,6 @@ Untuk update menu:
 
 1. Buka `admin.html`
 2. Kelola menu
-3. Klik unduh JSON
-4. Ganti file `data/menu.json`
+3. Klik `Simpan`
+4. Pilih file `data/menu.json` pada penyimpanan pertama
 5. Commit dan push ke GitHub

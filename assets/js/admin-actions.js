@@ -28,7 +28,6 @@
     document.querySelector("#clear-besok")?.addEventListener("click", app.clearTomorrow);
     document.querySelector("#save-besok")?.addEventListener("click", app.saveMainJson);
     document.querySelector("#copy-hari-ini-ke-besok")?.addEventListener("click", app.copyTodayToTomorrow);
-    document.querySelector("#promote-button")?.addEventListener("click", app.promoteTomorrow);
 
     document.addEventListener("click", (event) => {
       if (event.target instanceof HTMLElement && event.target.id === "empty-add-button") {
@@ -145,24 +144,55 @@
     app.flash("success", "Urutan menu berhasil diperbarui.");
   };
 
-  app.onSubmitForm = function onSubmitForm(event) {
+  app.onSubmitForm = async function onSubmitForm(event) {
     event.preventDefault();
+    app.clearFormError();
     const id = Number(document.querySelector("#menu-id")?.value || 0);
+    const nameField = document.querySelector("#menu-nama");
+    const categoryField = document.querySelector("#menu-kategori");
+    const priceField = document.querySelector("#menu-harga");
     const item = {
       id: id || app.nextId(),
-      nama_menu: (document.querySelector("#menu-nama")?.value || "").trim(),
-      kategori: document.querySelector("#menu-kategori")?.value || "",
+      nama_menu: (nameField?.value || "").trim(),
+      kategori: categoryField?.value || "",
       deskripsi: (document.querySelector("#menu-deskripsi")?.value || "").trim(),
-      harga: Number(document.querySelector("#menu-harga")?.value || 0),
+      harga: Number(priceField?.value || 0),
       gambar: (document.querySelector("#menu-gambar-data")?.value || "").trim(),
       aktif: Boolean(document.querySelector("#menu-aktif")?.checked),
       status_ketersediaan: document.querySelector("#menu-status")?.value || "tersedia",
     };
     const quickAdd = document.querySelector("#menu-quick-add")?.value || "";
 
-    if (!item.nama_menu || !item.kategori || item.harga <= 0) {
-      app.flash("error", "Nama menu, kategori, dan harga wajib diisi dengan benar.");
+    if (!item.nama_menu) {
+      app.showFormError("Nama menu wajib diisi.");
+      nameField?.focus();
       return;
+    }
+
+    if (!item.kategori) {
+      app.showFormError("Kategori menu wajib dipilih.");
+      categoryField?.focus();
+      return;
+    }
+
+    if (!Number.isFinite(item.harga) || item.harga <= 0) {
+      app.showFormError("Harga menu wajib diisi dengan angka lebih dari 0.");
+      priceField?.focus();
+      return;
+    }
+
+    if (app.pendingImageFile) {
+      try {
+        item.gambar = await app.saveMenuImageFile(app.pendingImageFile, item.id, item.nama_menu);
+        app.setValue("#menu-gambar-data", item.gambar);
+      } catch (error) {
+        if (error?.name === "AbortError") {
+          app.showFormError("Pemilihan folder gambar dibatalkan. Pilih folder assets/img/menu untuk melanjutkan.");
+          return;
+        }
+        app.showFormError(error?.message || "Gagal menyimpan gambar ke folder assets/img/menu.");
+        return;
+      }
     }
 
     const existingIndex = app.state.master_menu.findIndex((menu) => menu.id === item.id);
@@ -185,6 +215,8 @@
   };
 
   app.fillForm = function fillForm(menu) {
+    app.clearFormError();
+    app.clearPendingImage();
     app.setValue("#menu-id", String(menu.id));
     app.setValue("#menu-nama", menu.nama_menu);
     app.setValue("#menu-kategori", menu.kategori);
@@ -195,15 +227,19 @@
     app.setValue("#menu-quick-add", "");
     const checkbox = document.querySelector("#menu-aktif");
     if (checkbox) checkbox.checked = Boolean(menu.aktif);
+    const fileInput = document.querySelector("#menu-gambar-file");
+    if (fileInput) fileInput.value = "";
     app.renderImagePreview(menu.gambar || "");
     app.setText("#menu-form-title", "Edit menu");
     app.setText("#menu-submit-label", "Simpan Perubahan");
   };
 
   app.resetForm = function resetForm() {
+    app.clearFormError();
+    app.clearPendingImage();
     app.setValue("#menu-id", "");
     app.setValue("#menu-nama", "");
-    app.setValue("#menu-kategori", "");
+    app.setValue("#menu-kategori", "Menu Utama");
     app.setValue("#menu-deskripsi", "");
     app.setValue("#menu-harga", "");
     app.setValue("#menu-gambar-data", "");
@@ -220,6 +256,7 @@
 
   app.openModal = function openModal() {
     const shell = document.querySelector("#menu-modal-shell");
+    app.clearFormError();
     shell?.classList.remove("is-hidden");
     shell?.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
@@ -241,18 +278,17 @@
   app.onImageChange = function onImageChange(event) {
     const file = event.target.files?.[0];
     if (!file) {
+      app.clearPendingImage();
       app.setValue("#menu-gambar-data", "");
       app.renderImagePreview("");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = String(reader.result || "");
-      app.setValue("#menu-gambar-data", result);
-      app.renderImagePreview(result);
-      app.flash("success", "Gambar menu berhasil dimuat ke draft.");
-    };
-    reader.readAsDataURL(file);
+    app.clearPendingImage();
+    app.pendingImageFile = file;
+    app.pendingImagePreviewUrl = URL.createObjectURL(file);
+    app.setValue("#menu-gambar-data", "");
+    app.renderImagePreview(app.pendingImagePreviewUrl);
+    app.flash("success", "Preview gambar siap. Saat simpan, file akan ditulis ke folder assets/img/menu.");
   };
 
   app.clearToday = function clearToday() {
@@ -286,17 +322,5 @@
     app.state.menu_besok = [...app.state.menu_hari_ini];
     app.renderAll();
     app.flash("success", "Menu Hari Ini berhasil disalin ke Menu Besok.");
-  };
-
-  app.promoteTomorrow = function promoteTomorrow() {
-    if (!app.state.menu_besok.length) {
-      app.flash("error", "Menu Besok masih kosong.");
-      return;
-    }
-    if (!window.confirm("Gunakan seluruh Menu Besok sebagai Menu Hari Ini? Menu Besok akan dikosongkan setelah proses selesai.")) return;
-    app.state.menu_hari_ini = [...app.state.menu_besok];
-    app.state.menu_besok = [];
-    app.renderAll();
-    app.flash("success", "Menu Besok berhasil dipindahkan menjadi Menu Hari Ini.");
   };
 })();

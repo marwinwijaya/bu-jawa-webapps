@@ -35,6 +35,10 @@
 
   app.initialized = false;
   app.selectedIds = new Set();
+  app.menuFileHandle = null;
+  app.menuImageDirectoryHandle = null;
+  app.pendingImageFile = null;
+  app.pendingImagePreviewUrl = "";
 
   app.validId = function validId(id) {
     return Number.isFinite(id) && id > 0;
@@ -144,20 +148,151 @@
     };
   };
 
-  app.downloadJson = function downloadJson(fileName, payload) {
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName;
-    link.click();
-    URL.revokeObjectURL(url);
+  app.supportsDirectFileWrite = function supportsDirectFileWrite() {
+    return typeof window.showOpenFilePicker === "function" || typeof window.showSaveFilePicker === "function";
   };
 
-  app.saveMainJson = function saveMainJson() {
-    app.persist();
-    app.downloadJson("menu.json", app.buildExportPayload());
-    app.flash("success", "JSON terbaru berhasil dibuat. Ganti file data/menu.json lokal Anda lalu commit dan push.");
+  app.supportsDirectoryWrite = function supportsDirectoryWrite() {
+    return typeof window.showDirectoryPicker === "function";
+  };
+
+  app.getJsonPickerOptions = function getJsonPickerOptions() {
+    return {
+      multiple: false,
+      excludeAcceptAllOption: false,
+      suggestedName: "menu.json",
+      types: [
+        {
+          description: "File JSON menu",
+          accept: {
+            "application/json": [".json"],
+          },
+        },
+      ],
+    };
+  };
+
+  app.pickMenuJsonFile = async function pickMenuJsonFile() {
+    if (!app.supportsDirectFileWrite()) {
+      throw new Error("Browser ini belum mendukung penyimpanan langsung ke file. Gunakan Chrome atau Edge terbaru saat membuka admin lokal.");
+    }
+
+    let handle = null;
+    if (typeof window.showOpenFilePicker === "function") {
+      const handles = await window.showOpenFilePicker(app.getJsonPickerOptions());
+      handle = handles?.[0] || null;
+    } else {
+      handle = await window.showSaveFilePicker(app.getJsonPickerOptions());
+    }
+
+    if (!handle) {
+      throw new Error("File data/menu.json belum dipilih.");
+    }
+
+    app.menuFileHandle = handle;
+    return handle;
+  };
+
+  app.ensureMenuFileHandle = async function ensureMenuFileHandle() {
+    if (app.menuFileHandle) return app.menuFileHandle;
+    return app.pickMenuJsonFile();
+  };
+
+  app.writeJsonToFile = async function writeJsonToFile(fileHandle, payload) {
+    const writable = await fileHandle.createWritable();
+    await writable.write(JSON.stringify(payload, null, 2));
+    await writable.close();
+  };
+
+  app.pickMenuImageDirectory = async function pickMenuImageDirectory() {
+    if (!app.supportsDirectoryWrite()) {
+      throw new Error("Browser ini belum mendukung penyimpanan gambar langsung ke folder. Gunakan Chrome atau Edge terbaru.");
+    }
+
+    const handle = await window.showDirectoryPicker({
+      id: "rmbj-menu-images",
+      mode: "readwrite",
+    });
+
+    if (!handle) {
+      throw new Error("Folder assets/img/menu belum dipilih.");
+    }
+
+    app.menuImageDirectoryHandle = handle;
+    return handle;
+  };
+
+  app.ensureMenuImageDirectoryHandle = async function ensureMenuImageDirectoryHandle() {
+    if (app.menuImageDirectoryHandle) return app.menuImageDirectoryHandle;
+    return app.pickMenuImageDirectory();
+  };
+
+  app.getFileExtension = function getFileExtension(fileName) {
+    const parts = String(fileName || "").split(".");
+    return parts.length > 1 ? parts.pop().toLowerCase() : "jpg";
+  };
+
+  app.slugify = function slugify(value) {
+    return String(value || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60) || "menu";
+  };
+
+  app.buildMenuImageName = function buildMenuImageName(menuId, menuName, originalName) {
+    const extension = app.getFileExtension(originalName);
+    return `menu-${menuId}-${app.slugify(menuName)}.${extension}`;
+  };
+
+  app.saveMenuImageFile = async function saveMenuImageFile(file, menuId, menuName) {
+    const directoryHandle = await app.ensureMenuImageDirectoryHandle();
+    const fileName = app.buildMenuImageName(menuId, menuName, file.name);
+    const fileHandle = await directoryHandle.getFileHandle(fileName, { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(await file.arrayBuffer());
+    await writable.close();
+    return `assets/img/menu/${fileName}`;
+  };
+
+  app.clearPendingImage = function clearPendingImage() {
+    if (app.pendingImagePreviewUrl) {
+      URL.revokeObjectURL(app.pendingImagePreviewUrl);
+    }
+    app.pendingImageFile = null;
+    app.pendingImagePreviewUrl = "";
+  };
+
+  app.showFormError = function showFormError(message) {
+    const node = document.querySelector("#menu-form-error");
+    if (!node) return;
+    node.textContent = message;
+    node.classList.remove("is-hidden");
+  };
+
+  app.clearFormError = function clearFormError() {
+    const node = document.querySelector("#menu-form-error");
+    if (!node) return;
+    node.textContent = "";
+    node.classList.add("is-hidden");
+  };
+
+  app.saveMainJson = async function saveMainJson() {
+    try {
+      app.persist();
+      const payload = app.buildExportPayload();
+      const fileHandle = await app.ensureMenuFileHandle();
+      await app.writeJsonToFile(fileHandle, payload);
+      app.flash("success", "File data/menu.json berhasil diperbarui. Lanjutkan commit dan push lewat GitHub Desktop.");
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        app.flash("error", "Penyimpanan dibatalkan sebelum file dipilih.");
+        return;
+      }
+      app.flash("error", error?.message || "Gagal menyimpan file JSON terbaru.");
+    }
   };
 
   app.setText = function setText(selector, value) {
