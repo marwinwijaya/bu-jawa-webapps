@@ -9,51 +9,63 @@
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/css/style.css" rel="stylesheet">
 </head>
-<body class="admin-body" data-page="admin">
-  <main class="auth-layout" id="admin-login-section">
-    <section class="auth-card">
-      <span class="section-kicker">Dashboard Admin</span>
-      <h1>Login admin Rumah Makan Bu Jawa</h1>
-      <p>Versi GitHub Pages berjalan sepenuhnya di browser. Data disimpan di perangkat yang membuka situs ini.</p>
-      <p class="auth-note">Login awal: <strong>admin</strong> / <strong>admin123</strong></p>
-      <p id="login-error" class="text-danger small mt-2"></p>
-      <form id="admin-login-form" class="auth-form">
-        <label for="username">Username</label>
-        <input id="username" type="text" class="form-control" required>
-        <label for="password">Password</label>
-        <input id="password" type="password" class="form-control" required>
-        <button type="submit" class="btn btn-primary-custom w-100">Masuk ke Dashboard</button>
-      </form>
-      <a href="index.html" class="back-link">Kembali ke website publik</a>
-    </section>
-  </main>
-
-  <div class="admin-shell is-hidden" id="admin-dashboard-section">
+<body class="admin-body">
+  <div class="admin-shell">
     <aside class="admin-sidebar">
       <div>
         <span class="section-kicker">Admin</span>
         <h1>Rumah Makan Bu Jawa</h1>
-        <p>Kelola katalog menu dan masukkan menu yang dipilih ke jadwal tampil.</p>
+        <p>Kelola menu secara lokal, lalu unduh JSON untuk di-upload ke repository GitHub Pages.</p>
       </div>
       <nav class="admin-nav">
+        <a href="#panduan">Panduan</a>
         <a href="#ringkasan">Ringkasan</a>
+        <a href="#menu-form-card">Form Menu</a>
         <a href="#daftar-menu">Daftar Menu</a>
         <a href="#jadwal">Menu Terjadwal</a>
         <a href="index.html" target="_blank" rel="noopener noreferrer">Buka Website Publik</a>
-        <button type="button" id="logout-button" class="sidebar-button">Keluar</button>
       </nav>
     </aside>
 
     <main class="admin-main">
       <header class="admin-header">
         <div>
-          <h2>Dashboard Admin</h2>
-          <p>Versi statis untuk GitHub Pages. Perubahan tersimpan di browser saat ini.</p>
+          <h2>Admin Lokal Generator JSON</h2>
+          <p>Atur menu di browser, lalu unduh file JSON hasilnya untuk menggantikan <code>data/menu.json</code> di repository.</p>
         </div>
         <div class="header-actions">
-          <button type="button" id="reset-data-button" class="btn btn-outline-custom">Reset Data Contoh</button>
+          <button type="button" id="reload-source-button" class="btn btn-outline-custom">Muat Ulang dari menu.json</button>
+          <button type="button" id="save-draft-button" class="btn btn-outline-custom">Simpan Draft di Browser</button>
         </div>
       </header>
+
+      <section class="admin-section" id="panduan">
+        <div class="note-grid">
+          <div class="note-card">
+            <span class="section-kicker">Alur Kerja</span>
+            <h3>Workflow update menu harian</h3>
+            <ol class="plain-list">
+              <li>Buka <code>admin.html</code>.</li>
+              <li>Tambah, edit, hapus, atau ubah status menu.</li>
+              <li>Atur menu ke <strong>hari ini</strong> atau <strong>besok</strong>.</li>
+              <li>Klik tombol unduh JSON.</li>
+              <li>Ganti file <code>data/menu.json</code> di repository GitHub.</li>
+            </ol>
+          </div>
+          <div class="note-card">
+            <span class="section-kicker">Generator JSON</span>
+            <h3>Hasil unduhan siap dipakai website publik</h3>
+            <p id="json-info">Draft sedang disiapkan.</p>
+            <div class="toolbar-grid">
+              <button type="button" id="download-json-button" class="btn btn-primary-custom">Unduh JSON Utama</button>
+              <button type="button" id="download-json-hari-ini-button" class="btn btn-outline-custom">Unduh JSON Hari Ini</button>
+              <button type="button" id="download-json-besok-button" class="btn btn-outline-custom">Unduh JSON Besok</button>
+            </div>
+            <label for="import-json-input" class="btn btn-outline-custom mt-3">Import JSON</label>
+            <input id="import-json-input" type="file" accept="application/json" class="visually-hidden">
+          </div>
+        </div>
+      </section>
 
       <section class="admin-section" id="ringkasan">
         <div class="summary-grid">
@@ -120,6 +132,16 @@
             </div>
 
             <div class="full">
+              <label for="menu-gambar-file">Upload Gambar Menu</label>
+              <input id="menu-gambar-file" type="file" accept="image/*" class="form-control">
+              <p class="form-help">Jika dipilih, gambar akan dimasukkan ke JSON sebagai data URL. Untuk hasil lebih ringan, gunakan path gambar repository bila memungkinkan.</p>
+            </div>
+
+            <div class="full image-preview-wrap">
+              <img id="menu-image-preview" src="assets/img/about.jpg" alt="Preview gambar menu" class="image-preview">
+            </div>
+
+            <div class="full">
               <label for="menu-deskripsi">Deskripsi Singkat</label>
               <textarea id="menu-deskripsi" class="form-control" rows="4"></textarea>
             </div>
@@ -130,8 +152,8 @@
             </div>
 
             <div class="full form-actions">
-              <button type="submit" class="btn btn-primary-custom" id="menu-form-button">Tambah Menu</button>
-              <button type="button" class="btn btn-outline-custom" onclick="window.location.reload()">Batal</button>
+              <button type="submit" class="btn btn-primary-custom" id="menu-submit-label">Tambah Menu</button>
+              <button type="button" class="btn btn-outline-custom" id="reset-form-button">Reset Form</button>
             </div>
           </form>
         </section>
@@ -155,8 +177,8 @@
             <label for="filter-aktif">Status Aktif</label>
             <select id="filter-aktif" class="form-select">
               <option value="">Semua status</option>
-              <option value="1">Aktif</option>
-              <option value="0">Nonaktif</option>
+              <option value="true">Aktif</option>
+              <option value="false">Nonaktif</option>
             </select>
           </div>
           <div>
@@ -165,12 +187,7 @@
               <option value="">Semua tipe</option>
               <option value="hari_ini">Hari Ini</option>
               <option value="besok">Besok</option>
-              <option value="jadwal">Jadwal Lain</option>
             </select>
-          </div>
-          <div>
-            <label for="filter-tanggal">Tanggal Tampil</label>
-            <input id="filter-tanggal" type="date" class="form-control">
           </div>
         </form>
 
@@ -183,8 +200,8 @@
                 <th>Harga</th>
                 <th>Status</th>
                 <th>Aktif</th>
-                <th>Tanggal Tampil</th>
                 <th>Tipe Hari</th>
+                <th>Gambar</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -233,7 +250,7 @@
               <h4>Menu Hari Ini</h4>
               <span>Aktif sekarang</span>
             </div>
-            <ul class="schedule-list" id="schedule-today-list"></ul>
+            <ul class="schedule-list" id="schedule-hari-ini-list"></ul>
           </div>
 
           <div class="schedule-card schedule-card-wide">
@@ -241,7 +258,7 @@
               <h4>Menu Besok / Selanjutnya</h4>
               <span>Preview pelanggan</span>
             </div>
-            <ul class="schedule-list" id="schedule-upcoming-list"></ul>
+            <ul class="schedule-list" id="schedule-besok-list"></ul>
           </div>
         </div>
       </section>
@@ -249,6 +266,6 @@
   </div>
 
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script src="assets/js/admin.js"></script>
 </body>
 </html>

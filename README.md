@@ -1,45 +1,54 @@
 # Rumah Makan Bu Jawa
 
-Versi ini disiapkan untuk hosting statis seperti GitHub Pages.
+Website statis untuk GitHub Pages dengan admin lokal generator JSON.
 
-## Teknologi
+## Struktur utama
 
-- HTML
-- CSS
-- JavaScript
-- Penyimpanan data lokal browser menggunakan `localStorage`
+- `index.html` : website publik
+- `admin.html` : admin lokal untuk kelola menu dan generate JSON
+- `assets/css/` : styling
+- `assets/js/site.js` : logika website publik
+- `assets/js/admin.js` : logika admin generator JSON
+- `data/menu.json` : sumber data publik
 
-## Halaman utama
+## Cara kerja
 
-- [index.html](d:/Development/amal/bu-jawa-webapps/index.html) untuk website publik
-- [admin.html](d:/Development/amal/bu-jawa-webapps/admin.html) untuk dashboard admin
+1. Website publik membaca data dari `data/menu.json`.
+2. Admin membuka `admin.html`.
+3. Admin menambah, mengedit, menghapus, mengaktifkan, atau menjadwalkan menu.
+4. Admin mengunduh file JSON hasil generate.
+5. File hasil unduhan digunakan untuk menggantikan `data/menu.json` di repository GitHub.
 
-## Login awal admin
+## Format data
 
-- Username: `admin`
-- Password: `admin123`
+Setiap item menu memiliki field:
 
-## Cara kerja data
+- `id`
+- `nama_menu`
+- `kategori`
+- `deskripsi`
+- `harga`
+- `gambar`
+- `aktif`
+- `status_ketersediaan`
+- `tipe_hari`
 
-- Semua data menu disimpan di browser yang membuka website
-- Perubahan dari admin hanya tersimpan di perangkat dan browser tersebut
-- Jika browser dibersihkan atau ganti perangkat, data tidak ikut berpindah
+## Catatan penting
 
-## Cocok untuk
+- Website ini full static dan tidak memakai backend.
+- Tidak ada database runtime.
+- Halaman publik hanya membaca file JSON.
+- Admin lokal menyimpan draft sementara di browser untuk memudahkan editing.
+- Data yang benar-benar dipakai website publik tetap berasal dari `data/menu.json`.
 
-- Demo
-- Prototype
-- Website statis di GitHub Pages
+## Deploy
 
-## Batasan penting
+Upload repository ini ke GitHub Pages. Halaman utama publik memakai `index.html`.
 
-- Tidak ada backend server
-- Tidak ada SQLite saat live di GitHub Pages
-- Login admin bersifat frontend-only dan tidak aman untuk kebutuhan produksi multi-user
+Untuk update menu:
 
-## Deploy ke GitHub Pages
-
-Upload isi repo ini ke branch GitHub Pages Anda, lalu gunakan:
-
-- `index.html` sebagai halaman publik
-- `admin.html` sebagai halaman admin
+1. Buka `admin.html`
+2. Kelola menu
+3. Klik unduh JSON
+4. Ganti file `data/menu.json`
+5. Commit dan push ke GitHub
