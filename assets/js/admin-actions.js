@@ -26,7 +26,6 @@
     document.querySelector("#clear-hari-ini")?.addEventListener("click", app.clearToday);
     document.querySelector("#clear-besok")?.addEventListener("click", app.clearTomorrow);
     document.querySelector("#copy-hari-ini-ke-besok")?.addEventListener("click", app.copyTodayToTomorrow);
-    document.querySelector("#rollover-menu-button")?.addEventListener("click", app.rolloverTomorrowToToday);
 
     document.addEventListener("click", (event) => {
       if (event.target instanceof HTMLElement && event.target.id === "empty-add-button") {
@@ -332,15 +331,4 @@
     await app.syncState({ successMessage: "Menu Hari Ini berhasil disalin ke Menu Besok." });
   };
 
-  app.rolloverTomorrowToToday = async function rolloverTomorrowToToday() {
-    if (!app.state.menu_besok.length) {
-      app.flash("error", "Menu Besok masih kosong.");
-      return;
-    }
-    if (!window.confirm("Ganti hari sekarang? Semua Menu Besok akan menjadi Menu Hari Ini, lalu daftar Menu Besok akan dikosongkan.")) return;
-    app.state.menu_hari_ini = [...app.state.menu_besok];
-    app.state.menu_besok = [];
-    app.renderAll();
-    await app.syncState({ successMessage: "Pergantian hari berhasil. Menu Besok sekarang menjadi Menu Hari Ini." });
-  };
 })();

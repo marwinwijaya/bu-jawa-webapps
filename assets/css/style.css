@@ -831,6 +831,8 @@ textarea.form-control {
   position: sticky;
   top: 0;
   height: 100vh;
+  align-self: start;
+  overflow-y: auto;
 }
 
 .admin-sidebar p {
@@ -2058,10 +2060,13 @@ body.modal-open {
   }
 
   .admin-sidebar {
-    position: static;
+    position: sticky;
+    top: 0;
     height: auto;
+    max-height: 100vh;
     display: grid;
     gap: 1rem;
+    z-index: 35;
   }
 
   .admin-nav {
@@ -2121,8 +2126,11 @@ body.modal-open {
   }
 
   .admin-sidebar {
-    position: static;
+    position: sticky;
+    top: 0;
     height: auto;
+    max-height: 100vh;
+    z-index: 35;
   }
 
   .master-toolbar {
