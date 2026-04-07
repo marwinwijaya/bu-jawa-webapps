@@ -9,18 +9,29 @@
       }
 
       const payload = await response.json();
-      const menus = Array.isArray(payload) ? payload : Array.isArray(payload.menus) ? payload.menus : [];
-
-      renderPublicPage(menus);
+      const parsed = parsePayload(payload);
+      renderPublicPage(parsed.menuHariIni, parsed.menuBesok);
     } catch (error) {
       renderErrorState("Data menu belum bisa dimuat. Pastikan file data/menu.json tersedia di repository GitHub Pages.");
     }
   });
 
-  function renderPublicPage(menus) {
-    const menuHariIni = menus.filter((menu) => menu.aktif && menu.tipe_hari === "hari_ini");
-    const menuBesok = menus.filter((menu) => menu.aktif && menu.tipe_hari === "besok");
+  function parsePayload(payload) {
+    if (payload.menu_hari_ini && payload.menu_besok) {
+      return {
+        menuHariIni: Array.isArray(payload.menu_hari_ini) ? payload.menu_hari_ini.filter((menu) => menu.aktif) : [],
+        menuBesok: Array.isArray(payload.menu_besok) ? payload.menu_besok.filter((menu) => menu.aktif) : [],
+      };
+    }
 
+    const menus = Array.isArray(payload) ? payload : Array.isArray(payload.menus) ? payload.menus : [];
+    return {
+      menuHariIni: menus.filter((menu) => menu.aktif && menu.tipe_hari === "hari_ini"),
+      menuBesok: menus.filter((menu) => menu.aktif && menu.tipe_hari === "besok"),
+    };
+  }
+
+  function renderPublicPage(menuHariIni, menuBesok) {
     setText("#hero-menu-count", `${menuHariIni.length} menu aktif`);
     renderMenuList("#menu-hari-ini-list", menuHariIni, false);
     renderMenuList("#menu-besok-list", menuBesok, true);

@@ -1,6 +1,94 @@
 {
-  "generated_at": "2026-04-07T09:00:00+07:00",
-  "menus": [
+  "metadata": {
+    "nama_usaha": "Rumah Makan Bu Jawa",
+    "telepon": "0895-4057-18033",
+    "jam_buka": "Setiap hari, pukul 09.00 sampai 21.00 WIB",
+    "maps": "https://maps.app.goo.gl/XNuEpTYSbn5omncMA",
+    "generated_at": "2026-04-07T10:00:00+07:00"
+  },
+  "master_menu": [
+    {
+      "id": 1,
+      "nama_menu": "Nasi Gudeg",
+      "kategori": "Makanan",
+      "deskripsi": "Gudeg manis gurih dengan sambal krecek dan telur, cocok untuk makan siang keluarga.",
+      "harga": 22000,
+      "gambar": "assets/img/menu/cake.jpg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 2,
+      "nama_menu": "Ayam Goreng",
+      "kategori": "Lauk Tambahan",
+      "deskripsi": "Ayam goreng bumbu kuning khas rumahan dengan tekstur empuk dan rasa meresap.",
+      "harga": 18000,
+      "gambar": "assets/img/menu/tuscan-grilled.jpg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 3,
+      "nama_menu": "Sayur Lodeh",
+      "kategori": "Makanan",
+      "deskripsi": "Sayur lodeh santan hangat dengan isian sayuran segar dan rasa khas dapur Jawa.",
+      "harga": 16000,
+      "gambar": "assets/img/menu/greek-salad.jpg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 4,
+      "nama_menu": "Tempe Orek",
+      "kategori": "Lauk Tambahan",
+      "deskripsi": "Tempe orek manis pedas yang renyah dan cocok sebagai pelengkap berbagai lauk.",
+      "harga": 9000,
+      "gambar": "assets/img/menu/bread-barrel.jpg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 5,
+      "nama_menu": "Sambal Terasi",
+      "kategori": "Lauk Tambahan",
+      "deskripsi": "Sambal terasi segar dengan rasa pedas mantap untuk menemani lauk utama.",
+      "harga": 7000,
+      "gambar": "assets/img/menu/lobster-bisque.jpg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 6,
+      "nama_menu": "Es Teh Manis",
+      "kategori": "Minuman",
+      "deskripsi": "Es teh manis segar yang pas untuk menemani hidangan rumahan sepanjang hari.",
+      "harga": 6000,
+      "gambar": "assets/img/menu/mozzarella.jpg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 7,
+      "nama_menu": "Teh Hangat",
+      "kategori": "Minuman",
+      "deskripsi": "Teh hangat klasik yang nyaman dinikmati bersama menu sarapan atau makan malam.",
+      "harga": 5000,
+      "gambar": "assets/img/menu/spinach-salad.jpg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 8,
+      "nama_menu": "Jeruk Es",
+      "kategori": "Minuman",
+      "deskripsi": "Minuman jeruk segar dengan rasa manis asam yang ringan dan menyegarkan.",
+      "harga": 8000,
+      "gambar": "assets/img/menu/caesar.jpg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    }
+  ],
+  "menu_hari_ini": [
     {
       "id": 1,
       "nama_menu": "Nasi Gudeg",
@@ -24,39 +112,6 @@
       "tipe_hari": "hari_ini"
     },
     {
-      "id": 3,
-      "nama_menu": "Sayur Lodeh",
-      "kategori": "Makanan",
-      "deskripsi": "Sayur lodeh santan hangat dengan isian sayuran segar dan rasa khas dapur Jawa.",
-      "harga": 16000,
-      "gambar": "assets/img/menu/greek-salad.jpg",
-      "aktif": true,
-      "status_ketersediaan": "tersedia",
-      "tipe_hari": "hari_ini"
-    },
-    {
-      "id": 4,
-      "nama_menu": "Tempe Orek",
-      "kategori": "Lauk Tambahan",
-      "deskripsi": "Tempe orek manis pedas yang renyah dan cocok sebagai pelengkap berbagai lauk.",
-      "harga": 9000,
-      "gambar": "assets/img/menu/bread-barrel.jpg",
-      "aktif": true,
-      "status_ketersediaan": "tersedia",
-      "tipe_hari": "hari_ini"
-    },
-    {
-      "id": 5,
-      "nama_menu": "Sambal Terasi",
-      "kategori": "Lauk Tambahan",
-      "deskripsi": "Sambal terasi segar dengan rasa pedas mantap untuk menemani lauk utama.",
-      "harga": 7000,
-      "gambar": "assets/img/menu/lobster-bisque.jpg",
-      "aktif": true,
-      "status_ketersediaan": "tersedia",
-      "tipe_hari": "hari_ini"
-    },
-    {
       "id": 6,
       "nama_menu": "Es Teh Manis",
       "kategori": "Minuman",
@@ -66,7 +121,9 @@
       "aktif": true,
       "status_ketersediaan": "tersedia",
       "tipe_hari": "hari_ini"
-    },
+    }
+  ],
+  "menu_besok": [
     {
       "id": 7,
       "nama_menu": "Teh Hangat",

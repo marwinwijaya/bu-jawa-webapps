@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Admin | Rumah Makan Bu Jawa</title>
+  <title>Panel Admin Rumah Makan Bu Jawa</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -14,7 +14,7 @@
     <section class="auth-card login-card">
       <span class="section-kicker">Login Admin</span>
       <h1>Panel Admin Rumah Makan Bu Jawa</h1>
-      <p>Masuk untuk mengelola menu lokal dan menghasilkan file JSON yang siap di-upload ke GitHub Pages.</p>
+      <p>Masuk untuk mengelola master menu, menu hari ini, dan menu besok tanpa backend.</p>
       <form id="login-form" class="auth-form">
         <label for="login-username">Username</label>
         <input id="login-username" type="text" class="form-control" autocomplete="username" required>
@@ -27,260 +27,241 @@
     </section>
   </main>
 
-  <div class="admin-shell is-hidden" id="admin-shell">
-    <aside class="admin-sidebar">
-      <div>
-        <span class="section-kicker">Admin</span>
+  <div class="admin-shell admin-premium is-hidden" id="admin-shell">
+    <aside class="admin-sidebar premium-sidebar">
+      <div class="sidebar-brand">
+        <span class="section-kicker">Dashboard Operasional</span>
         <h1>Rumah Makan Bu Jawa</h1>
-        <p>Kelola menu secara lokal, lalu unduh JSON untuk di-upload ke repository GitHub Pages.</p>
+        <p>Kelola master menu, susun menu harian, dan generate JSON untuk GitHub Pages.</p>
       </div>
-      <nav class="admin-nav">
-        <a href="#panduan">Panduan</a>
-        <a href="#ringkasan">Ringkasan</a>
-        <a href="#menu-form-card">Form Menu</a>
-        <a href="#daftar-menu">Daftar Menu</a>
-        <a href="#jadwal">Menu Terjadwal</a>
-        <a href="index.html" target="_blank" rel="noopener noreferrer">Buka Website Publik</a>
-        <button type="button" id="logout-button" class="sidebar-button">Logout</button>
+
+      <nav class="admin-nav premium-nav">
+        <a href="#ringkasan"><i class="bi bi-grid-1x2"></i><span>Ringkasan</span></a>
+        <a href="#master-menu"><i class="bi bi-journal-text"></i><span>Master Menu</span></a>
+        <a href="#penjadwalan"><i class="bi bi-calendar2-week"></i><span>Menu Harian</span></a>
+        <a href="#preview-json"><i class="bi bi-filetype-json"></i><span>Preview JSON</span></a>
+        <a href="index.html" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right"></i><span>Buka Website Publik</span></a>
+        <button type="button" id="logout-button" class="sidebar-button"><i class="bi bi-box-arrow-right"></i><span>Logout</span></button>
       </nav>
+
+      <div class="sidebar-tip">
+        <strong>Flow cepat</strong>
+        <p>Pilih menu dari Master Menu, klik tambah ke Hari Ini atau Besok, lalu unduh JSON.</p>
+      </div>
     </aside>
 
-    <main class="admin-main">
-      <header class="admin-header">
+    <main class="admin-main premium-main">
+      <header class="dashboard-hero">
         <div>
-          <h2>Admin Lokal Generator JSON</h2>
-          <p>Atur menu di browser, lalu unduh file JSON hasilnya untuk menggantikan <code>data/menu.json</code> di repository.</p>
+          <span class="section-kicker">Panel Admin Rumah Makan Bu Jawa</span>
+          <h2>Kelola master menu, menu hari ini, dan menu besok</h2>
+          <p>Update operasional harian dibuat cepat, minim langkah, dan mudah dipakai oleh admin non-teknis.</p>
         </div>
-        <div class="header-actions">
-          <button type="button" id="reload-source-button" class="btn btn-outline-custom">Muat Ulang dari menu.json</button>
-          <button type="button" id="save-draft-button" class="btn btn-outline-custom">Simpan Draft di Browser</button>
+        <div class="dashboard-hero-side">
+          <div class="date-chip">
+            <i class="bi bi-calendar3"></i>
+            <span id="today-label">-</span>
+          </div>
+          <div class="hero-action-grid">
+            <button type="button" id="save-draft-button" class="btn btn-outline-custom">Simpan Draft</button>
+            <button type="button" id="promote-button" class="btn btn-accent-custom">Gunakan Menu Besok Menjadi Hari Ini</button>
+            <button type="button" id="reset-besok-button" class="btn btn-outline-custom">Reset Menu Besok</button>
+            <button type="button" id="download-json-button" class="btn btn-primary-custom">Unduh JSON Utama</button>
+          </div>
         </div>
       </header>
 
-      <section class="admin-section" id="panduan">
-        <div class="note-grid">
-          <div class="note-card">
-            <span class="section-kicker">Alur Kerja</span>
-            <h3>Workflow update menu harian</h3>
-            <ol class="plain-list">
-              <li>Buka <code>admin.html</code>.</li>
-              <li>Tambah, edit, hapus, atau ubah status menu.</li>
-              <li>Atur menu ke <strong>hari ini</strong> atau <strong>besok</strong>.</li>
-              <li>Klik tombol unduh JSON.</li>
-              <li>Ganti file <code>data/menu.json</code> di repository GitHub.</li>
-            </ol>
-          </div>
-          <div class="note-card">
-            <span class="section-kicker">Generator JSON</span>
-            <h3>Hasil unduhan siap dipakai website publik</h3>
-            <p id="json-info">Draft sedang disiapkan.</p>
-            <div class="toolbar-grid">
-              <button type="button" id="download-json-button" class="btn btn-primary-custom">Unduh JSON Utama</button>
-              <button type="button" id="download-json-hari-ini-button" class="btn btn-outline-custom">Unduh JSON Hari Ini</button>
-              <button type="button" id="download-json-besok-button" class="btn btn-outline-custom">Unduh JSON Besok</button>
-            </div>
-            <label for="import-json-input" class="btn btn-outline-custom mt-3">Import JSON</label>
-            <input id="import-json-input" type="file" accept="application/json" class="visually-hidden">
-          </div>
-        </div>
-      </section>
-
       <section class="admin-section" id="ringkasan">
-        <div class="summary-grid">
-          <div class="summary-card"><span>Menu Hari Ini</span><strong id="summary-hari-ini">0</strong></div>
-          <div class="summary-card"><span>Menu Besok</span><strong id="summary-besok">0</strong></div>
-          <div class="summary-card"><span>Total Menu</span><strong id="summary-total">0</strong></div>
-          <div class="summary-card"><span>Menu Nonaktif</span><strong id="summary-nonaktif">0</strong></div>
+        <div class="summary-grid premium-summary">
+          <div class="summary-card">
+            <span>Total Master Menu</span>
+            <strong id="summary-master">0</strong>
+          </div>
+          <div class="summary-card">
+            <span>Total Menu Hari Ini</span>
+            <strong id="summary-hari-ini">0</strong>
+          </div>
+          <div class="summary-card">
+            <span>Total Menu Besok</span>
+            <strong id="summary-besok">0</strong>
+          </div>
+          <div class="summary-card">
+            <span>Total Menu Aktif</span>
+            <strong id="summary-aktif">0</strong>
+          </div>
+          <div class="summary-card">
+            <span>Total Menu Habis</span>
+            <strong id="summary-habis">0</strong>
+          </div>
         </div>
       </section>
 
-      <section class="admin-section" id="menu-form-card">
-        <section class="form-card">
+      <section class="admin-section" id="master-menu">
+        <div class="panel-shell">
           <div class="section-title-inline">
             <div>
-              <span class="section-kicker">Form Menu</span>
-              <h1 id="menu-form-title">Tambah menu baru</h1>
+              <span class="section-kicker">Master Menu</span>
+              <h3>Pusat data semua menu yang bisa dipilih ke Hari Ini atau Besok</h3>
             </div>
-            <button type="button" class="btn btn-outline-custom" onclick="window.location.hash='daftar-menu'">Ke Daftar Menu</button>
+            <div class="header-actions">
+              <button type="button" id="open-create-modal" class="btn btn-primary-custom">Tambah Menu Baru</button>
+            </div>
           </div>
 
-          <form id="menu-form" class="menu-form-grid">
-            <input type="hidden" id="menu-id">
-
-            <div class="full">
-              <label for="menu-nama">Nama Menu</label>
-              <input id="menu-nama" type="text" class="form-control" required>
+          <div class="master-toolbar">
+            <div class="search-field">
+              <i class="bi bi-search"></i>
+              <input id="master-search" type="text" class="form-control" placeholder="Cari nama menu atau deskripsi...">
             </div>
-
-            <div>
-              <label for="menu-kategori">Kategori</label>
-              <select id="menu-kategori" class="form-select" required></select>
-            </div>
-
-            <div>
-              <label for="menu-harga">Harga</label>
-              <input id="menu-harga" type="number" min="0" class="form-control" required>
-            </div>
-
-            <div>
-              <label for="menu-status">Status Ketersediaan</label>
-              <select id="menu-status" class="form-select">
-                <option value="tersedia">Tersedia</option>
-                <option value="habis">Habis</option>
-              </select>
-            </div>
-
-            <div>
-              <label for="menu-tipe-hari">Tipe Hari</label>
-              <select id="menu-tipe-hari" class="form-select">
-                <option value="hari_ini">Hari Ini</option>
-                <option value="besok">Besok</option>
-                <option value="jadwal">Jadwal Lain</option>
-              </select>
-            </div>
-
-            <div>
-              <label for="menu-tanggal">Tanggal Tampil</label>
-              <input id="menu-tanggal" type="date" class="form-control" required>
-            </div>
-
-            <div class="full">
-              <label for="menu-gambar">Path Gambar</label>
-              <input id="menu-gambar" type="text" class="form-control" value="assets/img/about.jpg">
-            </div>
-
-            <div class="full">
-              <label for="menu-gambar-file">Upload Gambar Menu</label>
-              <input id="menu-gambar-file" type="file" accept="image/*" class="form-control">
-              <p class="form-help">Jika dipilih, gambar akan dimasukkan ke JSON sebagai data URL. Untuk hasil lebih ringan, gunakan path gambar repository bila memungkinkan.</p>
-            </div>
-
-            <div class="full image-preview-wrap">
-              <img id="menu-image-preview" src="assets/img/about.jpg" alt="Preview gambar menu" class="image-preview">
-            </div>
-
-            <div class="full">
-              <label for="menu-deskripsi">Deskripsi Singkat</label>
-              <textarea id="menu-deskripsi" class="form-control" rows="4"></textarea>
-            </div>
-
-            <div class="full checkbox-row">
-              <input id="menu-aktif" type="checkbox" checked>
-              <label for="menu-aktif">Aktifkan menu ini agar bisa tampil di halaman publik</label>
-            </div>
-
-            <div class="full form-actions">
-              <button type="submit" class="btn btn-primary-custom" id="menu-submit-label">Tambah Menu</button>
-              <button type="button" class="btn btn-outline-custom" id="reset-form-button">Reset Form</button>
-            </div>
-          </form>
-        </section>
-      </section>
-
-      <section class="admin-section" id="daftar-menu">
-        <div class="section-title-inline">
-          <div>
-            <span class="section-kicker">Daftar Menu</span>
-            <h3>Katalog menu utama yang bisa ditambah dan dipilih untuk dijadwalkan</h3>
-          </div>
-          <a href="#menu-form-card" class="btn btn-primary-custom">Tambah Menu Baru</a>
-        </div>
-
-        <form id="filter-form" class="filter-grid">
-          <div>
-            <label for="filter-kategori">Kategori</label>
             <select id="filter-kategori" class="form-select"></select>
-          </div>
-          <div>
-            <label for="filter-aktif">Status Aktif</label>
             <select id="filter-aktif" class="form-select">
-              <option value="">Semua status</option>
-              <option value="true">Aktif</option>
-              <option value="false">Nonaktif</option>
+              <option value="">Semua status aktif</option>
+              <option value="aktif">Aktif</option>
+              <option value="nonaktif">Nonaktif</option>
             </select>
+            <div class="bulk-actions">
+              <button type="button" id="bulk-add-hari-ini" class="btn btn-outline-custom">Tambahkan Terpilih ke Hari Ini</button>
+              <button type="button" id="bulk-add-besok" class="btn btn-outline-custom">Tambahkan Terpilih ke Besok</button>
+            </div>
           </div>
-          <div>
-            <label for="filter-tipe-hari">Tipe Hari</label>
-            <select id="filter-tipe-hari" class="form-select">
-              <option value="">Semua tipe</option>
-              <option value="hari_ini">Hari Ini</option>
-              <option value="besok">Besok</option>
-            </select>
-          </div>
-        </form>
 
-        <div class="table-wrap">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Menu</th>
-                <th>Kategori</th>
-                <th>Harga</th>
-                <th>Status</th>
-                <th>Aktif</th>
-                <th>Tipe Hari</th>
-                <th>Gambar</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="menu-table-body"></tbody>
-          </table>
+          <div class="master-grid" id="master-grid"></div>
         </div>
       </section>
 
-      <section class="admin-section" id="jadwal">
-        <div class="section-title-inline">
-          <div>
-            <span class="section-kicker">Menu Terjadwal</span>
-            <h3>Tambahkan menu dari Daftar Menu ke jadwal tampil. Menu nonaktif akan aktif otomatis saat dijadwalkan.</h3>
-          </div>
+      <section class="admin-section" id="penjadwalan">
+        <div class="schedule-layout">
+          <section class="schedule-board">
+            <div class="schedule-board-head">
+              <div>
+                <span class="section-kicker">Menu Hari Ini</span>
+                <h3>Daftar menu yang tampil hari ini</h3>
+              </div>
+              <div class="board-actions">
+                <button type="button" id="clear-hari-ini" class="btn btn-outline-custom">Kosongkan Hari Ini</button>
+              </div>
+            </div>
+            <div class="schedule-card-list" id="hari-ini-list"></div>
+          </section>
+
+          <section class="schedule-board">
+            <div class="schedule-board-head">
+              <div>
+                <span class="section-kicker">Menu Besok</span>
+                <h3>Susun preview menu untuk hari berikutnya</h3>
+              </div>
+              <div class="board-actions">
+                <button type="button" id="download-json-besok-button" class="btn btn-outline-custom">Unduh JSON Besok</button>
+              </div>
+            </div>
+            <div class="schedule-card-list" id="besok-list"></div>
+          </section>
         </div>
+      </section>
 
-        <div class="schedule-grid">
-          <div class="schedule-card">
-            <div class="schedule-head">
-              <h4>Tambah ke Jadwal</h4>
-              <span>Atur cepat</span>
+      <section class="admin-section" id="preview-json">
+        <div class="note-grid">
+          <div class="note-card">
+            <span class="section-kicker">Generator JSON</span>
+            <h3>File siap upload ke repository</h3>
+            <p id="json-info">Draft sedang disiapkan.</p>
+            <div class="toolbar-grid">
+              <button type="button" id="download-json-hari-ini-button" class="btn btn-outline-custom">Unduh JSON Hari Ini</button>
+              <button type="button" id="download-json-besok-mini-button" class="btn btn-outline-custom">Unduh JSON Besok</button>
+              <label for="import-json-input" class="btn btn-outline-custom">Import JSON</label>
+              <button type="button" id="reload-source-button" class="btn btn-outline-custom">Muat dari menu.json</button>
             </div>
-            <form id="schedule-form" class="schedule-form">
-              <div>
-                <label for="schedule-menu-id">Pilih menu dari Daftar Menu</label>
-                <select id="schedule-menu-id" class="form-select" required></select>
-              </div>
-              <div>
-                <label for="schedule-target-day">Masukkan ke</label>
-                <select id="schedule-target-day" class="form-select">
-                  <option value="besok">Menu Besok</option>
-                  <option value="hari_ini">Menu Hari Ini</option>
-                  <option value="jadwal">Jadwal Lain</option>
-                </select>
-              </div>
-              <div>
-                <label for="schedule-date">Tanggal Tampil</label>
-                <input id="schedule-date" type="date" class="form-control">
-              </div>
-              <button type="submit" class="btn btn-primary-custom">Tambahkan ke Menu Terjadwal</button>
-            </form>
+            <input id="import-json-input" type="file" accept="application/json" class="visually-hidden">
           </div>
-
-          <div class="schedule-card">
-            <div class="schedule-head">
-              <h4>Menu Hari Ini</h4>
-              <span>Aktif sekarang</span>
-            </div>
-            <ul class="schedule-list" id="schedule-hari-ini-list"></ul>
-          </div>
-
-          <div class="schedule-card schedule-card-wide">
-            <div class="schedule-head">
-              <h4>Menu Besok / Selanjutnya</h4>
-              <span>Preview pelanggan</span>
-            </div>
-            <ul class="schedule-list" id="schedule-besok-list"></ul>
+          <div class="note-card">
+            <span class="section-kicker">Preview Ekspor</span>
+            <h3>Pratinjau data akhir</h3>
+            <pre class="json-preview" id="json-preview-output"></pre>
           </div>
         </div>
       </section>
     </main>
+  </div>
+
+  <div class="modal-shell is-hidden" id="menu-modal-shell" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal="true"></div>
+    <div class="modal-panel">
+      <div class="modal-head">
+        <div>
+          <span class="section-kicker">Form Master Menu</span>
+          <h3 id="menu-form-title">Tambah menu baru</h3>
+        </div>
+        <button type="button" class="modal-close" id="close-modal-button" aria-label="Tutup form">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <form id="menu-form" class="menu-form-grid">
+        <input type="hidden" id="menu-id">
+
+        <div class="full">
+          <label for="menu-nama">Nama Menu</label>
+          <input id="menu-nama" type="text" class="form-control" required>
+        </div>
+
+        <div>
+          <label for="menu-kategori">Kategori</label>
+          <select id="menu-kategori" class="form-select" required></select>
+        </div>
+
+        <div>
+          <label for="menu-harga">Harga</label>
+          <input id="menu-harga" type="number" min="0" class="form-control" required>
+        </div>
+
+        <div>
+          <label for="menu-status">Status Ketersediaan Default</label>
+          <select id="menu-status" class="form-select">
+            <option value="tersedia">Tersedia</option>
+            <option value="habis">Habis</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="menu-quick-add">Setelah simpan, tambahkan ke</label>
+          <select id="menu-quick-add" class="form-select">
+            <option value="">Hanya simpan ke Master Menu</option>
+            <option value="hari_ini">Master Menu + Hari Ini</option>
+            <option value="besok">Master Menu + Besok</option>
+          </select>
+        </div>
+
+        <div class="full">
+          <label for="menu-gambar">Path / URL Gambar</label>
+          <input id="menu-gambar" type="text" class="form-control" value="assets/img/about.jpg">
+        </div>
+
+        <div class="full">
+          <label for="menu-gambar-file">Upload Gambar Menu</label>
+          <input id="menu-gambar-file" type="file" accept="image/*" class="form-control">
+          <p class="form-help">Untuk hasil ringan di GitHub Pages, utamakan path gambar yang sudah ada di repository.</p>
+        </div>
+
+        <div class="full image-preview-wrap">
+          <img id="menu-image-preview" src="assets/img/about.jpg" alt="Preview gambar menu" class="image-preview">
+        </div>
+
+        <div class="full">
+          <label for="menu-deskripsi">Deskripsi Singkat</label>
+          <textarea id="menu-deskripsi" class="form-control" rows="4"></textarea>
+        </div>
+
+        <div class="full checkbox-row">
+          <input id="menu-aktif" type="checkbox" checked>
+          <label for="menu-aktif">Aktifkan menu ini agar bisa dipakai di menu harian</label>
+        </div>
+
+        <div class="full form-actions">
+          <button type="submit" class="btn btn-primary-custom" id="menu-submit-label">Simpan Master Menu</button>
+          <button type="button" class="btn btn-outline-custom" id="reset-form-button">Reset Form</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
