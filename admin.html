@@ -39,14 +39,13 @@
         <a href="#ringkasan"><i class="bi bi-grid-1x2"></i><span>Ringkasan</span></a>
         <a href="#master-menu"><i class="bi bi-journal-text"></i><span>Master Menu</span></a>
         <a href="#penjadwalan"><i class="bi bi-calendar2-week"></i><span>Menu Harian</span></a>
-        <a href="#preview-json"><i class="bi bi-filetype-json"></i><span>Preview JSON</span></a>
         <a href="index.html" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right"></i><span>Buka Website Publik</span></a>
         <button type="button" id="logout-button" class="sidebar-button"><i class="bi bi-box-arrow-right"></i><span>Logout</span></button>
       </nav>
 
       <div class="sidebar-tip">
         <strong>Flow cepat</strong>
-        <p>Pilih menu dari Master Menu, klik tambah ke Hari Ini atau Besok, lalu unduh JSON.</p>
+        <p>Pilih menu dari Master Menu, susun Menu Hari Ini atau Besok, lalu klik Simpan untuk menyiapkan JSON terbaru.</p>
       </div>
     </aside>
 
@@ -119,8 +118,6 @@
             <div class="bulk-actions">
               <button type="button" id="bulk-add-hari-ini" class="btn btn-outline-custom">Tambahkan Terpilih ke Hari Ini</button>
               <button type="button" id="bulk-add-besok" class="btn btn-outline-custom">Tambahkan Terpilih ke Besok</button>
-              <button type="button" id="save-draft-button" class="btn btn-outline-custom">Simpan Draft</button>
-              <button type="button" id="download-json-button" class="btn btn-primary-custom">Unduh JSON Utama</button>
             </div>
           </div>
           <div class="master-list-groups" id="master-grid"></div>
@@ -129,13 +126,12 @@
 
       <section class="admin-section" id="penjadwalan">
         <div class="schedule-layout">
-          <section class="schedule-board">
-            <div class="schedule-board-head">
-              <div>
-                <span class="section-kicker">Menu Hari Ini</span>
-                <h3>Daftar menu yang tampil hari ini</h3>
-              </div>
-              <div class="board-actions">
+          <section class="schedule-board schedule-board-equal">
+            <div class="schedule-board-head schedule-board-head-stacked">
+              <span class="section-kicker">Menu Hari Ini</span>
+              <h3 class="schedule-board-title">Daftar menu yang tampil hari ini</h3>
+              <p class="schedule-board-description">Kelola menu yang sedang tayang hari ini, lalu simpan untuk menyiapkan data terbaru.</p>
+              <div class="board-actions schedule-board-actions">
                 <button type="button" id="clear-hari-ini" class="btn btn-outline-custom">Kosongkan Menu</button>
                 <button type="button" id="save-hari-ini" class="btn btn-primary-custom">Simpan</button>
               </div>
@@ -151,13 +147,12 @@
             </div>
           </section>
 
-          <section class="schedule-board">
-            <div class="schedule-board-head">
-              <div>
-                <span class="section-kicker">Menu Besok</span>
-                <h3>Susun preview menu untuk hari berikutnya</h3>
-              </div>
-              <div class="board-actions">
+          <section class="schedule-board schedule-board-equal">
+            <div class="schedule-board-head schedule-board-head-stacked">
+              <span class="section-kicker">Menu Besok</span>
+              <h3 class="schedule-board-title">Susun preview menu untuk hari berikutnya</h3>
+              <p class="schedule-board-description">Siapkan rencana menu besok, salin dari hari ini bila perlu, lalu simpan saat sudah final.</p>
+              <div class="board-actions schedule-board-actions">
                 <button type="button" id="copy-hari-ini-ke-besok" class="btn btn-outline-custom">Copy dari Menu Hari Ini</button>
                 <button type="button" id="promote-button" class="btn btn-accent-custom">Gunakan sebagai Menu Hari Ini</button>
                 <button type="button" id="clear-besok" class="btn btn-outline-custom">Kosongkan Menu</button>
@@ -174,28 +169,6 @@
               <div class="schedule-card-list" id="besok-list"></div>
             </div>
           </section>
-        </div>
-      </section>
-
-      <section class="admin-section" id="preview-json">
-        <div class="note-grid">
-          <div class="note-card">
-            <span class="section-kicker">Generator JSON</span>
-            <h3>File siap upload ke repository</h3>
-            <p id="json-info">Draft sedang disiapkan.</p>
-            <div class="toolbar-grid">
-              <button type="button" id="download-json-hari-ini-button" class="btn btn-outline-custom">Unduh JSON Hari Ini</button>
-              <button type="button" id="download-json-besok-mini-button" class="btn btn-outline-custom">Unduh JSON Besok</button>
-              <label for="import-json-input" class="btn btn-outline-custom">Import JSON</label>
-              <button type="button" id="reload-source-button" class="btn btn-outline-custom">Muat dari menu.json</button>
-            </div>
-            <input id="import-json-input" type="file" accept="application/json" class="visually-hidden">
-          </div>
-          <div class="note-card">
-            <span class="section-kicker">Preview Ekspor</span>
-            <h3>Pratinjau data akhir</h3>
-            <pre class="json-preview" id="json-preview-output"></pre>
-          </div>
         </div>
       </section>
     </main>
@@ -280,6 +253,10 @@
   </div>
 
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/js/admin.js"></script>
+  <script src="assets/js/admin-core.js"></script>
+  <script src="assets/js/admin-auth.js"></script>
+  <script src="assets/js/admin-render.js"></script>
+  <script src="assets/js/admin-actions.js"></script>
+  <script src="assets/js/admin-main.js"></script>
 </body>
 </html>
