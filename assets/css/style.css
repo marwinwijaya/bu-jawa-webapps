@@ -525,6 +525,18 @@ textarea.form-control {
   font-size: 0.9rem;
 }
 
+.login-card {
+  width: min(560px, 100%);
+}
+
+.login-error {
+  min-height: 1.5rem;
+  margin: 0.15rem 0 0;
+  color: var(--danger);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
 .form-help {
   margin-top: 0.5rem;
   font-size: 0.9rem;

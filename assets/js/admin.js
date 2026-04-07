@@ -2,6 +2,9 @@
   "use strict";
 
   const STORAGE_KEY = "rm_bu_jawa_admin_draft_v2";
+  const SESSION_KEY = "rm_bu_jawa_admin_session";
+  const LOGIN_USERNAME = "admin";
+  const LOGIN_PASSWORD = "rmbujawa2026";
   const CATEGORIES = ["Makanan", "Minuman", "Lauk Tambahan", "Paket"];
   const DEFAULT_IMAGE = "assets/img/about.jpg";
   const seedMenus = [
@@ -16,17 +19,91 @@
   ];
 
   let draftMenus = [];
+  let adminInitialized = false;
 
   document.addEventListener("DOMContentLoaded", async () => {
-    setupCategoryOptions();
-    setupListeners();
-    await bootstrapDraft();
-    resetForm();
-    renderAll();
+    setupLogin();
+    if (!isLoggedIn()) {
+      showLoginScreen();
+      return;
+    }
+    showDashboard();
+    await initializeAdminAfterLogin();
   });
 
   function createMenu(id, nama_menu, kategori, deskripsi, harga, gambar, aktif, status_ketersediaan, tipe_hari) {
     return { id, nama_menu, kategori, deskripsi, harga, gambar, aktif, status_ketersediaan, tipe_hari };
+  }
+
+  function setupLogin() {
+    document.querySelector("#login-form")?.addEventListener("submit", handleLoginSubmit);
+    document.querySelector("#logout-button")?.addEventListener("click", handleLogout);
+  }
+
+  function handleLoginSubmit(event) {
+    event.preventDefault();
+    const username = (document.querySelector("#login-username")?.value || "").trim();
+    const password = document.querySelector("#login-password")?.value || "";
+
+    if (username === LOGIN_USERNAME && password === LOGIN_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, "logged_in");
+      clearLoginError();
+      showDashboard();
+      initializeAdminAfterLogin();
+      showFlash("success", "Login admin berhasil.");
+      return;
+    }
+
+    setLoginError("Username atau password salah. Silakan periksa kembali.");
+  }
+
+  function handleLogout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    showLoginScreen();
+    clearLoginForm();
+    clearLoginError();
+    showFlash("success", "Anda telah logout dari panel admin.");
+  }
+
+  function isLoggedIn() {
+    return sessionStorage.getItem(SESSION_KEY) === "logged_in";
+  }
+
+  function showLoginScreen() {
+    document.querySelector("#login-screen")?.classList.remove("is-hidden");
+    document.querySelector("#admin-shell")?.classList.add("is-hidden");
+  }
+
+  function showDashboard() {
+    document.querySelector("#login-screen")?.classList.add("is-hidden");
+    document.querySelector("#admin-shell")?.classList.remove("is-hidden");
+  }
+
+  async function initializeAdminAfterLogin() {
+    if (!adminInitialized) {
+      setupCategoryOptions();
+      setupListeners();
+      await bootstrapDraft();
+      adminInitialized = true;
+    }
+    resetForm();
+    renderAll();
+  }
+
+  function setLoginError(message) {
+    const target = document.querySelector("#login-error");
+    if (target) {
+      target.textContent = message;
+    }
+  }
+
+  function clearLoginError() {
+    setLoginError("");
+  }
+
+  function clearLoginForm() {
+    setValue("#login-username", "");
+    setValue("#login-password", "");
   }
 
   async function bootstrapDraft() {
