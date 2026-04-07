@@ -24,10 +24,9 @@
     document.querySelector("#bulk-add-hari-ini")?.addEventListener("click", () => app.bulkAdd("hari_ini"));
     document.querySelector("#bulk-add-besok")?.addEventListener("click", () => app.bulkAdd("besok"));
     document.querySelector("#clear-hari-ini")?.addEventListener("click", app.clearToday);
-    document.querySelector("#save-hari-ini")?.addEventListener("click", app.saveMainJson);
     document.querySelector("#clear-besok")?.addEventListener("click", app.clearTomorrow);
-    document.querySelector("#save-besok")?.addEventListener("click", app.saveMainJson);
     document.querySelector("#copy-hari-ini-ke-besok")?.addEventListener("click", app.copyTodayToTomorrow);
+    document.querySelector("#rollover-menu-button")?.addEventListener("click", app.rolloverTomorrowToToday);
 
     document.addEventListener("click", (event) => {
       if (event.target instanceof HTMLElement && event.target.id === "empty-add-button") {
@@ -37,7 +36,7 @@
     });
   };
 
-  app.handleMasterAction = function handleMasterAction(event) {
+  app.handleMasterAction = async function handleMasterAction(event) {
     const action = event.currentTarget.dataset.masterAction;
     const id = Number(event.currentTarget.dataset.id);
     const menu = app.findMaster(id);
@@ -54,32 +53,32 @@
       app.state.menu_hari_ini = app.state.menu_hari_ini.filter((item) => item !== id);
       app.state.menu_besok = app.state.menu_besok.filter((item) => item !== id);
       app.selectedIds.delete(id);
-      app.flash("success", "Menu berhasil dihapus dari Master Menu.");
       app.renderAll();
+      await app.syncState({ successMessage: "Menu berhasil dihapus dari Master Menu." });
       return;
     }
     if (action === "toggle-active") {
       menu.aktif = !menu.aktif;
-      app.flash("success", `Status aktif ${menu.nama_menu} diperbarui.`);
       app.renderAll();
+      await app.syncState({ successMessage: `Status aktif ${menu.nama_menu} diperbarui.` });
       return;
     }
     if (action === "toggle-availability") {
       menu.status_ketersediaan = menu.status_ketersediaan === "habis" ? "tersedia" : "habis";
-      app.flash("success", `Status ketersediaan ${menu.nama_menu} diperbarui.`);
       app.renderAll();
+      await app.syncState({ successMessage: `Status ketersediaan ${menu.nama_menu} diperbarui.` });
       return;
     }
     if (action === "add-today") {
-      app.addToSchedule(id, "hari_ini");
+      await app.addToSchedule(id, "hari_ini");
       return;
     }
     if (action === "add-tomorrow") {
-      app.addToSchedule(id, "besok");
+      await app.addToSchedule(id, "besok");
     }
   };
 
-  app.addToSchedule = function addToSchedule(id, targetName) {
+  app.addToSchedule = async function addToSchedule(id, targetName) {
     const key = targetName === "hari_ini" ? "menu_hari_ini" : "menu_besok";
     const label = targetName === "hari_ini" ? "Menu Hari Ini" : "Menu Besok";
     if (app.state[key].includes(id)) {
@@ -87,11 +86,11 @@
       return;
     }
     app.state[key].push(id);
-    app.flash("success", `Menu berhasil ditambahkan ke ${label}.`);
     app.renderAll();
+    await app.syncState({ successMessage: `Menu berhasil ditambahkan ke ${label}.` });
   };
 
-  app.bulkAdd = function bulkAdd(targetName) {
+  app.bulkAdd = async function bulkAdd(targetName) {
     if (!app.selectedIds.size) {
       app.flash("error", "Pilih minimal satu menu terlebih dahulu.");
       return;
@@ -104,11 +103,15 @@
         added += 1;
       }
     });
-    app.flash(added ? "success" : "error", added ? `${added} menu berhasil ditambahkan.` : "Semua menu terpilih sudah ada di daftar tujuan.");
+    if (!added) {
+      app.flash("error", "Semua menu terpilih sudah ada di daftar tujuan.");
+      return;
+    }
     app.renderAll();
+    await app.syncState({ successMessage: `${added} menu berhasil ditambahkan.` });
   };
 
-  app.handleScheduleAction = function handleScheduleAction(event) {
+  app.handleScheduleAction = async function handleScheduleAction(event) {
     const action = event.currentTarget.dataset.scheduleAction;
     const targetName = event.currentTarget.dataset.target;
     const id = Number(event.currentTarget.dataset.id);
@@ -118,20 +121,27 @@
     const key = targetName === "hari_ini" ? "menu_hari_ini" : "menu_besok";
     if (action === "toggle-availability") {
       menu.status_ketersediaan = menu.status_ketersediaan === "habis" ? "tersedia" : "habis";
-      app.flash("success", `Status ${menu.nama_menu} diperbarui.`);
     }
     if (action === "toggle-active") {
       menu.aktif = !menu.aktif;
-      app.flash("success", `Status aktif ${menu.nama_menu} diperbarui.`);
     }
     if (action === "remove") {
       app.state[key] = app.state[key].filter((item) => item !== id);
-      app.flash("success", `${menu.nama_menu} dihapus dari ${targetName === "hari_ini" ? "Menu Hari Ini" : "Menu Besok"}.`);
     }
     if (action === "move-up" || action === "move-down") {
       app.reorder(key, id, action === "move-up" ? -1 : 1);
     }
     app.renderAll();
+    const targetLabel = targetName === "hari_ini" ? "Menu Hari Ini" : "Menu Besok";
+    const successMessage =
+      action === "toggle-availability"
+        ? `Status ${menu.nama_menu} diperbarui.`
+        : action === "toggle-active"
+          ? `Status aktif ${menu.nama_menu} diperbarui.`
+          : action === "remove"
+            ? `${menu.nama_menu} dihapus dari ${targetLabel}.`
+            : "Urutan menu berhasil diperbarui.";
+    await app.syncState({ successMessage });
   };
 
   app.reorder = function reorder(key, id, delta) {
@@ -141,7 +151,6 @@
     const copy = [...app.state[key]];
     [copy[currentIndex], copy[nextIndex]] = [copy[nextIndex], copy[currentIndex]];
     app.state[key] = copy;
-    app.flash("success", "Urutan menu berhasil diperbarui.");
   };
 
   app.onSubmitForm = async function onSubmitForm(event) {
@@ -198,10 +207,8 @@
     const existingIndex = app.state.master_menu.findIndex((menu) => menu.id === item.id);
     if (existingIndex >= 0) {
       app.state.master_menu[existingIndex] = item;
-      app.flash("success", "Menu berhasil diperbarui.");
     } else {
       app.state.master_menu.push(item);
-      app.flash("success", "Menu baru berhasil ditambahkan.");
     }
 
     if (quickAdd) {
@@ -212,6 +219,7 @@
     app.closeModal();
     app.resetForm();
     app.renderAll();
+    await app.syncState({ successMessage: existingIndex >= 0 ? "Menu berhasil diperbarui." : "Menu baru berhasil ditambahkan." });
   };
 
   app.fillForm = function fillForm(menu) {
@@ -291,7 +299,7 @@
     app.flash("success", "Preview gambar siap. Saat simpan, file akan ditulis ke folder assets/img/menu.");
   };
 
-  app.clearToday = function clearToday() {
+  app.clearToday = async function clearToday() {
     if (!app.state.menu_hari_ini.length) {
       app.flash("error", "Menu Hari Ini sudah kosong.");
       return;
@@ -299,10 +307,10 @@
     if (!window.confirm("Kosongkan seluruh daftar Menu Hari Ini?")) return;
     app.state.menu_hari_ini = [];
     app.renderAll();
-    app.flash("success", "Menu Hari Ini berhasil dikosongkan.");
+    await app.syncState({ successMessage: "Menu Hari Ini berhasil dikosongkan." });
   };
 
-  app.clearTomorrow = function clearTomorrow() {
+  app.clearTomorrow = async function clearTomorrow() {
     if (!app.state.menu_besok.length) {
       app.flash("error", "Menu Besok sudah kosong.");
       return;
@@ -310,10 +318,10 @@
     if (!window.confirm("Kosongkan seluruh daftar Menu Besok?")) return;
     app.state.menu_besok = [];
     app.renderAll();
-    app.flash("success", "Menu Besok berhasil dikosongkan.");
+    await app.syncState({ successMessage: "Menu Besok berhasil dikosongkan." });
   };
 
-  app.copyTodayToTomorrow = function copyTodayToTomorrow() {
+  app.copyTodayToTomorrow = async function copyTodayToTomorrow() {
     if (!app.state.menu_hari_ini.length) {
       app.flash("error", "Menu Hari Ini masih kosong.");
       return;
@@ -321,6 +329,18 @@
     if (app.state.menu_besok.length && !window.confirm("Isi Menu Besok saat ini akan diganti dengan salinan Menu Hari Ini. Lanjutkan?")) return;
     app.state.menu_besok = [...app.state.menu_hari_ini];
     app.renderAll();
-    app.flash("success", "Menu Hari Ini berhasil disalin ke Menu Besok.");
+    await app.syncState({ successMessage: "Menu Hari Ini berhasil disalin ke Menu Besok." });
+  };
+
+  app.rolloverTomorrowToToday = async function rolloverTomorrowToToday() {
+    if (!app.state.menu_besok.length) {
+      app.flash("error", "Menu Besok masih kosong.");
+      return;
+    }
+    if (!window.confirm("Ganti hari sekarang? Semua Menu Besok akan menjadi Menu Hari Ini, lalu daftar Menu Besok akan dikosongkan.")) return;
+    app.state.menu_hari_ini = [...app.state.menu_besok];
+    app.state.menu_besok = [];
+    app.renderAll();
+    await app.syncState({ successMessage: "Pergantian hari berhasil. Menu Besok sekarang menjadi Menu Hari Ini." });
   };
 })();

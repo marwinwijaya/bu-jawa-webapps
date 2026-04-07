@@ -39,6 +39,7 @@
   app.menuImageDirectoryHandle = null;
   app.pendingImageFile = null;
   app.pendingImagePreviewUrl = "";
+  app.handleDbPromise = null;
 
   app.validId = function validId(id) {
     return Number.isFinite(id) && id > 0;
@@ -190,6 +191,7 @@
     }
 
     app.menuFileHandle = handle;
+    await app.storePersistentHandle("menu-json", handle);
     return handle;
   };
 
@@ -202,6 +204,61 @@
     const writable = await fileHandle.createWritable();
     await writable.write(JSON.stringify(payload, null, 2));
     await writable.close();
+  };
+
+  app.openHandleDb = function openHandleDb() {
+    if (app.handleDbPromise) return app.handleDbPromise;
+
+    app.handleDbPromise = new Promise((resolve, reject) => {
+      const request = indexedDB.open("rmbj-admin-handles", 1);
+
+      request.onupgradeneeded = () => {
+        const database = request.result;
+        if (!database.objectStoreNames.contains("handles")) {
+          database.createObjectStore("handles");
+        }
+      };
+
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+
+    return app.handleDbPromise;
+  };
+
+  app.storePersistentHandle = async function storePersistentHandle(key, handle) {
+    if (!("indexedDB" in window)) return;
+    const database = await app.openHandleDb();
+    await new Promise((resolve, reject) => {
+      const transaction = database.transaction("handles", "readwrite");
+      transaction.objectStore("handles").put(handle, key);
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+    });
+  };
+
+  app.loadPersistentHandle = async function loadPersistentHandle(key) {
+    if (!("indexedDB" in window)) return null;
+    const database = await app.openHandleDb();
+    return new Promise((resolve, reject) => {
+      const transaction = database.transaction("handles", "readonly");
+      const request = transaction.objectStore("handles").get(key);
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error);
+    });
+  };
+
+  app.restoreStoredHandles = async function restoreStoredHandles() {
+    try {
+      const [jsonHandle, imageHandle] = await Promise.all([
+        app.loadPersistentHandle("menu-json"),
+        app.loadPersistentHandle("menu-images"),
+      ]);
+      if (jsonHandle) app.menuFileHandle = jsonHandle;
+      if (imageHandle) app.menuImageDirectoryHandle = imageHandle;
+    } catch (error) {
+      // Ignore stale or unsupported handle storage and continue with manual picking.
+    }
   };
 
   app.pickMenuImageDirectory = async function pickMenuImageDirectory() {
@@ -219,6 +276,7 @@
     }
 
     app.menuImageDirectoryHandle = handle;
+    await app.storePersistentHandle("menu-images", handle);
     return handle;
   };
 
@@ -292,6 +350,37 @@
         return;
       }
       app.flash("error", error?.message || "Gagal menyimpan file JSON terbaru.");
+    }
+  };
+
+  app.syncState = async function syncState(options) {
+    const settings = {
+      successMessage: "",
+      skipFlash: false,
+      ...options,
+    };
+
+    app.persist();
+
+    try {
+      const payload = app.buildExportPayload();
+      const fileHandle = await app.ensureMenuFileHandle();
+      await app.writeJsonToFile(fileHandle, payload);
+      if (!settings.skipFlash && settings.successMessage) {
+        app.flash("success", settings.successMessage);
+      }
+      return true;
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        if (!settings.skipFlash) {
+          app.flash("error", "Sinkronisasi dibatalkan sebelum file data/menu.json dipilih.");
+        }
+        return false;
+      }
+      if (!settings.skipFlash) {
+        app.flash("error", error?.message || "Gagal memperbarui file data/menu.json.");
+      }
+      return false;
     }
   };
 

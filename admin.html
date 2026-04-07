@@ -45,7 +45,7 @@
 
       <div class="sidebar-tip">
         <strong>Flow cepat</strong>
-        <p>Pilih menu dari Master Menu, susun Menu Hari Ini atau Besok, lalu klik Simpan untuk update JSON terbaru.</p>
+        <p>Pilih menu dari Master Menu, susun Menu Hari Ini atau Besok, lalu perubahan akan langsung diperbarui ke file lokal setelah file dan folder berhasil terhubung.</p>
       </div>
     </aside>
 
@@ -130,10 +130,9 @@
             <div class="schedule-board-head schedule-board-head-stacked">
               <span class="section-kicker">Menu Hari Ini</span>
               <h3 class="schedule-board-title">Daftar menu yang tampil hari ini</h3>
-              <p class="schedule-board-description">Kelola menu yang sedang tayang hari ini, lalu simpan untuk menyiapkan data terbaru.</p>
+              <p class="schedule-board-description">Kelola menu yang sedang tayang hari ini. Perubahan akan langsung tersinkron ke file JSON lokal.</p>
               <div class="board-actions schedule-board-actions">
                 <button type="button" id="clear-hari-ini" class="btn btn-outline-custom">Kosongkan Menu</button>
-                <button type="button" id="save-hari-ini" class="btn btn-primary-custom">Simpan</button>
               </div>
             </div>
             <div class="list-shell schedule-list-shell">
@@ -151,11 +150,11 @@
             <div class="schedule-board-head schedule-board-head-stacked">
               <span class="section-kicker">Menu Besok</span>
               <h3 class="schedule-board-title">Daftar menu yang tampil besok</h3>
-              <p class="schedule-board-description">Siapkan rencana menu besok, salin dari hari ini bila perlu, lalu simpan saat sudah final.</p>
+              <p class="schedule-board-description">Siapkan rencana menu besok, salin dari hari ini bila perlu, lalu gunakan saat pergantian hari.</p>
               <div class="board-actions schedule-board-actions">
                 <button type="button" id="copy-hari-ini-ke-besok" class="btn btn-outline-custom">Copy dari Menu Hari Ini</button>
+                <button type="button" id="rollover-menu-button" class="btn btn-accent-custom">Ganti Hari Sekarang</button>
                 <button type="button" id="clear-besok" class="btn btn-outline-custom">Kosongkan Menu</button>
-                <button type="button" id="save-besok" class="btn btn-primary-custom">Simpan</button>
               </div>
             </div>
             <div class="list-shell schedule-list-shell">
