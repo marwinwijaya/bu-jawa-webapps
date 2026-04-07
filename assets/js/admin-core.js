@@ -301,6 +301,25 @@
     }
   };
 
+  app.ensureStartupAccess = async function ensureStartupAccess() {
+    const status = {
+      jsonReady: false,
+      imageReady: false,
+    };
+
+    if (app.menuFileHandle) {
+      status.jsonReady = await app.ensureHandlePermission(app.menuFileHandle, "readwrite");
+      if (!status.jsonReady) app.menuFileHandle = null;
+    }
+
+    if (app.menuImageDirectoryHandle) {
+      status.imageReady = await app.ensureHandlePermission(app.menuImageDirectoryHandle, "readwrite");
+      if (!status.imageReady) app.menuImageDirectoryHandle = null;
+    }
+
+    return status;
+  };
+
   app.pickMenuImageDirectory = async function pickMenuImageDirectory() {
     if (!app.supportsDirectoryWrite()) {
       throw new Error("Browser ini belum mendukung penyimpanan gambar langsung ke folder. Gunakan Chrome atau Edge terbaru.");

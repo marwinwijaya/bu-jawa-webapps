@@ -26,6 +26,7 @@
   app.initDashboard = async function initDashboard() {
     if (!app.initialized) {
       await app.restoreStoredHandles();
+      await app.ensureStartupAccess();
       app.setupCategoryOptions();
       app.bindDashboard();
       await app.bootstrapState();
