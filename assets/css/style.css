@@ -25,7 +25,7 @@ html {
 
 body {
   margin: 0;
-  font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
   color: var(--text);
   background:
     radial-gradient(circle at top left, rgba(110, 79, 53, 0.12), transparent 30%),
@@ -47,7 +47,7 @@ h2,
 h3,
 h4 {
   margin: 0;
-  font-family: "Fraunces", serif;
+  font-family: "DM Serif Display", serif;
 }
 
 p {
@@ -85,7 +85,7 @@ p {
 }
 
 .brand-mark {
-  font-family: "Fraunces", serif;
+  font-family: "DM Serif Display", serif;
   font-size: 1.65rem;
   color: var(--primary-dark);
 }
