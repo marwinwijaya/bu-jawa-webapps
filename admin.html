@@ -55,19 +55,11 @@
         <div>
           <span class="section-kicker">Panel Admin Rumah Makan Bu Jawa</span>
           <h2>Kelola master menu, menu hari ini, dan menu besok</h2>
-          <p>Update operasional harian dibuat cepat, minim langkah, dan mudah dipakai oleh admin non-teknis.</p>
+          <p>Kelola daftar menu, susun menu harian, lalu ekspor JSON terbaru untuk workflow GitHub Pages dan GitHub Desktop.</p>
         </div>
-        <div class="dashboard-hero-side">
-          <div class="date-chip">
-            <i class="bi bi-calendar3"></i>
-            <span id="today-label">-</span>
-          </div>
-          <div class="hero-action-grid">
-            <button type="button" id="save-draft-button" class="btn btn-outline-custom">Simpan Draft</button>
-            <button type="button" id="promote-button" class="btn btn-accent-custom">Gunakan Menu Besok Menjadi Hari Ini</button>
-            <button type="button" id="reset-besok-button" class="btn btn-outline-custom">Reset Menu Besok</button>
-            <button type="button" id="download-json-button" class="btn btn-primary-custom">Unduh JSON Utama</button>
-          </div>
+        <div class="date-chip">
+          <i class="bi bi-calendar3"></i>
+          <span id="today-label">-</span>
         </div>
       </header>
 
@@ -127,20 +119,11 @@
             <div class="bulk-actions">
               <button type="button" id="bulk-add-hari-ini" class="btn btn-outline-custom">Tambahkan Terpilih ke Hari Ini</button>
               <button type="button" id="bulk-add-besok" class="btn btn-outline-custom">Tambahkan Terpilih ke Besok</button>
+              <button type="button" id="save-draft-button" class="btn btn-outline-custom">Simpan Draft</button>
+              <button type="button" id="download-json-button" class="btn btn-primary-custom">Unduh JSON Utama</button>
             </div>
           </div>
-
-          <div class="list-shell master-list-shell">
-            <div class="list-header master-list-header">
-              <div>Menu</div>
-              <div>Kategori</div>
-              <div>Harga</div>
-              <div>Status</div>
-              <div>Penjadwalan</div>
-              <div>Aksi</div>
-            </div>
-            <div class="master-list" id="master-grid"></div>
-          </div>
+          <div class="master-list-groups" id="master-grid"></div>
         </div>
       </section>
 
@@ -153,7 +136,8 @@
                 <h3>Daftar menu yang tampil hari ini</h3>
               </div>
               <div class="board-actions">
-                <button type="button" id="clear-hari-ini" class="btn btn-outline-custom">Kosongkan Hari Ini</button>
+                <button type="button" id="clear-hari-ini" class="btn btn-outline-custom">Kosongkan Menu</button>
+                <button type="button" id="save-hari-ini" class="btn btn-primary-custom">Simpan</button>
               </div>
             </div>
             <div class="list-shell schedule-list-shell">
@@ -174,7 +158,10 @@
                 <h3>Susun preview menu untuk hari berikutnya</h3>
               </div>
               <div class="board-actions">
-                <button type="button" id="download-json-besok-button" class="btn btn-outline-custom">Unduh JSON Besok</button>
+                <button type="button" id="copy-hari-ini-ke-besok" class="btn btn-outline-custom">Copy dari Menu Hari Ini</button>
+                <button type="button" id="promote-button" class="btn btn-accent-custom">Gunakan sebagai Menu Hari Ini</button>
+                <button type="button" id="clear-besok" class="btn btn-outline-custom">Kosongkan Menu</button>
+                <button type="button" id="save-besok" class="btn btn-primary-custom">Simpan</button>
               </div>
             </div>
             <div class="list-shell schedule-list-shell">
@@ -263,18 +250,15 @@
         </div>
 
         <div class="full">
-          <label for="menu-gambar">Path / URL Gambar</label>
-          <input id="menu-gambar" type="text" class="form-control" value="assets/img/about.jpg">
-        </div>
-
-        <div class="full">
           <label for="menu-gambar-file">Upload Gambar Menu</label>
           <input id="menu-gambar-file" type="file" accept="image/*" class="form-control">
-          <p class="form-help">Untuk hasil ringan di GitHub Pages, utamakan path gambar yang sudah ada di repository.</p>
+          <input id="menu-gambar-data" type="hidden">
+          <p class="form-help">Pilih gambar dari komputer lokal. Preview akan tampil sebelum disimpan.</p>
         </div>
 
         <div class="full image-preview-wrap">
-          <img id="menu-image-preview" src="assets/img/about.jpg" alt="Preview gambar menu" class="image-preview">
+          <img id="menu-image-preview" src="" alt="Preview gambar menu" class="image-preview">
+          <p id="menu-image-note" class="form-help">Belum ada gambar dipilih.</p>
         </div>
 
         <div class="full">
