@@ -125,21 +125,35 @@
 
       <section class="section-block menu-section" id="menu-hari-ini">
         <div class="container">
-          <div class="section-heading">
-            <span class="section-kicker">Menu Hari Ini</span>
-            <h2>Daftar menu aktif yang siap dilihat pelanggan hari ini</h2>
+          <div class="section-heading menu-heading-row">
+            <div>
+              <span class="section-kicker"><i class="bi bi-stars"></i> Menu Hari Ini</span>
+              <h2>Hidangan pilihan yang sedang siap dipesan hari ini</h2>
+              <p class="section-subcopy">Daftar menu aktif bergerak halus dalam satu jalur agar pelanggan bisa melihat pilihan unggulan dengan cepat dan nyaman.</p>
+            </div>
+            <div class="menu-section-note">
+              <span class="menu-note-chip"><i class="bi bi-clock-history"></i> Diperbarui dari JSON</span>
+              <span class="menu-note-chip"><i class="bi bi-eye"></i> Pause saat hover</span>
+            </div>
           </div>
-          <div class="row g-4" id="menu-hari-ini-list"></div>
+          <div id="menu-hari-ini-list"></div>
         </div>
       </section>
 
       <section class="section-block" id="menu-besok">
         <div class="container">
-          <div class="section-heading">
-            <span class="section-kicker">Menu Besok</span>
-            <h2>Preview menu hari berikutnya untuk membantu pelanggan merencanakan pesanan</h2>
+          <div class="section-heading menu-heading-row">
+            <div>
+              <span class="section-kicker"><i class="bi bi-sunrise"></i> Menu Besok</span>
+              <h2>Preview menu berikutnya untuk membantu pelanggan merencanakan pesanan</h2>
+              <p class="section-subcopy">Tampilan besok dibuat konsisten namun dibedakan secara visual, sehingga pelanggan langsung tahu mana menu hari ini dan mana preview hari berikutnya.</p>
+            </div>
+            <div class="menu-section-note">
+              <span class="menu-note-chip is-tomorrow"><i class="bi bi-calendar2-check"></i> Preview Besok</span>
+              <span class="menu-note-chip"><i class="bi bi-arrow-left-right"></i> Marquee halus</span>
+            </div>
           </div>
-          <div class="row g-4" id="menu-besok-list"></div>
+          <div id="menu-besok-list"></div>
         </div>
       </section>
 
