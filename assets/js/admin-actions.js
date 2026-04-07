@@ -166,7 +166,7 @@
       nama_menu: (nameField?.value || "").trim(),
       kategori: categoryField?.value || "",
       deskripsi: (document.querySelector("#menu-deskripsi")?.value || "").trim(),
-      harga: Number(priceField?.value || 0),
+      harga: Math.round(Number(priceField?.value || 0) * 1000),
       gambar: (document.querySelector("#menu-gambar-data")?.value || "").trim(),
       aktif: Boolean(document.querySelector("#menu-aktif")?.checked),
       status_ketersediaan: document.querySelector("#menu-status")?.value || "tersedia",
@@ -186,7 +186,7 @@
     }
 
     if (!Number.isFinite(item.harga) || item.harga <= 0) {
-      app.showFormError("Harga menu wajib diisi dengan angka lebih dari 0.");
+      app.showFormError("Harga menu wajib diisi dalam satuan ribu rupiah, dengan angka lebih dari 0.");
       priceField?.focus();
       return;
     }
@@ -244,7 +244,7 @@
     app.setValue("#menu-nama", menu.nama_menu);
     app.setValue("#menu-kategori", menu.kategori);
     app.setValue("#menu-deskripsi", menu.deskripsi || "");
-    app.setValue("#menu-harga", String(menu.harga));
+    app.setValue("#menu-harga", String((Number(menu.harga || 0) / 1000).toString().replace(/\.0$/, "")));
     app.setValue("#menu-gambar-data", menu.gambar || "");
     app.setValue("#menu-status", menu.status_ketersediaan);
     app.setValue("#menu-quick-add", "");
