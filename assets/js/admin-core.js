@@ -5,6 +5,7 @@
 
   app.STORAGE_KEY = "rm_bu_jawa_admin_dashboard_v4";
   app.SESSION_KEY = "rm_bu_jawa_admin_session";
+  app.SIDEBAR_KEY = "rm_bu_jawa_admin_sidebar_collapsed";
   app.LOGIN_USERNAME = "admin";
   app.LOGIN_PASSWORD = "rmbujawa2026";
   app.CATEGORIES = ["Menu Utama", "Menu Sayur", "Minuman", "Snack"];
@@ -112,6 +113,26 @@
     localStorage.setItem(app.STORAGE_KEY, JSON.stringify(app.state));
   };
 
+  app.isSidebarCollapsed = function isSidebarCollapsed() {
+    return localStorage.getItem(app.SIDEBAR_KEY) === "true";
+  };
+
+  app.applySidebarState = function applySidebarState() {
+    const collapsed = app.isSidebarCollapsed();
+    document.body.classList.toggle("sidebar-collapsed", collapsed);
+    const button = document.querySelector("#sidebar-toggle-button");
+    if (button) {
+      button.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      const label = button.querySelector("span");
+      if (label) label.textContent = collapsed ? "Tampilkan Menu" : "Sembunyikan Menu";
+    }
+  };
+
+  app.toggleSidebar = function toggleSidebar() {
+    localStorage.setItem(app.SIDEBAR_KEY, app.isSidebarCollapsed() ? "false" : "true");
+    app.applySidebarState();
+  };
+
   app.findMaster = function findMaster(id) {
     return app.state.master_menu.find((item) => Number(item.id) === Number(id)) || null;
   };
@@ -196,7 +217,11 @@
   };
 
   app.ensureMenuFileHandle = async function ensureMenuFileHandle() {
-    if (app.menuFileHandle) return app.menuFileHandle;
+    if (app.menuFileHandle) {
+      const hasPermission = await app.ensureHandlePermission(app.menuFileHandle, "readwrite");
+      if (hasPermission) return app.menuFileHandle;
+      app.menuFileHandle = null;
+    }
     return app.pickMenuJsonFile();
   };
 
@@ -204,6 +229,21 @@
     const writable = await fileHandle.createWritable();
     await writable.write(JSON.stringify(payload, null, 2));
     await writable.close();
+  };
+
+  app.ensureHandlePermission = async function ensureHandlePermission(handle, mode) {
+    if (!handle || typeof handle.queryPermission !== "function") return true;
+
+    const options = { mode: mode || "readwrite" };
+    const currentPermission = await handle.queryPermission(options);
+    if (currentPermission === "granted") return true;
+
+    if (typeof handle.requestPermission === "function") {
+      const requestedPermission = await handle.requestPermission(options);
+      return requestedPermission === "granted";
+    }
+
+    return false;
   };
 
   app.openHandleDb = function openHandleDb() {
@@ -281,7 +321,11 @@
   };
 
   app.ensureMenuImageDirectoryHandle = async function ensureMenuImageDirectoryHandle() {
-    if (app.menuImageDirectoryHandle) return app.menuImageDirectoryHandle;
+    if (app.menuImageDirectoryHandle) {
+      const hasPermission = await app.ensureHandlePermission(app.menuImageDirectoryHandle, "readwrite");
+      if (hasPermission) return app.menuImageDirectoryHandle;
+      app.menuImageDirectoryHandle = null;
+    }
     return app.pickMenuImageDirectory();
   };
 
@@ -386,7 +430,7 @@
     } catch (error) {
       if (error?.name === "AbortError") {
         if (!settings.skipFlash) {
-          app.flash("error", "Sinkronisasi dibatalkan sebelum file data/menu.json dipilih.");
+          app.flash("error", "Sinkronisasi dibatalkan. Pilih file data/menu.json untuk melanjutkan.");
         }
         return false;
       }

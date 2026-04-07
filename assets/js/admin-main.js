@@ -52,6 +52,7 @@
 
     if (hasDashboard) {
       if (!app.requireLogin()) return;
+      app.applySidebarState();
       await app.initDashboard();
       return;
     }

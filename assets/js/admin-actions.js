@@ -26,6 +26,7 @@
     document.querySelector("#clear-hari-ini")?.addEventListener("click", app.clearToday);
     document.querySelector("#clear-besok")?.addEventListener("click", app.clearTomorrow);
     document.querySelector("#copy-hari-ini-ke-besok")?.addEventListener("click", app.copyTodayToTomorrow);
+    document.querySelector("#sidebar-toggle-button")?.addEventListener("click", app.toggleSidebar);
 
     document.addEventListener("click", (event) => {
       if (event.target instanceof HTMLElement && event.target.id === "empty-add-button") {
@@ -155,6 +156,7 @@
   app.onSubmitForm = async function onSubmitForm(event) {
     event.preventDefault();
     app.clearFormError();
+    const previousState = JSON.parse(JSON.stringify(app.state));
     const id = Number(document.querySelector("#menu-id")?.value || 0);
     const nameField = document.querySelector("#menu-nama");
     const categoryField = document.querySelector("#menu-kategori");
@@ -215,10 +217,24 @@
       if (!app.state[key].includes(item.id)) app.state[key].push(item.id);
     }
 
+    app.renderAll();
+    const synced = await app.syncState({
+      successMessage: existingIndex >= 0
+        ? "Menu berhasil diperbarui dan data/menu.json ikut diperbarui."
+        : "Menu baru berhasil ditambahkan dan data/menu.json ikut diperbarui.",
+      skipFlash: true,
+    });
+
+    if (!synced) {
+      app.state = app.normalizePayload(previousState);
+      app.renderAll();
+      app.showFormError("Simpan menu dibatalkan karena file data/menu.json belum berhasil diperbarui. Pilih file data/menu.json lalu coba lagi.");
+      return;
+    }
+
     app.closeModal();
     app.resetForm();
-    app.renderAll();
-    await app.syncState({ successMessage: existingIndex >= 0 ? "Menu berhasil diperbarui." : "Menu baru berhasil ditambahkan." });
+    app.flash("success", existingIndex >= 0 ? "Menu berhasil diperbarui dan data/menu.json ikut diperbarui." : "Menu baru berhasil ditambahkan dan data/menu.json ikut diperbarui.");
   };
 
   app.fillForm = function fillForm(menu) {
