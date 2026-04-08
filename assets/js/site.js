@@ -80,7 +80,7 @@
       target.innerHTML = `
         <div class="marquee-shell">
           <div class="empty-state">
-            <p>${isTomorrow ? "Preview menu besok belum tersedia." : "Menu aktif untuk hari ini belum tersedia."}</p>
+            <p>${isTomorrow ? "Menu besok belum kami tampilkan dulu. Cek lagi nanti, ya." : "Menu hari ini belum tampil dulu. Yuk cek lagi sebentar lagi."}</p>
           </div>
         </div>
       `;
@@ -111,7 +111,7 @@
       : `<span class="menu-pill badge-success">Tersedia</span>`;
     const dayBadge = isTomorrow
       ? `<span class="menu-pill badge-warning">Menu Besok</span>`
-      : `<span class="menu-pill badge-neutral">Siap Dipesan</span>`;
+      : `<span class="menu-pill badge-neutral">Siap Dipilih</span>`;
 
     return `
       <article class="menu-marquee-card ${isTomorrow ? "is-tomorrow-card" : ""}">
@@ -126,7 +126,7 @@
           <h3>${escapeHtml(menu.nama_menu)}</h3>
           <div class="menu-marquee-meta">
             <span class="menu-category">${escapeHtml(menu.kategori)}</span>
-            <strong>${formatRupiah(menu.harga)}</strong>
+            <strong class="menu-price">${formatRupiah(menu.harga)}</strong>
           </div>
           <p>${escapeHtml(menu.deskripsi || "")}</p>
         </div>
