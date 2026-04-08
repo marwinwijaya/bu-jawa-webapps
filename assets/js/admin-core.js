@@ -414,6 +414,19 @@
     return `Rp ${Number(value || 0).toLocaleString("id-ID")}`;
   };
 
+  app.parsePriceInput = function parsePriceInput(value) {
+    const digits = String(value || "").replace(/[^\d]/g, "");
+    if (!digits) return 0;
+    const amount = Number(digits);
+    if (!Number.isFinite(amount) || amount <= 0) return 0;
+    return amount >= 1000 ? amount : amount * 1000;
+  };
+
+  app.formatPriceInput = function formatPriceInput(value) {
+    const amount = app.parsePriceInput(value);
+    return amount ? String(amount) : "";
+  };
+
   app.truncate = function truncate(value, maxLength) {
     const text = String(value || "").trim();
     if (text.length <= maxLength) return text;
