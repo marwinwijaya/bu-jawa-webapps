@@ -36,11 +36,9 @@
 
   app.initialized = false;
   app.selectedIds = new Set();
-  app.menuFileHandle = null;
-  app.menuImageDirectoryHandle = null;
   app.pendingImageFile = null;
   app.pendingImagePreviewUrl = "";
-  app.handleDbPromise = null;
+  app.pendingImageDataUrl = "";
 
   app.validId = function validId(id) {
     return Number.isFinite(id) && id > 0;
@@ -73,6 +71,7 @@
       deskripsi: String(item.deskripsi || "").trim(),
       harga: Number(item.harga || 0),
       gambar: app.normalizeImagePath(item.gambar),
+      gambar_preview: typeof item.gambar_preview === "string" && item.gambar_preview.startsWith("data:") ? item.gambar_preview : "",
       aktif: Boolean(item.aktif),
       status_ketersediaan: item.status_ketersediaan === "habis" ? "habis" : "tersedia",
     };
@@ -158,194 +157,59 @@
       }));
   };
 
+  app.serializeMenu = function serializeMenu(menu) {
+    return {
+      id: menu.id,
+      nama_menu: menu.nama_menu,
+      kategori: menu.kategori,
+      deskripsi: menu.deskripsi,
+      harga: menu.harga,
+      gambar: menu.gambar,
+      aktif: menu.aktif,
+      status_ketersediaan: menu.status_ketersediaan,
+    };
+  };
+
   app.buildExportPayload = function buildExportPayload() {
     return {
       metadata: {
         ...app.state.metadata,
         generated_at: new Date().toISOString(),
       },
-      master_menu: app.state.master_menu,
+      master_menu: app.state.master_menu.map(app.serializeMenu),
       menu_hari_ini: app.buildSnapshot(app.state.menu_hari_ini, "hari_ini"),
       menu_besok: app.buildSnapshot(app.state.menu_besok, "besok"),
     };
   };
 
-  app.supportsDirectFileWrite = function supportsDirectFileWrite() {
-    return typeof window.showOpenFilePicker === "function" || typeof window.showSaveFilePicker === "function";
+  app.downloadJson = function downloadJson(fileName, payload) {
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
-  app.supportsDirectoryWrite = function supportsDirectoryWrite() {
-    return typeof window.showDirectoryPicker === "function";
+  app.exportJson = function exportJson() {
+    app.persist();
+    app.downloadJson("menu.json", app.buildExportPayload());
+    app.flash("success", "JSON terbaru berhasil diexport. Ganti file data/menu.json di project lokal Anda lalu commit dan push.");
   };
 
-  app.getJsonPickerOptions = function getJsonPickerOptions() {
-    return {
-      multiple: false,
-      excludeAcceptAllOption: false,
-      suggestedName: "menu.json",
-      types: [
-        {
-          description: "File JSON menu",
-          accept: {
-            "application/json": [".json"],
-          },
-        },
-      ],
-    };
+  app.readJsonFile = async function readJsonFile(file) {
+    const text = await file.text();
+    return JSON.parse(text);
   };
 
-  app.pickMenuJsonFile = async function pickMenuJsonFile() {
-    if (!app.supportsDirectFileWrite()) {
-      throw new Error("Browser ini belum mendukung penyimpanan langsung ke file. Gunakan Chrome atau Edge terbaru saat membuka admin lokal.");
-    }
-
-    let handle = null;
-    if (typeof window.showOpenFilePicker === "function") {
-      const handles = await window.showOpenFilePicker(app.getJsonPickerOptions());
-      handle = handles?.[0] || null;
-    } else {
-      handle = await window.showSaveFilePicker(app.getJsonPickerOptions());
-    }
-
-    if (!handle) {
-      throw new Error("File data/menu.json belum dipilih.");
-    }
-
-    app.menuFileHandle = handle;
-    await app.storePersistentHandle("menu-json", handle);
-    return handle;
-  };
-
-  app.ensureMenuFileHandle = async function ensureMenuFileHandle() {
-    if (app.menuFileHandle) {
-      const hasPermission = await app.ensureHandlePermission(app.menuFileHandle, "readwrite");
-      if (hasPermission) return app.menuFileHandle;
-      app.menuFileHandle = null;
-    }
-    return app.pickMenuJsonFile();
-  };
-
-  app.writeJsonToFile = async function writeJsonToFile(fileHandle, payload) {
-    const writable = await fileHandle.createWritable();
-    await writable.write(JSON.stringify(payload, null, 2));
-    await writable.close();
-  };
-
-  app.ensureHandlePermission = async function ensureHandlePermission(handle, mode) {
-    if (!handle || typeof handle.queryPermission !== "function") return true;
-
-    const options = { mode: mode || "readwrite" };
-    const currentPermission = await handle.queryPermission(options);
-    if (currentPermission === "granted") return true;
-
-    if (typeof handle.requestPermission === "function") {
-      const requestedPermission = await handle.requestPermission(options);
-      return requestedPermission === "granted";
-    }
-
-    return false;
-  };
-
-  app.openHandleDb = function openHandleDb() {
-    if (app.handleDbPromise) return app.handleDbPromise;
-
-    app.handleDbPromise = new Promise((resolve, reject) => {
-      const request = indexedDB.open("rmbj-admin-handles", 1);
-
-      request.onupgradeneeded = () => {
-        const database = request.result;
-        if (!database.objectStoreNames.contains("handles")) {
-          database.createObjectStore("handles");
-        }
-      };
-
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-
-    return app.handleDbPromise;
-  };
-
-  app.storePersistentHandle = async function storePersistentHandle(key, handle) {
-    if (!("indexedDB" in window)) return;
-    const database = await app.openHandleDb();
-    await new Promise((resolve, reject) => {
-      const transaction = database.transaction("handles", "readwrite");
-      transaction.objectStore("handles").put(handle, key);
-      transaction.oncomplete = () => resolve();
-      transaction.onerror = () => reject(transaction.error);
-    });
-  };
-
-  app.loadPersistentHandle = async function loadPersistentHandle(key) {
-    if (!("indexedDB" in window)) return null;
-    const database = await app.openHandleDb();
-    return new Promise((resolve, reject) => {
-      const transaction = database.transaction("handles", "readonly");
-      const request = transaction.objectStore("handles").get(key);
-      request.onsuccess = () => resolve(request.result || null);
-      request.onerror = () => reject(request.error);
-    });
-  };
-
-  app.restoreStoredHandles = async function restoreStoredHandles() {
-    try {
-      const [jsonHandle, imageHandle] = await Promise.all([
-        app.loadPersistentHandle("menu-json"),
-        app.loadPersistentHandle("menu-images"),
-      ]);
-      if (jsonHandle) app.menuFileHandle = jsonHandle;
-      if (imageHandle) app.menuImageDirectoryHandle = imageHandle;
-    } catch (error) {
-      // Ignore stale or unsupported handle storage and continue with manual picking.
-    }
-  };
-
-  app.ensureStartupAccess = async function ensureStartupAccess() {
-    const status = {
-      jsonReady: false,
-      imageReady: false,
-    };
-
-    if (app.menuFileHandle) {
-      status.jsonReady = await app.ensureHandlePermission(app.menuFileHandle, "readwrite");
-      if (!status.jsonReady) app.menuFileHandle = null;
-    }
-
-    if (app.menuImageDirectoryHandle) {
-      status.imageReady = await app.ensureHandlePermission(app.menuImageDirectoryHandle, "readwrite");
-      if (!status.imageReady) app.menuImageDirectoryHandle = null;
-    }
-
-    return status;
-  };
-
-  app.pickMenuImageDirectory = async function pickMenuImageDirectory() {
-    if (!app.supportsDirectoryWrite()) {
-      throw new Error("Browser ini belum mendukung penyimpanan gambar langsung ke folder. Gunakan Chrome atau Edge terbaru.");
-    }
-
-    const handle = await window.showDirectoryPicker({
-      id: "rmbj-menu-images",
-      mode: "readwrite",
-    });
-
-    if (!handle) {
-      throw new Error("Folder assets/img/menu belum dipilih.");
-    }
-
-    app.menuImageDirectoryHandle = handle;
-    await app.storePersistentHandle("menu-images", handle);
-    return handle;
-  };
-
-  app.ensureMenuImageDirectoryHandle = async function ensureMenuImageDirectoryHandle() {
-    if (app.menuImageDirectoryHandle) {
-      const hasPermission = await app.ensureHandlePermission(app.menuImageDirectoryHandle, "readwrite");
-      if (hasPermission) return app.menuImageDirectoryHandle;
-      app.menuImageDirectoryHandle = null;
-    }
-    return app.pickMenuImageDirectory();
+  app.importJsonFile = async function importJsonFile(file) {
+    const payload = await app.readJsonFile(file);
+    app.state = app.normalizePayload(payload);
+    app.selectedIds.clear();
+    app.persist();
+    app.renderAll();
+    app.flash("success", "Data JSON berhasil dimuat ke draft admin.");
   };
 
   app.getFileExtension = function getFileExtension(fileName) {
@@ -381,14 +245,12 @@
     return `menu-${menuId}-${app.slugify(menuName)}.${extension}`;
   };
 
-  app.saveMenuImageFile = async function saveMenuImageFile(file, menuId, menuName) {
-    const directoryHandle = await app.ensureMenuImageDirectoryHandle();
-    const fileName = app.buildMenuImageName(menuId, menuName, file.name);
-    const fileHandle = await directoryHandle.getFileHandle(fileName, { create: true });
-    const writable = await fileHandle.createWritable();
-    await writable.write(await file.arrayBuffer());
-    await writable.close();
-    return `assets/img/menu/${fileName}`;
+  app.buildImageReference = function buildImageReference(fileName) {
+    const extension = app.getFileExtension(fileName);
+    const baseName = String(fileName || "")
+      .replace(/\.[^.]+$/, "")
+      .trim();
+    return `assets/img/${app.slugify(baseName)}.${extension}`;
   };
 
   app.clearPendingImage = function clearPendingImage() {
@@ -397,6 +259,16 @@
     }
     app.pendingImageFile = null;
     app.pendingImagePreviewUrl = "";
+    app.pendingImageDataUrl = "";
+  };
+
+  app.readFileAsDataUrl = function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
+      reader.onerror = () => reject(new Error("Gagal membaca file gambar."));
+      reader.readAsDataURL(file);
+    });
   };
 
   app.showFormError = function showFormError(message) {
@@ -413,51 +285,9 @@
     node.classList.add("is-hidden");
   };
 
-  app.saveMainJson = async function saveMainJson() {
-    try {
-      app.persist();
-      const payload = app.buildExportPayload();
-      const fileHandle = await app.ensureMenuFileHandle();
-      await app.writeJsonToFile(fileHandle, payload);
-      app.flash("success", "File data/menu.json berhasil diperbarui. Lanjutkan commit dan push lewat GitHub Desktop.");
-    } catch (error) {
-      if (error?.name === "AbortError") {
-        app.flash("error", "Penyimpanan dibatalkan sebelum file dipilih.");
-        return;
-      }
-      app.flash("error", error?.message || "Gagal menyimpan file JSON terbaru.");
-    }
-  };
-
-  app.syncState = async function syncState(options) {
-    const settings = {
-      successMessage: "",
-      skipFlash: false,
-      ...options,
-    };
-
-    app.persist();
-
-    try {
-      const payload = app.buildExportPayload();
-      const fileHandle = await app.ensureMenuFileHandle();
-      await app.writeJsonToFile(fileHandle, payload);
-      if (!settings.skipFlash && settings.successMessage) {
-        app.flash("success", settings.successMessage);
-      }
-      return true;
-    } catch (error) {
-      if (error?.name === "AbortError") {
-        if (!settings.skipFlash) {
-          app.flash("error", "Sinkronisasi dibatalkan. Pilih file data/menu.json untuk melanjutkan.");
-        }
-        return false;
-      }
-      if (!settings.skipFlash) {
-        app.flash("error", error?.message || "Gagal memperbarui file data/menu.json.");
-      }
-      return false;
-    }
+  app.commitDraft = function commitDraft(message) {
+    app.renderAll();
+    if (message) app.flash("success", message);
   };
 
   app.setText = function setText(selector, value) {
@@ -503,10 +333,12 @@
       .replace(/'/g, "&#039;");
   };
 
-  app.renderThumb = function renderThumb(src, className) {
+  app.renderThumb = function renderThumb(src, className, previewSrc) {
     const normalizedSrc = app.normalizeImagePath(src);
-    if (!normalizedSrc) return `<span class="${className} thumb-placeholder">Foto</span>`;
-    return `<img src="${app.escapeHtml(normalizedSrc)}" alt="" class="${className}">`;
+    const fallbackSrc = previewSrc || app.PLACEHOLDER_IMAGE;
+    const resolvedSrc = normalizedSrc || previewSrc;
+    if (!resolvedSrc) return `<span class="${className} thumb-placeholder">Foto</span>`;
+    return `<img src="${app.escapeHtml(resolvedSrc)}" alt="" class="${className}" onerror="this.onerror=null;this.src='${app.escapeHtml(fallbackSrc)}';">`;
   };
 
   app.renderEmpty = function renderEmpty(title, description, withButton) {

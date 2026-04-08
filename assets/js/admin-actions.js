@@ -26,6 +26,9 @@
     document.querySelector("#clear-hari-ini")?.addEventListener("click", app.clearToday);
     document.querySelector("#clear-besok")?.addEventListener("click", app.clearTomorrow);
     document.querySelector("#copy-hari-ini-ke-besok")?.addEventListener("click", app.copyTodayToTomorrow);
+    document.querySelector("#import-json-button")?.addEventListener("click", () => document.querySelector("#import-json-input")?.click());
+    document.querySelector("#import-json-input")?.addEventListener("change", app.onImportJson);
+    document.querySelector("#export-json-button")?.addEventListener("click", app.exportJson);
     document.querySelector("#sidebar-toggle-button")?.addEventListener("click", app.toggleSidebar);
 
     document.addEventListener("click", (event) => {
@@ -53,20 +56,17 @@
       app.state.menu_hari_ini = app.state.menu_hari_ini.filter((item) => item !== id);
       app.state.menu_besok = app.state.menu_besok.filter((item) => item !== id);
       app.selectedIds.delete(id);
-      app.renderAll();
-      await app.syncState({ successMessage: "Menu berhasil dihapus dari Master Menu." });
+      app.commitDraft("Menu berhasil dihapus dari Master Menu.");
       return;
     }
     if (action === "toggle-active") {
       menu.aktif = !menu.aktif;
-      app.renderAll();
-      await app.syncState({ successMessage: `Status aktif ${menu.nama_menu} diperbarui.` });
+      app.commitDraft(`Status aktif ${menu.nama_menu} diperbarui.`);
       return;
     }
     if (action === "toggle-availability") {
       menu.status_ketersediaan = menu.status_ketersediaan === "habis" ? "tersedia" : "habis";
-      app.renderAll();
-      await app.syncState({ successMessage: `Status ketersediaan ${menu.nama_menu} diperbarui.` });
+      app.commitDraft(`Status ketersediaan ${menu.nama_menu} diperbarui.`);
       return;
     }
     if (action === "add-today") {
@@ -86,8 +86,7 @@
       return;
     }
     app.state[key].push(id);
-    app.renderAll();
-    await app.syncState({ successMessage: `Menu berhasil ditambahkan ke ${label}.` });
+    app.commitDraft(`Menu berhasil ditambahkan ke ${label}.`);
   };
 
   app.bulkAdd = async function bulkAdd(targetName) {
@@ -107,8 +106,7 @@
       app.flash("error", "Semua menu terpilih sudah ada di daftar tujuan.");
       return;
     }
-    app.renderAll();
-    await app.syncState({ successMessage: `${added} menu berhasil ditambahkan.` });
+    app.commitDraft(`${added} menu berhasil ditambahkan.`);
   };
 
   app.handleScheduleAction = async function handleScheduleAction(event) {
@@ -141,7 +139,7 @@
           : action === "remove"
             ? `${menu.nama_menu} dihapus dari ${targetLabel}.`
             : "Urutan menu berhasil diperbarui.";
-    await app.syncState({ successMessage });
+    app.flash("success", successMessage);
   };
 
   app.reorder = function reorder(key, id, delta) {
@@ -156,11 +154,11 @@
   app.onSubmitForm = async function onSubmitForm(event) {
     event.preventDefault();
     app.clearFormError();
-    const previousState = JSON.parse(JSON.stringify(app.state));
     const id = Number(document.querySelector("#menu-id")?.value || 0);
     const nameField = document.querySelector("#menu-nama");
     const categoryField = document.querySelector("#menu-kategori");
     const priceField = document.querySelector("#menu-harga");
+    const existingIndex = app.state.master_menu.findIndex((menu) => menu.id === (id || -1));
     const item = {
       id: id || app.nextId(),
       nama_menu: (nameField?.value || "").trim(),
@@ -168,6 +166,7 @@
       deskripsi: (document.querySelector("#menu-deskripsi")?.value || "").trim(),
       harga: Math.round(Number(priceField?.value || 0) * 1000),
       gambar: (document.querySelector("#menu-gambar-data")?.value || "").trim(),
+      gambar_preview: "",
       aktif: Boolean(document.querySelector("#menu-aktif")?.checked),
       status_ketersediaan: document.querySelector("#menu-status")?.value || "tersedia",
     };
@@ -192,20 +191,13 @@
     }
 
     if (app.pendingImageFile) {
-      try {
-        item.gambar = await app.saveMenuImageFile(app.pendingImageFile, item.id, item.nama_menu);
-        app.setValue("#menu-gambar-data", item.gambar);
-      } catch (error) {
-        if (error?.name === "AbortError") {
-          app.showFormError("Pemilihan folder gambar dibatalkan. Pilih folder assets/img/menu untuk melanjutkan.");
-          return;
-        }
-        app.showFormError(error?.message || "Gagal menyimpan gambar ke folder assets/img/menu.");
-        return;
-      }
+      item.gambar = app.buildImageReference(app.pendingImageFile.name);
+      item.gambar_preview = app.pendingImageDataUrl || "";
+      app.setValue("#menu-gambar-data", item.gambar);
+    } else if (existingIndex >= 0) {
+      item.gambar_preview = app.state.master_menu[existingIndex]?.gambar_preview || "";
     }
 
-    const existingIndex = app.state.master_menu.findIndex((menu) => menu.id === item.id);
     if (existingIndex >= 0) {
       app.state.master_menu[existingIndex] = item;
     } else {
@@ -217,24 +209,9 @@
       if (!app.state[key].includes(item.id)) app.state[key].push(item.id);
     }
 
-    app.renderAll();
-    const synced = await app.syncState({
-      successMessage: existingIndex >= 0
-        ? "Menu berhasil diperbarui dan data/menu.json ikut diperbarui."
-        : "Menu baru berhasil ditambahkan dan data/menu.json ikut diperbarui.",
-      skipFlash: true,
-    });
-
-    if (!synced) {
-      app.state = app.normalizePayload(previousState);
-      app.renderAll();
-      app.showFormError("Simpan menu dibatalkan karena file data/menu.json belum berhasil diperbarui. Pilih file data/menu.json lalu coba lagi.");
-      return;
-    }
-
     app.closeModal();
     app.resetForm();
-    app.flash("success", existingIndex >= 0 ? "Menu berhasil diperbarui dan data/menu.json ikut diperbarui." : "Menu baru berhasil ditambahkan dan data/menu.json ikut diperbarui.");
+    app.commitDraft(existingIndex >= 0 ? "Menu berhasil diperbarui di draft admin." : "Menu baru berhasil ditambahkan ke draft admin.");
   };
 
   app.fillForm = function fillForm(menu) {
@@ -252,7 +229,7 @@
     if (checkbox) checkbox.checked = Boolean(menu.aktif);
     const fileInput = document.querySelector("#menu-gambar-file");
     if (fileInput) fileInput.value = "";
-    app.renderImagePreview(menu.gambar || "");
+    app.renderImagePreview(menu.gambar_preview || menu.gambar || "");
     app.setText("#menu-form-title", "Edit menu");
     app.setText("#menu-submit-label", "Simpan Perubahan");
   };
@@ -298,7 +275,7 @@
     if (event.key === "Escape" && open) app.closeModal();
   };
 
-  app.onImageChange = function onImageChange(event) {
+  app.onImageChange = async function onImageChange(event) {
     const file = event.target.files?.[0];
     if (!file) {
       app.clearPendingImage();
@@ -306,12 +283,21 @@
       app.renderImagePreview("");
       return;
     }
-    app.clearPendingImage();
-    app.pendingImageFile = file;
-    app.pendingImagePreviewUrl = URL.createObjectURL(file);
-    app.setValue("#menu-gambar-data", "");
-    app.renderImagePreview(app.pendingImagePreviewUrl);
-    app.flash("success", "Preview gambar siap. Saat simpan, file akan ditulis ke folder assets/img/menu.");
+    try {
+      app.clearPendingImage();
+      app.pendingImageFile = file;
+      app.pendingImagePreviewUrl = URL.createObjectURL(file);
+      app.pendingImageDataUrl = await app.readFileAsDataUrl(file);
+      app.setValue("#menu-gambar-data", app.buildImageReference(file.name));
+      app.renderImagePreview(app.pendingImagePreviewUrl);
+      app.flash("success", "Preview gambar siap. Path akan disimpan ke assets/img, jadi salin file asli ke folder assets/img di project Anda.");
+    } catch (error) {
+      app.clearPendingImage();
+      event.target.value = "";
+      app.setValue("#menu-gambar-data", "");
+      app.renderImagePreview("");
+      app.showFormError(error?.message || "Gagal membaca file gambar.");
+    }
   };
 
   app.clearToday = async function clearToday() {
@@ -321,8 +307,7 @@
     }
     if (!window.confirm("Kosongkan seluruh daftar Menu Hari Ini?")) return;
     app.state.menu_hari_ini = [];
-    app.renderAll();
-    await app.syncState({ successMessage: "Menu Hari Ini berhasil dikosongkan." });
+    app.commitDraft("Menu Hari Ini berhasil dikosongkan.");
   };
 
   app.clearTomorrow = async function clearTomorrow() {
@@ -332,8 +317,7 @@
     }
     if (!window.confirm("Kosongkan seluruh daftar Menu Besok?")) return;
     app.state.menu_besok = [];
-    app.renderAll();
-    await app.syncState({ successMessage: "Menu Besok berhasil dikosongkan." });
+    app.commitDraft("Menu Besok berhasil dikosongkan.");
   };
 
   app.copyTodayToTomorrow = async function copyTodayToTomorrow() {
@@ -343,8 +327,20 @@
     }
     if (app.state.menu_besok.length && !window.confirm("Isi Menu Besok saat ini akan diganti dengan salinan Menu Hari Ini. Lanjutkan?")) return;
     app.state.menu_besok = [...app.state.menu_hari_ini];
-    app.renderAll();
-    await app.syncState({ successMessage: "Menu Hari Ini berhasil disalin ke Menu Besok." });
+    app.commitDraft("Menu Hari Ini berhasil disalin ke Menu Besok.");
+  };
+
+  app.onImportJson = async function onImportJson(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      await app.importJsonFile(file);
+    } catch (error) {
+      app.flash("error", error?.message || "Gagal memuat file JSON.");
+    } finally {
+      event.target.value = "";
+    }
   };
 
 })();

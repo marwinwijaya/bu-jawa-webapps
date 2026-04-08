@@ -17,9 +17,10 @@ Website statis untuk GitHub Pages dengan admin lokal untuk mengelola menu dan me
 1. Website publik membaca data dari `data/menu.json`.
 2. Admin membuka `login.html` lalu login.
 3. Admin mengelola `master_menu`, lalu memilih menu ke `menu_hari_ini` atau `menu_besok`.
-4. Saat klik `Simpan`, admin memilih file `data/menu.json` lokal pada penyimpanan pertama.
-5. Perubahan berikutnya akan menulis ulang file JSON terbaru ke file yang sama selama sesi browser masih aktif.
-6. Setelah file lokal berubah, admin cukup commit dan push lewat GitHub Desktop.
+4. Seluruh perubahan bekerja di draft aktif yang tersimpan otomatis di browser.
+5. Jika perlu memuat data awal dari repository, gunakan tombol `Import JSON`.
+6. Saat selesai, gunakan `Simpan / Export JSON` untuk mengunduh file `menu.json` terbaru.
+7. Ganti file `data/menu.json` di project lokal, lalu commit dan push lewat GitHub Desktop.
 
 ## Format data
 
@@ -48,7 +49,7 @@ Struktur file JSON utama:
 - Halaman publik hanya membaca file JSON.
 - Admin lokal menyimpan draft otomatis di browser untuk memudahkan editing.
 - Data yang benar-benar dipakai website publik tetap berasal dari `data/menu.json`.
-- Penyimpanan langsung ke file membutuhkan browser yang mendukung File System Access API, seperti Chrome atau Edge terbaru.
+- File gambar menu direferensikan ke `assets/img/nama-file.ext`, jadi file aslinya perlu ikut disalin ke folder `assets/img` di project lokal.
 
 ## Deploy
 
@@ -58,6 +59,7 @@ Untuk update menu:
 
 1. Buka `login.html`
 2. Kelola menu
-3. Klik `Simpan`
-4. Pilih file `data/menu.json` pada penyimpanan pertama
-5. Commit dan push ke GitHub
+3. Jika perlu, gunakan `Import JSON` untuk memuat data awal
+4. Klik `Simpan / Export JSON`
+5. Ganti file `data/menu.json` dengan hasil export
+6. Commit dan push ke GitHub

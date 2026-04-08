@@ -108,7 +108,7 @@
           <label class="checkbox-chip compact-checkbox" aria-label="Pilih ${app.escapeHtml(menu.nama_menu)}">
             <input type="checkbox" data-master-select="${menu.id}" ${selected ? "checked" : ""}>
           </label>
-          ${app.renderThumb(menu.gambar, "master-row-thumb")}
+          ${app.renderThumb(menu.gambar, "master-row-thumb", menu.gambar_preview)}
           <div class="master-row-copy">
             <h4>${app.escapeHtml(menu.nama_menu)}</h4>
             <p>${app.escapeHtml(app.truncate(menu.deskripsi || "Belum ada deskripsi menu.", 84))}</p>
@@ -166,7 +166,7 @@
     return `
       <article class="schedule-row">
         <div class="schedule-row-menu">
-          ${app.renderThumb(menu.gambar, "schedule-row-thumb")}
+          ${app.renderThumb(menu.gambar, "schedule-row-thumb", menu.gambar_preview)}
           <div class="schedule-row-copy">
             <h4>${app.escapeHtml(menu.nama_menu)}</h4>
             <p>${app.escapeHtml(menu.kategori)} | ${app.formatRupiah(menu.harga)}</p>

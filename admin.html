@@ -29,7 +29,7 @@
 
         <div class="sidebar-tip">
           <strong>Flow cepat</strong>
-          <p>Pilih menu dari Master Menu, susun Menu Hari Ini atau Besok, lalu perubahan akan langsung diperbarui ke file lokal setelah file dan folder berhasil terhubung.</p>
+          <p>Kelola menu di draft lokal tanpa pilih file berulang. Import JSON hanya saat perlu memuat data awal, lalu export hasil terbaru saat siap commit ke GitHub.</p>
         </div>
       </div>
     </aside>
@@ -42,6 +42,8 @@
           <p>Kelola daftar menu, dan susun menu harian.</p>
         </div>
         <div class="dashboard-hero-tools">
+          <button type="button" id="import-json-button" class="btn btn-outline-custom">Import JSON</button>
+          <button type="button" id="export-json-button" class="btn btn-primary-custom">Simpan / Export JSON</button>
           <button type="button" id="sidebar-toggle-button" class="sidebar-toggle-button" aria-label="Sembunyikan atau tampilkan side menu" aria-expanded="true">
             <i class="bi bi-layout-sidebar-inset"></i>
             <span>Side Menu</span>
@@ -216,7 +218,7 @@
           <label for="menu-gambar-file">Upload Gambar Menu</label>
           <input id="menu-gambar-file" type="file" accept="image/*" class="form-control">
           <input id="menu-gambar-data" type="hidden">
-          <p class="form-help">Pilih gambar dari komputer lokal. Saat menu disimpan, file gambar akan ditulis ke folder <code>assets/img/menu</code>.</p>
+          <p class="form-help">Pilih gambar dari komputer lokal. Referensi gambar akan disimpan sebagai path <code>assets/img/nama-file</code>. Pastikan file asli juga Anda salin ke folder <code>assets/img</code> di project lokal.</p>
         </div>
 
         <div class="full image-preview-wrap">
@@ -241,6 +243,8 @@
       </form>
     </div>
   </div>
+
+  <input type="file" id="import-json-input" class="is-hidden" accept=".json,application/json">
 
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/admin-core.js"></script>
