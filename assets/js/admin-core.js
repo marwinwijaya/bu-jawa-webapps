@@ -4,6 +4,7 @@
   const app = (window.RMBJAdmin = window.RMBJAdmin || {});
 
   app.STORAGE_KEY = "rm_bu_jawa_admin_dashboard_v4";
+  app.PUBLIC_PREVIEW_KEY = "rm_bu_jawa_public_preview_v1";
   app.SESSION_KEY = "rm_bu_jawa_admin_session";
   app.SIDEBAR_KEY = "rm_bu_jawa_admin_sidebar_collapsed";
   app.LOGIN_USERNAME = "admin";
@@ -112,6 +113,7 @@
   app.persist = function persist() {
     app.state.metadata.generated_at = new Date().toISOString();
     localStorage.setItem(app.STORAGE_KEY, JSON.stringify(app.state));
+    localStorage.setItem(app.PUBLIC_PREVIEW_KEY, JSON.stringify(app.buildExportPayload()));
   };
 
   app.isSidebarCollapsed = function isSidebarCollapsed() {

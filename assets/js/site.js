@@ -1,20 +1,53 @@
 (function () {
   "use strict";
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    try {
-      const response = await fetch("data/menu.json", { cache: "no-store" });
-      if (!response.ok) {
-        throw new Error("Gagal memuat file menu.json");
-      }
+  const PUBLIC_PREVIEW_KEY = "rm_bu_jawa_public_preview_v1";
 
-      const payload = await response.json();
+  document.addEventListener("DOMContentLoaded", async () => {
+    await loadAndRender();
+    window.addEventListener("storage", async (event) => {
+      if (event.key === PUBLIC_PREVIEW_KEY) {
+        await loadAndRender();
+      }
+    });
+  });
+
+  async function loadAndRender() {
+    try {
+      const payload = await getActivePayload();
       const parsed = parsePayload(payload);
       renderPublicPage(parsed.menuHariIni, parsed.menuBesok);
     } catch (error) {
       renderErrorState("Data menu belum bisa dimuat. Pastikan file data/menu.json tersedia di repository GitHub Pages.");
     }
-  });
+  }
+
+  async function getActivePayload() {
+    if (isLocalPreviewEnvironment()) {
+      const preview = readPreviewPayload();
+      if (preview) return preview;
+    }
+
+    const response = await fetch("data/menu.json", { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error("Gagal memuat file menu.json");
+    }
+    return response.json();
+  }
+
+  function readPreviewPayload() {
+    try {
+      const raw = localStorage.getItem(PUBLIC_PREVIEW_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function isLocalPreviewEnvironment() {
+    const hostname = window.location.hostname;
+    return window.location.protocol === "file:" || hostname === "127.0.0.1" || hostname === "localhost" || hostname === "[::1]";
+  }
 
   function parsePayload(payload) {
     if (payload.menu_hari_ini && payload.menu_besok) {
