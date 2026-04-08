@@ -26,9 +26,7 @@
     document.querySelector("#clear-hari-ini")?.addEventListener("click", app.clearToday);
     document.querySelector("#clear-besok")?.addEventListener("click", app.clearTomorrow);
     document.querySelector("#copy-hari-ini-ke-besok")?.addEventListener("click", app.copyTodayToTomorrow);
-    document.querySelector("#import-json-button")?.addEventListener("click", () => document.querySelector("#import-json-input")?.click());
-    document.querySelector("#import-json-input")?.addEventListener("change", app.onImportJson);
-    document.querySelector("#export-json-button")?.addEventListener("click", app.exportJson);
+    document.querySelector("#save-json-button")?.addEventListener("click", app.saveMainJson);
     document.querySelector("#sidebar-toggle-button")?.addEventListener("click", app.toggleSidebar);
 
     document.addEventListener("click", (event) => {
@@ -329,18 +327,4 @@
     app.state.menu_besok = [...app.state.menu_hari_ini];
     app.commitDraft("Menu Hari Ini berhasil disalin ke Menu Besok.");
   };
-
-  app.onImportJson = async function onImportJson(event) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      await app.importJsonFile(file);
-    } catch (error) {
-      app.flash("error", error?.message || "Gagal memuat file JSON.");
-    } finally {
-      event.target.value = "";
-    }
-  };
-
 })();

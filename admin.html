@@ -29,7 +29,7 @@
 
         <div class="sidebar-tip">
           <strong>Flow cepat</strong>
-          <p>Kelola menu di draft lokal tanpa pilih file berulang. Import JSON hanya saat perlu memuat data awal, lalu export hasil terbaru saat siap commit ke GitHub.</p>
+          <p>Kelola menu di draft lokal, lalu klik Simpan untuk memperbarui <code>data/menu.json</code>. Browser hanya akan meminta izin file sekali di awal.</p>
         </div>
       </div>
     </aside>
@@ -42,8 +42,7 @@
           <p>Kelola daftar menu, dan susun menu harian.</p>
         </div>
         <div class="dashboard-hero-tools">
-          <button type="button" id="import-json-button" class="btn btn-outline-custom">Import JSON</button>
-          <button type="button" id="export-json-button" class="btn btn-primary-custom">Simpan / Export JSON</button>
+          <button type="button" id="save-json-button" class="btn btn-primary-custom">Simpan</button>
           <button type="button" id="sidebar-toggle-button" class="sidebar-toggle-button" aria-label="Sembunyikan atau tampilkan side menu" aria-expanded="true">
             <i class="bi bi-layout-sidebar-inset"></i>
             <span>Side Menu</span>
@@ -243,9 +242,6 @@
       </form>
     </div>
   </div>
-
-  <input type="file" id="import-json-input" class="is-hidden" accept=".json,application/json">
-
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/admin-core.js"></script>
   <script src="assets/js/admin-auth.js"></script>

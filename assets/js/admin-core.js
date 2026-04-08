@@ -39,6 +39,8 @@
   app.pendingImageFile = null;
   app.pendingImagePreviewUrl = "";
   app.pendingImageDataUrl = "";
+  app.menuFileHandle = null;
+  app.handleDbPromise = null;
 
   app.validId = function validId(id) {
     return Number.isFinite(id) && id > 0;
@@ -182,20 +184,86 @@
     };
   };
 
-  app.downloadJson = function downloadJson(fileName, payload) {
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName;
-    link.click();
-    URL.revokeObjectURL(url);
+  app.getJsonPickerOptions = function getJsonPickerOptions() {
+    return {
+      multiple: false,
+      excludeAcceptAllOption: false,
+      suggestedName: "menu.json",
+      types: [
+        {
+          description: "File JSON menu",
+          accept: {
+            "application/json": [".json"],
+          },
+        },
+      ],
+    };
   };
 
-  app.exportJson = function exportJson() {
-    app.persist();
-    app.downloadJson("menu.json", app.buildExportPayload());
-    app.flash("success", "JSON terbaru berhasil diexport. Ganti file data/menu.json di project lokal Anda lalu commit dan push.");
+  app.ensureHandlePermission = async function ensureHandlePermission(handle, mode) {
+    if (!handle || typeof handle.queryPermission !== "function") return true;
+    const options = { mode: mode || "readwrite" };
+    const currentPermission = await handle.queryPermission(options);
+    if (currentPermission === "granted") return true;
+    if (typeof handle.requestPermission === "function") {
+      const requestedPermission = await handle.requestPermission(options);
+      return requestedPermission === "granted";
+    }
+    return false;
+  };
+
+  app.openHandleDb = function openHandleDb() {
+    if (app.handleDbPromise) return app.handleDbPromise;
+
+    app.handleDbPromise = new Promise((resolve, reject) => {
+      const request = indexedDB.open("rmbj-admin-handles", 1);
+
+      request.onupgradeneeded = () => {
+        const database = request.result;
+        if (!database.objectStoreNames.contains("handles")) {
+          database.createObjectStore("handles");
+        }
+      };
+
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+
+    return app.handleDbPromise;
+  };
+
+  app.storePersistentHandle = async function storePersistentHandle(key, handle) {
+    if (!("indexedDB" in window)) return;
+    const database = await app.openHandleDb();
+    await new Promise((resolve, reject) => {
+      const transaction = database.transaction("handles", "readwrite");
+      transaction.objectStore("handles").put(handle, key);
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+    });
+  };
+
+  app.loadPersistentHandle = async function loadPersistentHandle(key) {
+    if (!("indexedDB" in window)) return null;
+    const database = await app.openHandleDb();
+    return new Promise((resolve, reject) => {
+      const transaction = database.transaction("handles", "readonly");
+      const request = transaction.objectStore("handles").get(key);
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error);
+    });
+  };
+
+  app.restoreStoredHandles = async function restoreStoredHandles() {
+    try {
+      const jsonHandle = await app.loadPersistentHandle("menu-json");
+      if (jsonHandle) {
+        const granted = await app.ensureHandlePermission(jsonHandle, "readwrite");
+        app.menuFileHandle = granted ? jsonHandle : null;
+      }
+    } catch (error) {
+      app.menuFileHandle = null;
+    }
   };
 
   app.readJsonFile = async function readJsonFile(file) {
@@ -203,13 +271,55 @@
     return JSON.parse(text);
   };
 
-  app.importJsonFile = async function importJsonFile(file) {
-    const payload = await app.readJsonFile(file);
-    app.state = app.normalizePayload(payload);
-    app.selectedIds.clear();
-    app.persist();
-    app.renderAll();
-    app.flash("success", "Data JSON berhasil dimuat ke draft admin.");
+  app.pickMenuJsonFile = async function pickMenuJsonFile() {
+    if (typeof window.showOpenFilePicker !== "function") {
+      throw new Error("Browser ini belum mendukung penyimpanan langsung ke file. Gunakan Chrome atau Edge terbaru.");
+    }
+
+    const handles = await window.showOpenFilePicker(app.getJsonPickerOptions());
+    const handle = handles?.[0] || null;
+    if (!handle) {
+      throw new Error("File data/menu.json belum dipilih.");
+    }
+
+    const granted = await app.ensureHandlePermission(handle, "readwrite");
+    if (!granted) {
+      throw new Error("Izin menulis ke data/menu.json belum diberikan.");
+    }
+
+    app.menuFileHandle = handle;
+    await app.storePersistentHandle("menu-json", handle);
+    return handle;
+  };
+
+  app.ensureMenuFileHandle = async function ensureMenuFileHandle() {
+    if (app.menuFileHandle) {
+      const granted = await app.ensureHandlePermission(app.menuFileHandle, "readwrite");
+      if (granted) return app.menuFileHandle;
+      app.menuFileHandle = null;
+    }
+    return app.pickMenuJsonFile();
+  };
+
+  app.writeJsonToFile = async function writeJsonToFile(fileHandle, payload) {
+    const writable = await fileHandle.createWritable();
+    await writable.write(JSON.stringify(payload, null, 2));
+    await writable.close();
+  };
+
+  app.saveMainJson = async function saveMainJson() {
+    try {
+      app.persist();
+      const fileHandle = await app.ensureMenuFileHandle();
+      await app.writeJsonToFile(fileHandle, app.buildExportPayload());
+      app.flash("success", "data/menu.json berhasil diperbarui. Lanjutkan commit dan push lewat GitHub Desktop.");
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        app.flash("error", "Pilih file data/menu.json untuk mengaktifkan tombol Simpan.");
+        return;
+      }
+      app.flash("error", error?.message || "Gagal memperbarui data/menu.json.");
+    }
   };
 
   app.getFileExtension = function getFileExtension(fileName) {
