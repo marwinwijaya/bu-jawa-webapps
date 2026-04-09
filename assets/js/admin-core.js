@@ -41,6 +41,7 @@
   app.pendingImagePreviewUrl = "";
   app.pendingImageDataUrl = "";
   app.menuFileHandle = null;
+  app.menuImageDirectoryHandle = null;
   app.handleDbPromise = null;
 
   app.validId = function validId(id) {
@@ -75,6 +76,7 @@
       harga: Number(item.harga || 0),
       gambar: app.normalizeImagePath(item.gambar),
       gambar_preview: typeof item.gambar_preview === "string" && item.gambar_preview.startsWith("data:") ? item.gambar_preview : "",
+      image_version: Number(item.image_version || item.gambar_update || item.updated_at || 0) || 0,
       aktif: Boolean(item.aktif),
       status_ketersediaan: item.status_ketersediaan === "habis" ? "habis" : "tersedia",
     };
@@ -155,6 +157,7 @@
         deskripsi: menu.deskripsi,
         harga: menu.harga,
         gambar: menu.gambar,
+        image_version: menu.image_version || 0,
         aktif: menu.aktif,
         status_ketersediaan: menu.status_ketersediaan,
         tipe_hari: type,
@@ -169,6 +172,7 @@
       deskripsi: menu.deskripsi,
       harga: menu.harga,
       gambar: menu.gambar,
+      image_version: menu.image_version || 0,
       aktif: menu.aktif,
       status_ketersediaan: menu.status_ketersediaan,
     };
@@ -258,13 +262,21 @@
 
   app.restoreStoredHandles = async function restoreStoredHandles() {
     try {
-      const jsonHandle = await app.loadPersistentHandle("menu-json");
+      const [jsonHandle, imageDirectoryHandle] = await Promise.all([
+        app.loadPersistentHandle("menu-json"),
+        app.loadPersistentHandle("menu-images"),
+      ]);
       if (jsonHandle) {
         const granted = await app.ensureHandlePermission(jsonHandle, "readwrite");
         app.menuFileHandle = granted ? jsonHandle : null;
       }
+      if (imageDirectoryHandle) {
+        const granted = await app.ensureHandlePermission(imageDirectoryHandle, "readwrite");
+        app.menuImageDirectoryHandle = granted ? imageDirectoryHandle : null;
+      }
     } catch (error) {
       app.menuFileHandle = null;
+      app.menuImageDirectoryHandle = null;
     }
   };
 
@@ -307,6 +319,40 @@
     const writable = await fileHandle.createWritable();
     await writable.write(JSON.stringify(payload, null, 2));
     await writable.close();
+  };
+
+  app.pickMenuImageDirectory = async function pickMenuImageDirectory() {
+    if (typeof window.showDirectoryPicker !== "function") {
+      throw new Error("Browser ini belum mendukung penyimpanan gambar ke folder. Gunakan Chrome atau Edge terbaru.");
+    }
+
+    const handle = await window.showDirectoryPicker({
+      id: "rmbj-assets-images",
+      mode: "readwrite",
+      startIn: "pictures",
+    });
+
+    if (!handle) {
+      throw new Error("Folder assets/img belum dipilih.");
+    }
+
+    const granted = await app.ensureHandlePermission(handle, "readwrite");
+    if (!granted) {
+      throw new Error("Izin menulis ke folder assets/img belum diberikan.");
+    }
+
+    app.menuImageDirectoryHandle = handle;
+    await app.storePersistentHandle("menu-images", handle);
+    return handle;
+  };
+
+  app.ensureMenuImageDirectoryHandle = async function ensureMenuImageDirectoryHandle() {
+    if (app.menuImageDirectoryHandle) {
+      const granted = await app.ensureHandlePermission(app.menuImageDirectoryHandle, "readwrite");
+      if (granted) return app.menuImageDirectoryHandle;
+      app.menuImageDirectoryHandle = null;
+    }
+    return app.pickMenuImageDirectory();
   };
 
   app.saveMainJson = async function saveMainJson() {
@@ -363,6 +409,16 @@
       .replace(/\.[^.]+$/, "")
       .trim();
     return `assets/img/${app.slugify(baseName)}.${extension}`;
+  };
+
+  app.saveMenuImageFile = async function saveMenuImageFile(file, menuId, menuName) {
+    const directoryHandle = await app.ensureMenuImageDirectoryHandle();
+    const fileName = app.buildMenuImageName(menuId, menuName, file.name);
+    const fileHandle = await directoryHandle.getFileHandle(fileName, { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(await file.arrayBuffer());
+    await writable.close();
+    return `assets/img/${fileName}`;
   };
 
   app.clearPendingImage = function clearPendingImage() {
@@ -458,12 +514,20 @@
       .replace(/'/g, "&#039;");
   };
 
-  app.renderThumb = function renderThumb(src, className, previewSrc) {
-    const normalizedSrc = app.normalizeImagePath(src);
+  app.renderThumb = function renderThumb(src, className, previewSrc, version) {
+    const normalizedSrc = app.buildVersionedImagePath(src, version);
     const fallbackSrc = previewSrc || app.PLACEHOLDER_IMAGE;
     const resolvedSrc = normalizedSrc || previewSrc;
     if (!resolvedSrc) return `<span class="${className} thumb-placeholder">Foto</span>`;
     return `<img src="${app.escapeHtml(resolvedSrc)}" alt="" class="${className}" onerror="this.onerror=null;this.src='${app.escapeHtml(fallbackSrc)}';">`;
+  };
+
+  app.buildVersionedImagePath = function buildVersionedImagePath(src, version) {
+    const normalizedSrc = app.normalizeImagePath(src);
+    if (!normalizedSrc || !version) return normalizedSrc;
+    if (normalizedSrc.startsWith("data:") || normalizedSrc.startsWith("blob:") || /^https?:\/\//i.test(normalizedSrc)) return normalizedSrc;
+    const separator = normalizedSrc.includes("?") ? "&" : "?";
+    return `${normalizedSrc}${separator}v=${encodeURIComponent(String(version))}`;
   };
 
   app.renderEmpty = function renderEmpty(title, description, withButton) {

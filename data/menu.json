@@ -4,7 +4,7 @@
     "telepon": "0895-4057-18033",
     "jam_buka": "Setiap hari, pukul 09.00 sampai 21.00 WIB",
     "maps": "https://maps.app.goo.gl/XNuEpTYSbn5omncMA",
-    "generated_at": "2026-04-09T05:56:12.203Z"
+    "generated_at": "2026-04-09T06:15:43.679Z"
   },
   "master_menu": [
     {
@@ -13,7 +13,7 @@
       "kategori": "Menu Utama",
       "deskripsi": "Ayam Bakar Khas Jawa",
       "harga": 15000,
-      "gambar": "assets/img/kartu-jamsostek.jpeg",
+      "gambar": "assets/img/menu-1-ayam-bakar.png",
       "aktif": true,
       "status_ketersediaan": "tersedia"
     },
@@ -35,7 +35,7 @@
       "kategori": "Menu Utama",
       "deskripsi": "Ayam Bakar Khas Jawa",
       "harga": 15000,
-      "gambar": "assets/img/kartu-jamsostek.jpeg",
+      "gambar": "assets/img/menu-1-ayam-bakar.png",
       "aktif": true,
       "status_ketersediaan": "tersedia",
       "tipe_hari": "hari_ini"
@@ -59,7 +59,7 @@
       "kategori": "Menu Utama",
       "deskripsi": "Ayam Bakar Khas Jawa",
       "harga": 15000,
-      "gambar": "assets/img/kartu-jamsostek.jpeg",
+      "gambar": "assets/img/menu-1-ayam-bakar.png",
       "aktif": true,
       "status_ketersediaan": "tersedia",
       "tipe_hari": "besok"

@@ -166,6 +166,7 @@
       harga: app.parsePriceInput(priceField?.value || ""),
       gambar: (document.querySelector("#menu-gambar-data")?.value || "").trim(),
       gambar_preview: "",
+      image_version: 0,
       aktif: Boolean(document.querySelector("#menu-aktif")?.checked),
       status_ketersediaan: document.querySelector("#menu-status")?.value || "tersedia",
     };
@@ -190,11 +191,22 @@
     }
 
     if (app.pendingImageFile) {
-      item.gambar = app.buildImageReference(app.pendingImageFile.name);
-      item.gambar_preview = app.pendingImageDataUrl || "";
-      app.setValue("#menu-gambar-data", item.gambar);
+      try {
+        item.gambar = await app.saveMenuImageFile(app.pendingImageFile, item.id, item.nama_menu);
+        item.gambar_preview = app.pendingImageDataUrl || "";
+        item.image_version = Date.now();
+        app.setValue("#menu-gambar-data", item.gambar);
+      } catch (error) {
+        if (error?.name === "AbortError") {
+          app.showFormError("Pilih folder assets/img untuk menyimpan gambar menu.");
+          return;
+        }
+        app.showFormError(error?.message || "Gagal menyimpan gambar menu ke assets/img.");
+        return;
+      }
     } else if (existingIndex >= 0) {
       item.gambar_preview = app.state.master_menu[existingIndex]?.gambar_preview || "";
+      item.image_version = app.state.master_menu[existingIndex]?.image_version || 0;
     }
 
     if (existingIndex >= 0) {
@@ -289,7 +301,7 @@
       app.pendingImageDataUrl = await app.readFileAsDataUrl(file);
       app.setValue("#menu-gambar-data", app.buildImageReference(file.name));
       app.renderImagePreview(app.pendingImagePreviewUrl);
-      app.flash("success", "Preview gambar siap. Path akan disimpan ke assets/img, jadi salin file asli ke folder assets/img di project Anda.");
+      app.flash("success", "Preview gambar siap. Saat simpan, file gambar akan ditulis ke folder assets/img.");
     } catch (error) {
       app.clearPendingImage();
       event.target.value = "";

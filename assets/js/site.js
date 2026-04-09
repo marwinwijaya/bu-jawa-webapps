@@ -158,7 +158,11 @@
     if (normalized.startsWith("data:") || normalized.startsWith("blob:") || /^https?:\/\//i.test(normalized)) {
       return normalized;
     }
-    return encodeURI(normalized);
+    const version = Number(menu?.image_version || menu?.gambar_update || menu?.updated_at || 0) || 0;
+    const encodedPath = encodeURI(normalized);
+    if (!version) return encodedPath;
+    const separator = encodedPath.includes("?") ? "&" : "?";
+    return `${encodedPath}${separator}v=${encodeURIComponent(String(version))}`;
   }
 
   function normalizeImagePath(value) {
