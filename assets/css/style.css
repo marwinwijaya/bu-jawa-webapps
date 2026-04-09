@@ -2750,21 +2750,29 @@ body.modal-open {
 }
 
 .public-section-copy {
-  max-width: 980px;
+  max-width: 1080px;
 }
 
 .public-section-head h2 {
   margin-top: 12px;
-  max-width: 30ch;
+  max-width: 36ch;
   font-size: clamp(1.7rem, 2.6vw, 2.45rem);
-  line-height: 1.16;
+  line-height: 1.12;
 }
 
 .public-section-head p {
-  max-width: 68ch;
+  max-width: 74ch;
   margin-top: 8px;
   font-size: 0.96rem;
   line-height: 1.65;
+}
+
+#tentang .public-section-copy {
+  max-width: 1160px;
+}
+
+#tentang .public-section-head h2 {
+  max-width: 40ch;
 }
 
 .public-section-head-split {

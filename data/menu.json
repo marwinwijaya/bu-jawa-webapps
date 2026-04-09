@@ -4,9 +4,76 @@
     "telepon": "0895-4057-18033",
     "jam_buka": "Setiap hari, pukul 09.00 sampai 21.00 WIB",
     "maps": "https://maps.app.goo.gl/XNuEpTYSbn5omncMA",
-    "generated_at": "2026-04-08T04:15:48.002Z"
+    "generated_at": "2026-04-09T05:56:12.203Z"
   },
-  "master_menu": [],
-  "menu_hari_ini": [],
-  "menu_besok": []
+  "master_menu": [
+    {
+      "id": 1,
+      "nama_menu": "Ayam Bakar",
+      "kategori": "Menu Utama",
+      "deskripsi": "Ayam Bakar Khas Jawa",
+      "harga": 15000,
+      "gambar": "assets/img/kartu-jamsostek.jpeg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 2,
+      "nama_menu": "Ayam Sayur",
+      "kategori": "Menu Utama",
+      "deskripsi": "Ayam Sayur Enak",
+      "harga": 15000,
+      "gambar": "assets/img/ktp-istri.jpeg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    }
+  ],
+  "menu_hari_ini": [
+    {
+      "id": 1,
+      "nama_menu": "Ayam Bakar",
+      "kategori": "Menu Utama",
+      "deskripsi": "Ayam Bakar Khas Jawa",
+      "harga": 15000,
+      "gambar": "assets/img/kartu-jamsostek.jpeg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia",
+      "tipe_hari": "hari_ini"
+    },
+    {
+      "id": 2,
+      "nama_menu": "Ayam Sayur",
+      "kategori": "Menu Utama",
+      "deskripsi": "Ayam Sayur Enak",
+      "harga": 15000,
+      "gambar": "assets/img/ktp-istri.jpeg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia",
+      "tipe_hari": "hari_ini"
+    }
+  ],
+  "menu_besok": [
+    {
+      "id": 1,
+      "nama_menu": "Ayam Bakar",
+      "kategori": "Menu Utama",
+      "deskripsi": "Ayam Bakar Khas Jawa",
+      "harga": 15000,
+      "gambar": "assets/img/kartu-jamsostek.jpeg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia",
+      "tipe_hari": "besok"
+    },
+    {
+      "id": 2,
+      "nama_menu": "Ayam Sayur",
+      "kategori": "Menu Utama",
+      "deskripsi": "Ayam Sayur Enak",
+      "harga": 15000,
+      "gambar": "assets/img/ktp-istri.jpeg",
+      "aktif": true,
+      "status_ketersediaan": "tersedia",
+      "tipe_hari": "besok"
+    }
+  ]
 }

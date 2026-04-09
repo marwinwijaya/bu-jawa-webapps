@@ -2,6 +2,7 @@
   "use strict";
 
   const PUBLIC_PREVIEW_KEY = "rm_bu_jawa_public_preview_v1";
+  const FALLBACK_MENU_IMAGE = "assets/img/about.jpg";
 
   document.addEventListener("DOMContentLoaded", async () => {
     await loadAndRender();
@@ -23,16 +24,19 @@
   }
 
   async function getActivePayload() {
-    if (isLocalPreviewEnvironment()) {
-      const preview = readPreviewPayload();
-      if (preview) return preview;
+    try {
+      const response = await fetch("data/menu.json", { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("Gagal memuat file menu.json");
+      }
+      return response.json();
+    } catch (error) {
+      if (isLocalPreviewEnvironment()) {
+        const preview = readPreviewPayload();
+        if (preview) return preview;
+      }
+      throw error;
     }
-
-    const response = await fetch("data/menu.json", { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error("Gagal memuat file menu.json");
-    }
-    return response.json();
   }
 
   function readPreviewPayload() {
@@ -105,7 +109,7 @@
   }
 
   function renderMenuCard(menu, isTomorrow) {
-    const imageSrc = normalizeImagePath(menu.gambar) || "assets/img/about.jpg";
+    const imageSrc = getMenuImageSrc(menu);
     const statusBadge = menu.status_ketersediaan === "habis"
       ? `<span class="menu-pill badge-danger">Habis</span>`
       : `<span class="menu-pill badge-success">Tersedia</span>`;
@@ -116,7 +120,7 @@
     return `
       <article class="menu-marquee-card ${isTomorrow ? "is-tomorrow-card" : ""}">
         <div class="menu-marquee-image-wrap">
-          <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(menu.nama_menu)}" class="menu-marquee-image">
+          <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(menu.nama_menu)}" class="menu-marquee-image" onerror="this.onerror=null;this.src='${escapeHtml(FALLBACK_MENU_IMAGE)}';">
         </div>
         <div class="menu-marquee-body">
           <div class="menu-marquee-badges">
@@ -145,6 +149,16 @@
 
   function formatRupiah(value) {
     return `Rp ${Number(value || 0).toLocaleString("id-ID")}`;
+  }
+
+  function getMenuImageSrc(menu) {
+    const rawValue = menu?.gambar || menu?.image || menu?.gambar_menu || "";
+    const normalized = normalizeImagePath(rawValue);
+    if (!normalized) return FALLBACK_MENU_IMAGE;
+    if (normalized.startsWith("data:") || normalized.startsWith("blob:") || /^https?:\/\//i.test(normalized)) {
+      return normalized;
+    }
+    return encodeURI(normalized);
   }
 
   function normalizeImagePath(value) {
