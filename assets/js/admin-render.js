@@ -143,8 +143,14 @@
 
     const ids = targetName === "hari_ini" ? app.state.menu_hari_ini : app.state.menu_besok;
     const items = ids.map((id) => app.findMaster(id)).filter(Boolean);
+
+    const fallbackBanner =
+      targetName === "besok" && app.isFallbackActive()
+        ? `<div class="fallback-banner"><i class="bi bi-info-circle"></i> Menu Besok belum diisi — akan menggunakan Menu Hari Ini sebagai fallback.</div>`
+        : "";
+
     if (!items.length) {
-      list.innerHTML = app.renderEmpty(
+      list.innerHTML = fallbackBanner + app.renderEmpty(
         targetName === "hari_ini" ? "Menu Hari Ini masih kosong" : "Menu Besok masih kosong",
         targetName === "hari_ini" ? "Pilih menu dari Master Menu untuk mulai menyusun menu hari ini." : "Tambahkan menu dari Master Menu atau copy dari Menu Hari Ini.",
         false
@@ -158,7 +164,7 @@
       rows.push(app.renderScheduleSpacer());
     }
 
-    list.innerHTML = rows.join("");
+    list.innerHTML = fallbackBanner + rows.join("");
     list.querySelectorAll("[data-schedule-action]").forEach((button) => button.addEventListener("click", app.handleScheduleAction));
   };
 
