@@ -45,7 +45,7 @@ Implementasi halaman `catalog.html` dan `assets/js/catalog.js` untuk Rumah Makan
   - Pasang event listener `input` yang memanggil `applyFilters()` pada setiap keystroke
   - _Persyaratan: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [-] 6. Implementasi fungsi filter gabungan `applyFilters()`
+- [x] 6. Implementasi fungsi filter gabungan `applyFilters()`
   - Tulis fungsi `applyFilters()` yang membaca state filter kategori aktif dan nilai search bar saat ini
   - Filter `allItems`: pertama berdasarkan kategori (jika bukan "Semua"), lalu berdasarkan kata kunci (case-insensitive, cocokkan `nama_menu` atau `deskripsi`)
   - Panggil `renderMenuGrid(filteredItems)` dengan hasil filter

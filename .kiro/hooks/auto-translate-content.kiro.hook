@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Auto-Translate Content Changes",
+  "description": "Monitors changes to JSON and YAML files containing user-facing text. When changes are detected, identifies new or modified text and generates translations for all configured target languages while maintaining context and locale-specific conventions.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "**/*.json",
+      "**/*.yaml",
+      "**/*.yml"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A user-facing content file has been edited. Please:\n1. Identify any new or modified text strings in the changed file.\n2. For each changed string, generate accurate translations into all relevant target languages configured for this project. Based on the project context (Rumah Makan Bu Jawa, a Javanese restaurant in Indonesia), the primary language is Bahasa Indonesia. Generate translations for English and any other languages relevant to the project.\n3. Ensure translations preserve the original meaning, tone, and context (e.g. food menu items, prices, availability labels, UI strings).\n4. Follow locale-specific conventions (e.g. date formats, currency display like \"Rp 15.000\").\n5. Present the translations clearly, grouped by string key or field name, so the developer can review and apply them."
+  }
+}
