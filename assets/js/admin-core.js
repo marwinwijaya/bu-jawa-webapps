@@ -178,7 +178,15 @@
     };
   };
 
+  app.isFallbackActive = function isFallbackActive() {
+    return app.state.menu_besok.length === 0 && app.state.menu_hari_ini.length > 0;
+  };
+
   app.buildExportPayload = function buildExportPayload() {
+    const menuBesokSource = app.isFallbackActive()
+      ? app.state.menu_hari_ini
+      : app.state.menu_besok;
+
     return {
       metadata: {
         ...app.state.metadata,
@@ -186,7 +194,7 @@
       },
       master_menu: app.state.master_menu.map(app.serializeMenu),
       menu_hari_ini: app.buildSnapshot(app.state.menu_hari_ini, "hari_ini"),
-      menu_besok: app.buildSnapshot(app.state.menu_besok, "besok"),
+      menu_besok: app.buildSnapshot(menuBesokSource, "besok"),
     };
   };
 
