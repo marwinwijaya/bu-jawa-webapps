@@ -17,7 +17,7 @@
     try {
       const payload = await getActivePayload();
       const parsed = parsePayload(payload);
-      renderPublicPage(parsed.menuHariIni, parsed.menuBesok);
+      renderPublicPage(parsed.menuHariIni, parsed.menuBesok, parsed.isFallback);
     } catch (error) {
       renderErrorState("Data menu belum bisa dimuat. Pastikan file data/menu.json tersedia di repository GitHub Pages.");
     }
@@ -54,27 +54,32 @@
   }
 
   function parsePayload(payload) {
-    if (payload.menu_hari_ini && payload.menu_besok) {
-      return {
-        menuHariIni: Array.isArray(payload.menu_hari_ini) ? payload.menu_hari_ini.filter((menu) => menu.aktif) : [],
-        menuBesok: Array.isArray(payload.menu_besok) ? payload.menu_besok.filter((menu) => menu.aktif) : [],
-      };
+    if (payload.menu_hari_ini && payload.menu_besok !== undefined) {
+      const menuHariIni = Array.isArray(payload.menu_hari_ini) ? payload.menu_hari_ini.filter((menu) => menu.aktif) : [];
+      const rawBesok = Array.isArray(payload.menu_besok) ? payload.menu_besok.filter((menu) => menu.aktif) : [];
+
+      if (rawBesok.length === 0 && menuHariIni.length > 0) {
+        return { menuHariIni, menuBesok: menuHariIni, isFallback: true };
+      }
+
+      return { menuHariIni, menuBesok: rawBesok, isFallback: false };
     }
 
     const menus = Array.isArray(payload) ? payload : Array.isArray(payload.menus) ? payload.menus : [];
     return {
       menuHariIni: menus.filter((menu) => menu.aktif && menu.tipe_hari === "hari_ini"),
       menuBesok: menus.filter((menu) => menu.aktif && menu.tipe_hari === "besok"),
+      isFallback: false,
     };
   }
 
-  function renderPublicPage(menuHariIni, menuBesok) {
+  function renderPublicPage(menuHariIni, menuBesok, isFallback) {
     setText("#hero-menu-count", `${menuHariIni.length} menu aktif`);
-    renderMenuList("#menu-hari-ini-list", menuHariIni, false);
-    renderMenuList("#menu-besok-list", menuBesok, true);
+    renderMenuList("#menu-hari-ini-list", menuHariIni, false, false);
+    renderMenuList("#menu-besok-list", menuBesok, true, isFallback);
   }
 
-  function renderMenuList(selector, menus, isTomorrow) {
+  function renderMenuList(selector, menus, isTomorrow, isFallback) {
     const target = document.querySelector(selector);
     if (!target) {
       return;
@@ -93,8 +98,12 @@
 
     const cards = menus.map((menu) => renderMenuCard(menu, isTomorrow)).join("");
     const animationClass = isTomorrow ? "is-tomorrow-marquee" : "is-today-marquee";
+    const fallbackBanner = (isTomorrow && isFallback)
+      ? `<p class="fallback-notice">Menu besok belum diperbarui — menampilkan menu hari ini sebagai referensi.</p>`
+      : "";
 
     target.innerHTML = `
+      ${fallbackBanner}
       <div class="marquee-shell ${isTomorrow ? "marquee-shell-tomorrow" : ""}">
         <div class="menu-marquee ${animationClass}">
           <div class="menu-marquee-track">
