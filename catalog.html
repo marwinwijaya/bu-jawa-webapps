@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Katalog Menu | Rumah Makan Bu Jawa</title>
+  <meta name="description" content="Lihat seluruh katalog menu Rumah Makan Bu Jawa, filter berdasarkan kategori, dan pesan langsung via WhatsApp.">
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body data-page="katalog">
+  <div class="site-shell">
+
+    <!-- Topbar -->
+    <div class="topbar-custom">
+      <div class="container d-flex flex-column flex-lg-row justify-content-between gap-2">
+        <div class="d-flex flex-wrap gap-3">
+          <span><i class="bi bi-telephone"></i> 0895-4057-18033</span>
+          <span><i class="bi bi-clock"></i> Setiap hari, pukul 09.00 sampai 21.00 WIB</span>
+        </div>
+        <div class="d-flex gap-3">
+          <a href="https://maps.app.goo.gl/XNuEpTYSbn5omncMA" target="_blank" rel="noopener noreferrer">Lihat Lokasi</a>
+          <a href="login.html">Login Admin</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="main-header">
+      <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light p-0">
+          <a class="navbar-brand brand-mark" href="index.html">Rumah Makan Bu Jawa</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUtama" aria-controls="navbarUtama" aria-expanded="false" aria-label="Buka navigasi">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarUtama">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+              <li class="nav-item"><a class="nav-link" href="index.html#beranda">Beranda</a></li>
+              <li class="nav-item"><a class="nav-link" href="index.html#tentang">Tentang Kami</a></li>
+              <li class="nav-item"><a class="nav-link" href="index.html#menu-hari-ini">Menu Hari Ini</a></li>
+              <li class="nav-item"><a class="nav-link" href="index.html#menu-besok">Menu Besok</a></li>
+              <li class="nav-item"><a class="nav-link active" href="catalog.html" aria-current="page">Katalog Menu</a></li>
+              <li class="nav-item"><a class="nav-link" href="index.html#kontak">Kontak & Lokasi</a></li>
+              <li class="nav-item ms-lg-3"><a class="btn btn-primary-custom" href="tel:0895405718033">Pesan Sekarang</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="public-main">
+      <div class="catalog-layout">
+        <div class="container-fluid px-0">
+          <div class="catalog-inner">
+
+            <!-- Catalog Content Area -->
+            <div class="catalog-content">
+
+              <!-- Page Header -->
+              <div class="catalog-page-header">
+                <div class="container">
+                  <span class="section-kicker">Katalog Menu</span>
+                  <h1>Semua menu Rumah Makan Bu Jawa</h1>
+                  <p>Telusuri seluruh pilihan menu, filter berdasarkan kategori, dan tambahkan ke keranjang untuk pesan via WhatsApp.</p>
+                </div>
+              </div>
+
+              <!-- Filter & Search Area -->
+              <div class="catalog-filter-area">
+                <div class="container">
+                  <div class="catalog-filter-row">
+                    <!-- Category Filter Buttons -->
+                    <div class="catalog-filter-buttons" id="catalog-category-filter" role="group" aria-label="Filter kategori menu">
+                      <button type="button" class="catalog-filter-btn active" data-category="Semua">Semua</button>
+                      <button type="button" class="catalog-filter-btn" data-category="Menu Utama">Menu Utama</button>
+                      <button type="button" class="catalog-filter-btn" data-category="Menu Sayur">Menu Sayur</button>
+                      <button type="button" class="catalog-filter-btn" data-category="Minuman">Minuman</button>
+                      <button type="button" class="catalog-filter-btn" data-category="Snack">Snack</button>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="catalog-search-wrap">
+                      <i class="bi bi-search catalog-search-icon"></i>
+                      <input
+                        type="text"
+                        id="catalog-search-input"
+                        class="catalog-search-input"
+                        placeholder="Cari nama atau deskripsi menu..."
+                        aria-label="Cari menu"
+                        autocomplete="off"
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Menu Grid Area -->
+              <div class="catalog-grid-area">
+                <div class="container">
+                  <div class="row g-3" id="catalog-menu-grid">
+                    <!-- Menu cards rendered by catalog.js -->
+                    <div class="col-12 text-center py-5 catalog-loading">
+                      <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Memuat menu...</span>
+                      </div>
+                      <p class="mt-3 text-muted">Memuat menu...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /.catalog-content -->
+
+            <!-- Cart Panel -->
+            <aside class="cart-panel" id="cart-panel" aria-label="Keranjang belanja">
+              <div class="cart-panel-header">
+                <h2 class="cart-panel-title">
+                  <i class="bi bi-cart3"></i> Keranjang
+                  <span class="cart-badge" id="cart-count-badge" aria-live="polite">0</span>
+                </h2>
+                <button class="cart-panel-close d-lg-none" id="cart-panel-close" aria-label="Tutup keranjang">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+
+              <div class="cart-panel-body" id="cart-items-list">
+                <!-- Cart items rendered by catalog.js -->
+                <div class="cart-empty-state">
+                  <i class="bi bi-cart-x"></i>
+                  <p>Keranjang masih kosong</p>
+                  <span>Tambahkan menu yang ingin dipesan</span>
+                </div>
+              </div>
+
+              <div class="cart-panel-footer">
+                <div class="cart-total-row">
+                  <span>Total</span>
+                  <strong id="cart-total-price">Rp 0</strong>
+                </div>
+                <button type="button" class="btn btn-primary-custom w-100 cart-checkout-btn" id="cart-checkout-btn" disabled>
+                  <i class="bi bi-whatsapp"></i> Pesan via WhatsApp
+                </button>
+              </div>
+            </aside><!-- /#cart-panel -->
+
+          </div><!-- /.catalog-inner -->
+        </div>
+      </div>
+
+      <!-- Cart Toggle Button (mobile) -->
+      <button class="cart-fab d-lg-none" id="cart-fab" aria-label="Buka keranjang belanja">
+        <i class="bi bi-cart3"></i>
+        <span class="cart-fab-badge" id="cart-fab-badge" aria-live="polite">0</span>
+      </button>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+        <p class="mb-0">&copy; 2026 Rumah Makan Bu Jawa. Seluruh informasi disajikan untuk memudahkan pemesanan.</p>
+        <a href="login.html">Akses Admin</a>
+      </div>
+    </footer>
+
+  </div><!-- /.site-shell -->
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/catalog.js"></script>
+</body>
+</html>
