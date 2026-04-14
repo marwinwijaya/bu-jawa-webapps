@@ -4,7 +4,7 @@
     "telepon": "0895-4057-18033",
     "jam_buka": "Setiap hari, pukul 09.00 sampai 21.00 WIB",
     "maps": "https://maps.app.goo.gl/XNuEpTYSbn5omncMA",
-    "generated_at": "2026-04-09T06:15:43.679Z"
+    "generated_at": "2026-04-14T02:12:11.297Z"
   },
   "master_menu": [
     {
@@ -13,7 +13,8 @@
       "kategori": "Menu Utama",
       "deskripsi": "Ayam Bakar Khas Jawa",
       "harga": 15000,
-      "gambar": "assets/img/menu-1-ayam-bakar.png",
+      "gambar": "assets/img/menu-1-ayam-bakar.jpg",
+      "image_version": 1776132385576,
       "aktif": true,
       "status_ketersediaan": "tersedia"
     },
@@ -23,7 +24,63 @@
       "kategori": "Menu Utama",
       "deskripsi": "Ayam Sayur Enak",
       "harga": 15000,
-      "gambar": "assets/img/ktp-istri.jpeg",
+      "gambar": "assets/img/menu-2-ayam-sayur.jpg",
+      "image_version": 1776132399516,
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 3,
+      "nama_menu": "Salad",
+      "kategori": "Snack",
+      "deskripsi": "Salad",
+      "harga": 10000,
+      "gambar": "assets/img/menu-3-salad.jpeg",
+      "image_version": 1776132472759,
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 4,
+      "nama_menu": "Ketoprak",
+      "kategori": "Menu Sayur",
+      "deskripsi": "Ketoprak",
+      "harga": 13000,
+      "gambar": "assets/img/menu-4-ketoprak.jpeg",
+      "image_version": 1776132584589,
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 5,
+      "nama_menu": "Sate",
+      "kategori": "Snack",
+      "deskripsi": "Sate",
+      "harga": 15000,
+      "gambar": "assets/img/menu-5-sate.jpeg",
+      "image_version": 1776132610078,
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 6,
+      "nama_menu": "Ayam Serundeng",
+      "kategori": "Menu Utama",
+      "deskripsi": "Ayam Serundeng",
+      "harga": 14000,
+      "gambar": "assets/img/menu-6-ayam-serundeng.jpg",
+      "image_version": 1776132696529,
+      "aktif": true,
+      "status_ketersediaan": "tersedia"
+    },
+    {
+      "id": 7,
+      "nama_menu": "Ayam Madu",
+      "kategori": "Menu Utama",
+      "deskripsi": "Ayam Madu",
+      "harga": 15000,
+      "gambar": "assets/img/menu-7-ayam-madu.jpg",
+      "image_version": 1776132724534,
       "aktif": true,
       "status_ketersediaan": "tersedia"
     }
@@ -35,7 +92,8 @@
       "kategori": "Menu Utama",
       "deskripsi": "Ayam Bakar Khas Jawa",
       "harga": 15000,
-      "gambar": "assets/img/menu-1-ayam-bakar.png",
+      "gambar": "assets/img/menu-1-ayam-bakar.jpg",
+      "image_version": 1776132385576,
       "aktif": true,
       "status_ketersediaan": "tersedia",
       "tipe_hari": "hari_ini"
@@ -46,7 +104,8 @@
       "kategori": "Menu Utama",
       "deskripsi": "Ayam Sayur Enak",
       "harga": 15000,
-      "gambar": "assets/img/ktp-istri.jpeg",
+      "gambar": "assets/img/menu-2-ayam-sayur.jpg",
+      "image_version": 1776132399516,
       "aktif": true,
       "status_ketersediaan": "tersedia",
       "tipe_hari": "hari_ini"
@@ -59,7 +118,8 @@
       "kategori": "Menu Utama",
       "deskripsi": "Ayam Bakar Khas Jawa",
       "harga": 15000,
-      "gambar": "assets/img/menu-1-ayam-bakar.png",
+      "gambar": "assets/img/menu-1-ayam-bakar.jpg",
+      "image_version": 1776132385576,
       "aktif": true,
       "status_ketersediaan": "tersedia",
       "tipe_hari": "besok"
@@ -70,7 +130,8 @@
       "kategori": "Menu Utama",
       "deskripsi": "Ayam Sayur Enak",
       "harga": 15000,
-      "gambar": "assets/img/ktp-istri.jpeg",
+      "gambar": "assets/img/menu-2-ayam-sayur.jpg",
+      "image_version": 1776132399516,
       "aktif": true,
       "status_ketersediaan": "tersedia",
       "tipe_hari": "besok"
