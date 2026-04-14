@@ -1290,6 +1290,55 @@ code {
   gap: 0.8rem;
 }
 
+/* Nav menu group */
+.nav-menu-group {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.nav-menu-group-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  color: rgba(248, 241, 229, 0.55);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: default;
+  user-select: none;
+}
+
+.nav-sub-menu {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.nav-sub-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.75rem 1rem 0.75rem 1.6rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f8f1e5;
+  font-size: 0.95rem;
+  transition: background 0.15s ease;
+}
+
+.nav-sub-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.nav-sub-item.is-active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
 .premium-main {
   padding: 2rem 2rem 3rem;
 }
@@ -1381,6 +1430,21 @@ body.sidebar-collapsed .sidebar-brand h1 {
 
 body.sidebar-collapsed .premium-nav a,
 body.sidebar-collapsed .premium-nav .sidebar-button {
+  justify-content: center;
+  padding-inline: 0.7rem;
+}
+
+body.sidebar-collapsed .nav-menu-group-header span,
+body.sidebar-collapsed .nav-sub-item span {
+  display: none;
+}
+
+body.sidebar-collapsed .nav-menu-group-header {
+  justify-content: center;
+  padding-inline: 0.7rem;
+}
+
+body.sidebar-collapsed .nav-sub-item {
   justify-content: center;
   padding-inline: 0.7rem;
 }

@@ -21,8 +21,26 @@
 
         <nav class="admin-nav premium-nav">
           <a href="#ringkasan"><i class="bi bi-grid-1x2"></i><span>Ringkasan</span></a>
-          <a href="#master-menu"><i class="bi bi-journal-text"></i><span>Master Menu</span></a>
-          <a href="#penjadwalan"><i class="bi bi-calendar2-week"></i><span>Menu Harian</span></a>
+          <div class="nav-menu-group">
+            <div class="nav-menu-group-header">
+              <i class="bi bi-journal-bookmark"></i>
+              <span>Menu</span>
+            </div>
+            <div class="nav-sub-menu">
+              <a href="#master-menu" class="nav-sub-item" data-sub-nav="katalog-menu">
+                <i class="bi bi-grid-3x3-gap"></i>
+                <span>Katalog Menu</span>
+              </a>
+              <a href="#penjadwalan" class="nav-sub-item" data-sub-nav="menu-hari-ini">
+                <i class="bi bi-calendar-check"></i>
+                <span>Menu Hari Ini</span>
+              </a>
+              <a href="#penjadwalan" class="nav-sub-item" data-sub-nav="menu-besok">
+                <i class="bi bi-calendar-plus"></i>
+                <span>Menu Besok</span>
+              </a>
+            </div>
+          </div>
           <a href="index.html" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right"></i><span>Buka Website Publik</span></a>
           <button type="button" id="logout-button" class="sidebar-button"><i class="bi bi-box-arrow-right"></i><span>Logout</span></button>
         </nav>
