@@ -4,7 +4,7 @@
     "telepon": "0895-4057-18033",
     "jam_buka": "Setiap hari, pukul 09.00 sampai 21.00 WIB",
     "maps": "https://maps.app.goo.gl/XNuEpTYSbn5omncMA",
-    "generated_at": "2026-04-14T02:12:11.297Z"
+    "generated_at": "2026-04-14T02:14:14.147Z"
   },
   "master_menu": [
     {
@@ -82,7 +82,7 @@
       "gambar": "assets/img/menu-7-ayam-madu.jpg",
       "image_version": 1776132724534,
       "aktif": true,
-      "status_ketersediaan": "tersedia"
+      "status_ketersediaan": "habis"
     }
   ],
   "menu_hari_ini": [
