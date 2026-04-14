@@ -3416,6 +3416,11 @@ body.modal-open {
   color: #fff;
 }
 
+[data-page="katalog"] .badge-nonaktif {
+  background: rgba(110, 98, 85, 0.88);
+  color: #fff;
+}
+
 [data-page="katalog"] .menu-card-body {
   display: flex;
   flex-direction: column;

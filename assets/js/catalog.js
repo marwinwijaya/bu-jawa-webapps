@@ -29,10 +29,11 @@
 
     var html = "";
     items.forEach(function (item) {
+      var isAktif = item.aktif !== false;
       var isHabis = item.status_ketersediaan === "habis";
-      var badgeClass = isHabis ? "badge-habis" : "badge-tersedia";
-      var badgeText = isHabis ? "Habis" : "Tersedia";
-      var btnDisabled = isHabis ? " disabled" : "";
+      var badgeClass = !isAktif ? "badge-nonaktif" : (isHabis ? "badge-habis" : "badge-tersedia");
+      var badgeText = !isAktif ? "Nonaktif" : (isHabis ? "Habis" : "Tersedia");
+      var btnDisabled = (!isAktif || isHabis) ? " disabled" : "";
       var imgSrc = item.gambar || "assets/img/about.jpg";
 
       html +=
@@ -127,7 +128,7 @@
         var masterMenu = data.master_menu;
         if (!Array.isArray(masterMenu)) throw new Error("Format data tidak valid");
 
-        allItems = masterMenu.filter(function (item) { return item.aktif === true; });
+        allItems = masterMenu.slice();
 
         if (allItems.length === 0) {
           if (grid) {
