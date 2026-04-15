@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Katalog Menu | Rumah Makan Bu Jawa</title>
-  <meta name="description" content="Lihat seluruh katalog menu Rumah Makan Bu Jawa, filter berdasarkan kategori, dan pesan langsung via WhatsApp.">
+  <meta name="description" content="Lihat katalog lengkap Rumah Makan Bu Jawa, filter menu berdasarkan kategori, lalu pesan cepat via WhatsApp.">
   <link href="assets/img/favicon.png" rel="icon">
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -15,69 +15,77 @@
   <div class="site-shell">
     <div id="site-menu-mount"></div>
 
-    <!-- Main Content -->
     <main class="public-main">
       <div class="catalog-layout">
         <div class="container">
           <div class="catalog-inner">
-
-            <!-- Catalog Content Area -->
             <div class="catalog-content">
+              <section class="catalog-hero">
+                <div class="catalog-page-header">
+                  <span class="section-kicker"><i class="bi bi-grid-3x3-gap-fill"></i> Katalog Menu Lengkap</span>
+                  <h1>Pilih menu Bu Jawa yang paling cocok untuk hari ini</h1>
+                  <p>Gunakan filter kategori, cari menu favorit, lalu tambahkan ke keranjang untuk dikirim langsung ke WhatsApp. Semua dibuat lebih cepat, lebih rapi, dan lebih siap closing.</p>
+                </div>
+                <div class="catalog-hero-chips">
+                  <span class="soft-chip"><i class="bi bi-card-image"></i> Foto menu lebih menonjol</span>
+                  <span class="soft-chip"><i class="bi bi-cart-check"></i> Keranjang siap kirim ke WhatsApp</span>
+                  <span class="soft-chip"><i class="bi bi-patch-check"></i> Status menu jelas</span>
+                </div>
+                <div class="catalog-highlights">
+                  <article class="catalog-insight-card">
+                    <i class="bi bi-fire"></i>
+                    <strong>Dirancang untuk bikin cepat lapar</strong>
+                    <p>Tampilan makanan lebih fokus, harga lebih mudah terlihat, dan CTA lebih tegas.</p>
+                  </article>
+                  <article class="catalog-insight-card">
+                    <i class="bi bi-building"></i>
+                    <strong>Nyaman untuk pesanan keluarga dan kantor</strong>
+                    <p>Lebih mudah dibanding harus kirim daftar menu satu per satu lewat chat.</p>
+                  </article>
+                  <article class="catalog-insight-card">
+                    <i class="bi bi-whatsapp"></i>
+                    <strong>Checkout langsung ke WhatsApp</strong>
+                    <p>Keranjang akan menyusun pesan order otomatis agar proses pemesanan lebih efisien.</p>
+                  </article>
+                </div>
+              </section>
 
-              <!-- Page Header -->
-              <div class="catalog-page-header public-section public-section-soft">
-                <div class="public-section-head">
-                  <div class="public-section-copy">
-                    <span class="section-kicker">Katalog Lengkap</span>
-                    <h1>Semua menu andalan Rumah Makan Bu Jawa</h1>
-                    <p>Pilih menu favorit, pakai filter kategori, lalu langsung pesan lewat WhatsApp.</p>
+              <section class="catalog-filter-area">
+                <div class="catalog-filter-row">
+                  <div class="catalog-filter-buttons" id="catalog-category-filter" role="group" aria-label="Filter kategori menu">
+                    <button type="button" class="catalog-filter-btn active" data-category="Semua">Semua</button>
+                    <button type="button" class="catalog-filter-btn" data-category="Menu Utama">Menu Utama</button>
+                    <button type="button" class="catalog-filter-btn" data-category="Menu Sayur">Menu Sayur</button>
+                    <button type="button" class="catalog-filter-btn" data-category="Minuman">Minuman</button>
+                    <button type="button" class="catalog-filter-btn" data-category="Snack">Snack</button>
+                  </div>
+
+                  <div class="catalog-search-wrap">
+                    <i class="bi bi-search catalog-search-icon"></i>
+                    <input
+                      type="text"
+                      id="catalog-search-input"
+                      class="catalog-search-input"
+                      placeholder="Cari nama atau deskripsi menu..."
+                      aria-label="Cari menu"
+                      autocomplete="off"
+                    >
                   </div>
                 </div>
-              </div>
+              </section>
 
-              <!-- Filter & Search Area -->
-              <div class="catalog-filter-area">
-                <div class="catalog-filter-row">
-                    <!-- Category Filter Buttons -->
-                    <div class="catalog-filter-buttons" id="catalog-category-filter" role="group" aria-label="Filter kategori menu">
-                      <button type="button" class="catalog-filter-btn active" data-category="Semua">Semua</button>
-                      <button type="button" class="catalog-filter-btn" data-category="Menu Utama">Menu Utama</button>
-                      <button type="button" class="catalog-filter-btn" data-category="Menu Sayur">Menu Sayur</button>
-                      <button type="button" class="catalog-filter-btn" data-category="Minuman">Minuman</button>
-                      <button type="button" class="catalog-filter-btn" data-category="Snack">Snack</button>
-                    </div>
-
-                    <!-- Search Input -->
-                    <div class="catalog-search-wrap">
-                      <i class="bi bi-search catalog-search-icon"></i>
-                      <input
-                        type="text"
-                        id="catalog-search-input"
-                        class="catalog-search-input"
-                        placeholder="Cari nama atau deskripsi menu..."
-                        aria-label="Cari menu"
-                        autocomplete="off"
-                      >
-                    </div>
-                </div>
-              </div>
-
-              <!-- Menu Grid Area -->
-              <div class="catalog-grid-area">
+              <section class="catalog-grid-area">
                 <div class="row g-4" id="catalog-menu-grid">
-                    <!-- Menu cards rendered by catalog.js -->
-                    <div class="col-12 catalog-loading">
-                      <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Memuat menu...</span>
-                      </div>
-                      <p>Memuat menu...</p>
+                  <div class="col-12 catalog-loading">
+                    <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Memuat menu...</span>
                     </div>
+                    <p>Memuat menu...</p>
+                  </div>
                 </div>
-              </div>
+              </section>
+            </div>
 
-            </div><!-- /.catalog-content -->
-
-            <!-- Cart Panel -->
             <aside class="cart-panel" id="cart-panel" aria-label="Keranjang belanja">
               <div class="cart-panel-header">
                 <h2 class="cart-panel-title">
@@ -90,7 +98,6 @@
               </div>
 
               <div class="cart-panel-body" id="cart-items-list">
-                <!-- Cart items rendered by catalog.js -->
                 <div class="cart-empty-state">
                   <i class="bi bi-cart-x"></i>
                   <p>Keranjang masih kosong</p>
@@ -107,32 +114,26 @@
                   <i class="bi bi-whatsapp"></i> Pesan via WhatsApp
                 </button>
               </div>
-            </aside><!-- /#cart-panel -->
-
-          </div><!-- /.catalog-inner -->
+            </aside>
+          </div>
         </div>
       </div>
 
-      <!-- Cart overlay backdrop (mobile) -->
       <div class="cart-overlay" id="cart-overlay" aria-hidden="true"></div>
 
-      <!-- Cart Toggle Button (mobile) -->
       <button class="cart-fab d-lg-none" id="cart-fab" aria-label="Buka keranjang belanja">
         <i class="bi bi-cart3"></i>
         <span class="cart-fab-badge" id="cart-fab-badge" aria-live="polite">0</span>
       </button>
-
     </main>
 
-    <!-- Footer -->
-      <footer class="site-footer">
+    <footer class="site-footer">
       <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
-        <p class="mb-0">&copy; 2026 Rumah Makan Bu Jawa. Menu dan info kami hadirkan biar Anda cepat pilih dan langsung pesan.</p>
+        <p class="mb-0">&copy; 2026 Rumah Makan Bu Jawa. Katalog dirancang untuk membantu pelanggan cepat memilih dan cepat order.</p>
         <a href="login.html">Akses Admin</a>
       </div>
     </footer>
-
-  </div><!-- /.site-shell -->
+  </div>
 
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/menu.js"></script>

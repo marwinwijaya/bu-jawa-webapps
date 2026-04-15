@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel Admin Rumah Makan Bu Jawa</title>
+  <meta name="description" content="Panel admin Rumah Makan Bu Jawa untuk mengelola master menu dan jadwal tayang menu harian.">
+  <link href="assets/img/favicon.png" rel="icon">
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -14,9 +16,9 @@
     <aside class="admin-sidebar premium-sidebar">
       <div class="admin-sidebar-inner">
         <div class="sidebar-brand">
-          <span class="section-kicker">Dashboard Operasional</span>
+          <span class="section-kicker"><i class="bi bi-speedometer2"></i> Dashboard Operasional</span>
           <h1>Rumah Makan Bu Jawa</h1>
-          <p>Kelola master menu, dan susun menu harian.</p>
+          <p>Kelola katalog menu, atur jadwal tayang, dan jaga tampilan publik tetap siap jual.</p>
         </div>
 
         <nav class="admin-nav premium-nav">
@@ -24,7 +26,7 @@
           <div class="nav-menu-group">
             <div class="nav-menu-group-header">
               <i class="bi bi-journal-bookmark"></i>
-              <span>Menu</span>
+              <span>Pengelolaan Menu</span>
             </div>
             <div class="nav-sub-menu">
               <a href="#master-menu" class="nav-sub-item" data-sub-nav="katalog-menu">
@@ -46,8 +48,8 @@
         </nav>
 
         <div class="sidebar-tip">
-          <strong>Flow cepat</strong>
-          <p>Kelola menu di draft lokal, lalu klik Simpan untuk memperbarui <code>data/menu.json</code>. Browser hanya akan meminta izin file sekali di awal.</p>
+          <strong>Flow simpan</strong>
+          <p>Kelola menu di draft lokal dulu, lalu klik <code>Simpan</code> untuk memperbarui <code>data/menu.json</code> dan menjaga katalog publik tetap sinkron.</p>
         </div>
       </div>
     </aside>
@@ -55,15 +57,15 @@
     <main class="admin-main premium-main">
       <header class="dashboard-hero">
         <div>
-          <span class="section-kicker">Panel Admin Rumah Makan Bu Jawa</span>
-          <h2>Kelola master menu</h2>
-          <p>Kelola daftar menu, dan susun menu harian.</p>
+          <span class="section-kicker"><i class="bi bi-stars"></i> Panel Admin Rumah Makan Bu Jawa</span>
+          <h2>Kelola katalog, foto, dan penjadwalan menu dari satu tempat</h2>
+          <p>Dirancang lebih jelas agar pekerjaan operasional lebih cepat, lebih aman, dan lebih nyaman dipakai setiap hari.</p>
         </div>
         <div class="dashboard-hero-tools">
           <button type="button" id="save-json-button" class="btn btn-primary-custom">Simpan</button>
           <button type="button" id="sidebar-toggle-button" class="sidebar-toggle-button" aria-label="Sembunyikan atau tampilkan side menu" aria-expanded="true">
             <i class="bi bi-layout-sidebar-inset"></i>
-            <span>Side Menu</span>
+            <span>Sembunyikan Menu</span>
           </button>
           <div class="date-chip">
             <i class="bi bi-calendar3"></i>
@@ -101,8 +103,8 @@
         <div class="panel-shell">
           <div class="section-title-inline">
             <div>
-              <span class="section-kicker">Master Menu</span>
-              <h3>Pusat data semua menu yang bisa dipilih ke Hari Ini atau Besok</h3>
+              <span class="section-kicker"><i class="bi bi-card-checklist"></i> Master Menu</span>
+              <h3>Pusat data semua menu yang dapat ditayangkan ke halaman publik</h3>
             </div>
             <div class="header-actions">
               <button type="button" id="open-create-modal" class="btn btn-primary-custom">Tambah Menu Baru</button>
@@ -130,6 +132,7 @@
               <button type="button" id="bulk-add-besok" class="btn btn-outline-custom">Tambahkan Terpilih ke Besok</button>
             </div>
           </div>
+
           <div class="master-list-groups" id="master-grid"></div>
         </div>
       </section>
@@ -138,9 +141,11 @@
         <div class="schedule-layout">
           <section class="schedule-board schedule-board-equal">
             <div class="schedule-board-head schedule-board-head-stacked">
-              <span class="section-kicker">Menu Hari Ini</span>
-              <h3 class="schedule-board-title">Daftar menu yang tampil hari ini</h3>
-              <p class="schedule-board-description">Kelola menu yang sedang tayang hari ini. Perubahan akan langsung tersinkron ke file JSON lokal.</p>
+              <div>
+                <span class="section-kicker"><i class="bi bi-sunrise"></i> Menu Hari Ini</span>
+                <h3 class="schedule-board-title">Daftar menu yang sedang tayang hari ini</h3>
+                <p class="schedule-board-description">Kelola menu yang tampil di website publik dan pastikan statusnya sesuai kondisi aktual.</p>
+              </div>
               <div class="board-actions schedule-board-actions">
                 <button type="button" id="clear-hari-ini" class="btn btn-outline-custom">Kosongkan Menu</button>
               </div>
@@ -158,9 +163,11 @@
 
           <section class="schedule-board schedule-board-equal">
             <div class="schedule-board-head schedule-board-head-stacked">
-              <span class="section-kicker">Menu Besok</span>
-              <h3 class="schedule-board-title">Daftar menu yang tampil besok</h3>
-              <p class="schedule-board-description">Siapkan rencana menu besok, salin dari hari ini bila perlu, lalu gunakan saat pergantian hari.</p>
+              <div>
+                <span class="section-kicker"><i class="bi bi-moon-stars"></i> Menu Besok</span>
+                <h3 class="schedule-board-title">Persiapan menu yang akan tampil besok</h3>
+                <p class="schedule-board-description">Susun rencana tayang besok lebih awal, salin dari hari ini bila perlu, lalu sesuaikan status menunya.</p>
+              </div>
               <div class="board-actions schedule-board-actions">
                 <button type="button" id="copy-hari-ini-ke-besok" class="btn btn-outline-custom">Copy dari Menu Hari Ini</button>
                 <button type="button" id="clear-besok" class="btn btn-outline-custom">Kosongkan Menu</button>
@@ -186,7 +193,7 @@
     <div class="modal-panel">
       <div class="modal-head">
         <div>
-          <span class="section-kicker">Form Master Menu</span>
+          <span class="section-kicker"><i class="bi bi-pencil-square"></i> Form Master Menu</span>
           <h3 id="menu-form-title">Tambah menu baru</h3>
         </div>
         <button type="button" class="modal-close" id="close-modal-button" aria-label="Tutup form">
@@ -209,9 +216,9 @@
         </div>
 
         <div>
-          <label for="menu-harga">Harga (Ribu Rupiah)</label>
+          <label for="menu-harga">Harga (Rupiah)</label>
           <input id="menu-harga" type="text" inputmode="numeric" class="form-control" placeholder="Contoh: 15000" required>
-          <p class="form-help">Masukkan angka dalam satuan ribu.</p>
+          <p class="form-help">Masukkan angka harga agar katalog publik menampilkan nominal dengan rapi.</p>
         </div>
 
         <div>
@@ -235,7 +242,7 @@
           <label for="menu-gambar-file">Upload Gambar Menu</label>
           <input id="menu-gambar-file" type="file" accept="image/*" class="form-control">
           <input id="menu-gambar-data" type="hidden">
-          <p class="form-help">Pilih gambar dari komputer lokal. Referensi gambar akan disimpan sebagai path <code>assets/img/nama-file</code>. Pastikan file asli juga Anda salin ke folder <code>assets/img</code> di project lokal.</p>
+          <p class="form-help">Pilih file dari komputer lokal. Referensi akan diarahkan ke folder <code>assets/img</code> agar katalog publik bisa menampilkan gambar secara konsisten.</p>
         </div>
 
         <div class="full image-preview-wrap">
@@ -260,6 +267,7 @@
       </form>
     </div>
   </div>
+
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/admin-core.js"></script>
   <script src="assets/js/admin-auth.js"></script>
