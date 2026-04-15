@@ -16,8 +16,13 @@
     <aside class="admin-sidebar premium-sidebar">
       <div class="admin-sidebar-inner">
         <div class="sidebar-brand">
-          <span class="section-kicker"><i class="bi bi-speedometer2"></i> Dashboard Operasional</span>
-          <h1>Rumah Makan Bu Jawa</h1>
+          <div class="sidebar-brand-mark">
+            <span class="sidebar-brand-icon"><i class="bi bi-shop-window"></i></span>
+            <div>
+              <span class="section-kicker"><i class="bi bi-speedometer2"></i> Dashboard Operasional</span>
+              <h1>Rumah Makan Bu Jawa</h1>
+            </div>
+          </div>
           <p>Kelola katalog menu, atur jadwal tayang, dan jaga tampilan publik tetap siap jual.</p>
         </div>
 
@@ -47,6 +52,15 @@
           <button type="button" id="logout-button" class="sidebar-button"><i class="bi bi-box-arrow-right"></i><span>Logout</span></button>
         </nav>
 
+        <div class="sidebar-utility-card">
+          <span class="section-kicker"><i class="bi bi-lightning-charge"></i> Navigasi Cepat</span>
+          <ul class="sidebar-utility-list">
+            <li><i class="bi bi-check2-circle"></i><span>Atur master menu dan jadwal dalam satu layar</span></li>
+            <li><i class="bi bi-image"></i><span>Upload gambar langsung ke <code>assets/img</code></span></li>
+            <li><i class="bi bi-cloud-arrow-up"></i><span>Simpan perubahan saat draft sudah siap dipublikasikan</span></li>
+          </ul>
+        </div>
+
         <div class="sidebar-tip">
           <strong>Flow simpan</strong>
           <p>Kelola menu di draft lokal dulu, lalu klik <code>Simpan</code> untuk memperbarui <code>data/menu.json</code> dan menjaga katalog publik tetap sinkron.</p>
@@ -56,43 +70,71 @@
 
     <main class="admin-main premium-main">
       <header class="dashboard-hero">
-        <div>
+        <div class="dashboard-hero-copy">
           <span class="section-kicker"><i class="bi bi-stars"></i> Panel Admin Rumah Makan Bu Jawa</span>
           <h2>Kelola katalog, foto, dan penjadwalan menu dari satu tempat</h2>
           <p>Dirancang lebih jelas agar pekerjaan operasional lebih cepat, lebih aman, dan lebih nyaman dipakai setiap hari.</p>
+          <div class="dashboard-hero-points">
+            <span><i class="bi bi-layout-text-window"></i> Struktur kerja lebih rapi</span>
+            <span><i class="bi bi-check2-square"></i> Aksi utama lebih mudah ditemukan</span>
+            <span><i class="bi bi-shield-check"></i> Tetap aman untuk workflow admin harian</span>
+          </div>
         </div>
         <div class="dashboard-hero-tools">
-          <button type="button" id="save-json-button" class="btn btn-primary-custom">Simpan</button>
-          <button type="button" id="sidebar-toggle-button" class="sidebar-toggle-button" aria-label="Sembunyikan atau tampilkan side menu" aria-expanded="true">
-            <i class="bi bi-layout-sidebar-inset"></i>
-            <span>Sembunyikan Menu</span>
-          </button>
-          <div class="date-chip">
+          <div class="hero-actions-card">
+            <div class="hero-actions-label">Aksi Utama</div>
+            <div class="hero-actions-row">
+              <button type="button" id="save-json-button" class="btn btn-primary-custom">
+                <i class="bi bi-floppy"></i>
+                <span>Simpan</span>
+              </button>
+              <button type="button" id="sidebar-toggle-button" class="sidebar-toggle-button" aria-label="Sembunyikan atau tampilkan side menu" aria-expanded="true">
+                <i class="bi bi-layout-sidebar-inset"></i>
+                <span>Sembunyikan Menu</span>
+              </button>
+            </div>
+          </div>
+          <div class="date-chip hero-date-chip">
             <i class="bi bi-calendar3"></i>
-            <span id="today-label">-</span>
+            <div>
+              <small>Tanggal aktif</small>
+              <span id="today-label">-</span>
+            </div>
           </div>
         </div>
       </header>
 
       <section class="admin-section" id="ringkasan">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker"><i class="bi bi-bar-chart-line"></i> Ringkasan</span>
+            <h3>Ikhtisar cepat kondisi katalog dan jadwal tayang</h3>
+          </div>
+          <p>Pantau jumlah menu, status tayang, dan item yang perlu perhatian tanpa harus membuka tiap bagian satu per satu.</p>
+        </div>
         <div class="summary-grid premium-summary">
           <div class="summary-card">
+            <span class="summary-icon"><i class="bi bi-journal-richtext"></i></span>
             <span>Total Master Menu</span>
             <strong id="summary-master">0</strong>
           </div>
           <div class="summary-card">
+            <span class="summary-icon"><i class="bi bi-sunrise"></i></span>
             <span>Total Menu Hari Ini</span>
             <strong id="summary-hari-ini">0</strong>
           </div>
           <div class="summary-card">
+            <span class="summary-icon"><i class="bi bi-moon-stars"></i></span>
             <span>Total Menu Besok</span>
             <strong id="summary-besok">0</strong>
           </div>
           <div class="summary-card">
+            <span class="summary-icon"><i class="bi bi-check2-circle"></i></span>
             <span>Total Menu Aktif</span>
             <strong id="summary-aktif">0</strong>
           </div>
           <div class="summary-card">
+            <span class="summary-icon"><i class="bi bi-exclamation-circle"></i></span>
             <span>Total Menu Habis</span>
             <strong id="summary-habis">0</strong>
           </div>
@@ -101,10 +143,11 @@
 
       <section class="admin-section" id="master-menu">
         <div class="panel-shell">
-          <div class="section-title-inline">
+          <div class="section-title-inline section-title-inline-hero">
             <div>
               <span class="section-kicker"><i class="bi bi-card-checklist"></i> Master Menu</span>
               <h3>Pusat data semua menu yang dapat ditayangkan ke halaman publik</h3>
+              <p class="section-supporting-text">Gunakan area ini untuk menambah, mengubah, memfilter, dan menyiapkan menu sebelum dijadwalkan ke halaman publik.</p>
             </div>
             <div class="header-actions">
               <button type="button" id="open-create-modal" class="btn btn-primary-custom">Tambah Menu Baru</button>
@@ -112,22 +155,35 @@
           </div>
 
           <div class="master-toolbar">
-            <div class="search-field">
-              <i class="bi bi-search"></i>
-              <input id="master-search" type="text" class="form-control" placeholder="Cari nama menu atau deskripsi...">
+            <div class="toolbar-field toolbar-search">
+              <label for="master-search">Cari menu</label>
+              <div class="search-field">
+                <i class="bi bi-search"></i>
+                <input id="master-search" type="text" class="form-control" placeholder="Cari nama menu atau deskripsi...">
+              </div>
             </div>
-            <select id="filter-kategori" class="form-select"></select>
-            <select id="filter-aktif" class="form-select">
-              <option value="">Semua status aktif</option>
-              <option value="aktif">Aktif</option>
-              <option value="nonaktif">Nonaktif</option>
-            </select>
-            <select id="filter-ketersediaan" class="form-select">
-              <option value="">Semua ketersediaan</option>
-              <option value="tersedia">Tersedia</option>
-              <option value="habis">Habis</option>
-            </select>
-            <div class="bulk-actions">
+            <div class="toolbar-field">
+              <label for="filter-kategori">Kategori</label>
+              <select id="filter-kategori" class="form-select"></select>
+            </div>
+            <div class="toolbar-field">
+              <label for="filter-aktif">Status aktif</label>
+              <select id="filter-aktif" class="form-select">
+                <option value="">Semua status aktif</option>
+                <option value="aktif">Aktif</option>
+                <option value="nonaktif">Nonaktif</option>
+              </select>
+            </div>
+            <div class="toolbar-field">
+              <label for="filter-ketersediaan">Ketersediaan</label>
+              <select id="filter-ketersediaan" class="form-select">
+                <option value="">Semua ketersediaan</option>
+                <option value="tersedia">Tersedia</option>
+                <option value="habis">Habis</option>
+              </select>
+            </div>
+            <div class="bulk-actions toolbar-actions">
+              <span class="toolbar-actions-label">Aksi untuk menu terpilih</span>
               <button type="button" id="bulk-add-hari-ini" class="btn btn-outline-custom">Tambahkan Terpilih ke Hari Ini</button>
               <button type="button" id="bulk-add-besok" class="btn btn-outline-custom">Tambahkan Terpilih ke Besok</button>
             </div>
@@ -138,6 +194,13 @@
       </section>
 
       <section class="admin-section" id="penjadwalan">
+        <div class="section-heading section-heading-inline">
+          <div>
+            <span class="section-kicker"><i class="bi bi-calendar-week"></i> Penjadwalan</span>
+            <h3>Kelola menu yang tampil hari ini dan persiapan besok</h3>
+          </div>
+          <p>Susun urutan, ubah status, dan kosongkan daftar bila ada penyesuaian operasional mendadak.</p>
+        </div>
         <div class="schedule-layout">
           <section class="schedule-board schedule-board-equal">
             <div class="schedule-board-head schedule-board-head-stacked">
@@ -205,59 +268,66 @@
         <input type="hidden" id="menu-id">
         <p id="menu-form-error" class="form-error is-hidden" aria-live="polite"></p>
 
-        <div class="full">
-          <label for="menu-nama">Nama Menu</label>
-          <input id="menu-nama" type="text" class="form-control" required>
+        <div class="form-card full">
+          <div class="form-card-grid form-card-grid-basic">
+            <div class="full">
+              <label for="menu-nama">Nama Menu</label>
+              <input id="menu-nama" type="text" class="form-control" placeholder="Contoh: Nasi Ayam Bakar" required>
+            </div>
+
+            <div>
+              <label for="menu-kategori">Kategori</label>
+              <select id="menu-kategori" class="form-select" required></select>
+            </div>
+
+            <div>
+              <label for="menu-harga">Harga (Rupiah)</label>
+              <input id="menu-harga" type="text" inputmode="numeric" class="form-control" placeholder="Contoh: 15000" required>
+              <p class="form-help">Masukkan angka harga agar katalog publik menampilkan nominal dengan rapi.</p>
+            </div>
+
+            <div>
+              <label for="menu-status">Status Ketersediaan Default</label>
+              <select id="menu-status" class="form-select">
+                <option value="tersedia">Tersedia</option>
+                <option value="habis">Habis</option>
+              </select>
+            </div>
+
+            <div class="full">
+              <label for="menu-quick-add">Setelah simpan, tambahkan ke</label>
+              <select id="menu-quick-add" class="form-select">
+                <option value="">Hanya simpan ke Master Menu</option>
+                <option value="hari_ini">Master Menu + Hari Ini</option>
+                <option value="besok">Master Menu + Besok</option>
+              </select>
+            </div>
+
+            <div class="full checkbox-row checkbox-row-card">
+              <input id="menu-aktif" type="checkbox" checked>
+              <label for="menu-aktif">Aktifkan menu ini agar bisa dipakai di menu harian</label>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label for="menu-kategori">Kategori</label>
-          <select id="menu-kategori" class="form-select" required></select>
+        <div class="form-card full">
+          <div class="form-media-layout">
+            <div class="form-media-fields">
+              <label for="menu-gambar-file">Upload Gambar Menu</label>
+              <input id="menu-gambar-file" type="file" accept="image/*" class="form-control">
+              <input id="menu-gambar-data" type="hidden">
+              <p class="form-help">Pilih file dari komputer lokal. Referensi akan diarahkan ke folder <code>assets/img</code> agar katalog publik bisa menampilkan gambar secara konsisten.</p>
+            </div>
+            <div class="image-preview-wrap">
+              <img id="menu-image-preview" src="" alt="Preview gambar menu" class="image-preview">
+              <p id="menu-image-note" class="form-help">Belum ada gambar dipilih.</p>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label for="menu-harga">Harga (Rupiah)</label>
-          <input id="menu-harga" type="text" inputmode="numeric" class="form-control" placeholder="Contoh: 15000" required>
-          <p class="form-help">Masukkan angka harga agar katalog publik menampilkan nominal dengan rapi.</p>
-        </div>
-
-        <div>
-          <label for="menu-status">Status Ketersediaan Default</label>
-          <select id="menu-status" class="form-select">
-            <option value="tersedia">Tersedia</option>
-            <option value="habis">Habis</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="menu-quick-add">Setelah simpan, tambahkan ke</label>
-          <select id="menu-quick-add" class="form-select">
-            <option value="">Hanya simpan ke Master Menu</option>
-            <option value="hari_ini">Master Menu + Hari Ini</option>
-            <option value="besok">Master Menu + Besok</option>
-          </select>
-        </div>
-
-        <div class="full">
-          <label for="menu-gambar-file">Upload Gambar Menu</label>
-          <input id="menu-gambar-file" type="file" accept="image/*" class="form-control">
-          <input id="menu-gambar-data" type="hidden">
-          <p class="form-help">Pilih file dari komputer lokal. Referensi akan diarahkan ke folder <code>assets/img</code> agar katalog publik bisa menampilkan gambar secara konsisten.</p>
-        </div>
-
-        <div class="full image-preview-wrap">
-          <img id="menu-image-preview" src="" alt="Preview gambar menu" class="image-preview">
-          <p id="menu-image-note" class="form-help">Belum ada gambar dipilih.</p>
-        </div>
-
-        <div class="full">
+        <div class="form-card full">
           <label for="menu-deskripsi">Deskripsi Singkat</label>
-          <textarea id="menu-deskripsi" class="form-control" rows="4"></textarea>
-        </div>
-
-        <div class="full checkbox-row">
-          <input id="menu-aktif" type="checkbox" checked>
-          <label for="menu-aktif">Aktifkan menu ini agar bisa dipakai di menu harian</label>
+          <textarea id="menu-deskripsi" class="form-control" rows="4" placeholder="Tambahkan deskripsi singkat agar menu mudah dikenali saat dikelola."></textarea>
         </div>
 
         <div class="full form-actions">

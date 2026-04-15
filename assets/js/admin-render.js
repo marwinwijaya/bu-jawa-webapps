@@ -104,7 +104,7 @@
     const inTomorrow = app.state.menu_besok.includes(menu.id);
     return `
       <article class="master-row ${selected ? "is-selected" : ""}">
-        <div class="master-row-menu">
+        <div class="master-row-menu row-cell" data-label="Menu">
           <label class="checkbox-chip compact-checkbox" aria-label="Pilih ${app.escapeHtml(menu.nama_menu)}">
             <input type="checkbox" data-master-select="${menu.id}" ${selected ? "checked" : ""}>
           </label>
@@ -114,17 +114,17 @@
             <p>${app.escapeHtml(app.truncate(menu.deskripsi || "Belum ada deskripsi menu.", 84))}</p>
           </div>
         </div>
-        <div class="master-row-price"><strong>${app.formatRupiah(menu.harga)}</strong></div>
-        <div class="master-row-status">
+        <div class="master-row-price row-cell" data-label="Harga"><strong>${app.formatRupiah(menu.harga)}</strong></div>
+        <div class="master-row-status row-cell" data-label="Status">
           <span class="soft-badge ${menu.aktif ? "is-success" : "is-neutral"}">${menu.aktif ? "Aktif" : "Nonaktif"}</span>
           <span class="soft-badge ${menu.status_ketersediaan === "habis" ? "is-danger" : "is-success"}">${menu.status_ketersediaan === "habis" ? "Habis" : "Tersedia"}</span>
         </div>
-        <div class="master-row-schedule">
+        <div class="master-row-schedule row-cell" data-label="Penjadwalan">
           ${inToday ? '<span class="soft-badge badge-outline-info">Hari Ini</span>' : ""}
           ${inTomorrow ? '<span class="soft-badge badge-outline-warning">Besok</span>' : ""}
           ${!inToday && !inTomorrow ? '<span class="soft-badge is-neutral">Belum dijadwalkan</span>' : ""}
         </div>
-        <div class="master-row-actions">
+        <div class="master-row-actions row-cell" data-label="Aksi">
           <button type="button" class="action-chip action-primary" data-master-action="add-today" data-id="${menu.id}">Hari Ini</button>
           <button type="button" class="action-chip action-warning" data-master-action="add-tomorrow" data-id="${menu.id}">Besok</button>
           <button type="button" class="action-chip" data-master-action="edit" data-id="${menu.id}">Edit</button>
@@ -146,7 +146,7 @@
 
     const fallbackBanner =
       targetName === "besok" && app.isFallbackActive()
-        ? `<div class="fallback-banner"><i class="bi bi-info-circle"></i> Menu Besok belum diisi — akan menggunakan Menu Hari Ini sebagai fallback.</div>`
+        ? `<div class="fallback-banner"><i class="bi bi-info-circle"></i> Menu Besok belum diisi dan akan menggunakan Menu Hari Ini sebagai fallback.</div>`
         : "";
 
     if (!items.length) {
@@ -171,22 +171,22 @@
   app.renderScheduleRow = function renderScheduleRow(menu, targetName, index, length) {
     return `
       <article class="schedule-row">
-        <div class="schedule-row-menu">
+        <div class="schedule-row-menu row-cell" data-label="Menu">
           ${app.renderThumb(menu.gambar, "schedule-row-thumb", menu.gambar_preview, menu.image_version)}
           <div class="schedule-row-copy">
             <h4>${app.escapeHtml(menu.nama_menu)}</h4>
             <p>${app.escapeHtml(menu.kategori)} | ${app.formatRupiah(menu.harga)}</p>
           </div>
         </div>
-        <div class="schedule-row-status">
+        <div class="schedule-row-status row-cell" data-label="Status">
           <span class="soft-badge ${menu.aktif ? "is-success" : "is-neutral"}">${menu.aktif ? "Aktif" : "Nonaktif"}</span>
           <span class="soft-badge ${menu.status_ketersediaan === "habis" ? "is-danger" : "is-success"}">${menu.status_ketersediaan === "habis" ? "Habis" : "Tersedia"}</span>
         </div>
-        <div class="schedule-row-order">
+        <div class="schedule-row-order row-cell" data-label="Urutan">
           <button type="button" class="action-chip action-order" data-schedule-action="move-up" data-target="${targetName}" data-id="${menu.id}" ${index === 0 ? "disabled" : ""}>Naik</button>
           <button type="button" class="action-chip action-order" data-schedule-action="move-down" data-target="${targetName}" data-id="${menu.id}" ${index === length - 1 ? "disabled" : ""}>Turun</button>
         </div>
-        <div class="schedule-row-actions">
+        <div class="schedule-row-actions row-cell" data-label="Aksi">
           <button type="button" class="action-chip" data-schedule-action="toggle-availability" data-target="${targetName}" data-id="${menu.id}">${menu.status_ketersediaan === "habis" ? "Tandai Tersedia" : "Tandai Habis"}</button>
           <button type="button" class="action-chip" data-schedule-action="toggle-active" data-target="${targetName}" data-id="${menu.id}">${menu.aktif ? "Nonaktifkan" : "Aktifkan"}</button>
           <button type="button" class="action-chip action-danger" data-schedule-action="remove" data-target="${targetName}" data-id="${menu.id}">Hapus</button>
@@ -198,16 +198,16 @@
   app.renderScheduleSpacer = function renderScheduleSpacer() {
     return `
       <article class="schedule-row schedule-row-spacer" aria-hidden="true">
-        <div class="schedule-row-menu">
+        <div class="schedule-row-menu row-cell" data-label="Menu">
           <span class="schedule-row-thumb thumb-placeholder">-</span>
           <div class="schedule-row-copy">
             <h4>Slot kosong</h4>
             <p>Baris ini hanya untuk menjaga kerapihan layout.</p>
           </div>
         </div>
-        <div class="schedule-row-status"></div>
-        <div class="schedule-row-order"></div>
-        <div class="schedule-row-actions"></div>
+        <div class="schedule-row-status row-cell" data-label="Status"></div>
+        <div class="schedule-row-order row-cell" data-label="Urutan"></div>
+        <div class="schedule-row-actions row-cell" data-label="Aksi"></div>
       </article>
     `;
   };
