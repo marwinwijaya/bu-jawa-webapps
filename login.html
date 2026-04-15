@@ -13,58 +13,38 @@
 </head>
 <body class="login-body">
   <main class="login-page-shell">
-    <section class="login-surface">
-      <div class="login-showcase">
-        <span class="section-kicker"><i class="bi bi-shield-lock"></i> Dashboard Admin</span>
-        <h1>Kelola tampilan jualan Bu Jawa dari satu panel yang lebih rapi</h1>
-        <p>Masuk untuk memperbarui master menu, mengatur menu hari ini, menyiapkan menu besok, dan menjaga katalog publik tetap siap jual setiap saat.</p>
-
-        <div class="login-feature-list">
-          <div class="login-feature-item">
-            <i class="bi bi-journal-check"></i>
-            <div>
-              <strong>Kelola Master Menu</strong>
-              <p>Tambah, edit, dan rapikan menu tanpa mengubah file JSON secara manual.</p>
-            </div>
-          </div>
-          <div class="login-feature-item">
-            <i class="bi bi-calendar2-week"></i>
-            <div>
-              <strong>Atur Menu Harian</strong>
-              <p>Pindahkan menu ke Hari Ini atau Besok dari dashboard operasional yang lebih jelas.</p>
-            </div>
-          </div>
-          <div class="login-feature-item">
-            <i class="bi bi-card-image"></i>
-            <div>
-              <strong>Upload Foto Menu</strong>
-              <p>Preview gambar, simpan referensi asset, dan jaga tampilan katalog tetap menarik.</p>
-            </div>
+    <section class="login-surface" aria-labelledby="login-title">
+      <section class="auth-card login-card login-card-premium">
+        <div class="login-brand">
+          <span class="login-brand-mark" aria-hidden="true">
+            <i class="bi bi-shop"></i>
+          </span>
+          <div class="login-brand-copy">
+            <p class="login-brand-name">Rumah Makan Bu Jawa</p>
+            <p class="login-brand-subtitle">Dashboard Admin</p>
           </div>
         </div>
-      </div>
 
-      <section class="auth-card login-card login-card-premium">
         <div class="login-card-head">
-          <span class="section-kicker"><i class="bi bi-key"></i> Akses Dashboard</span>
-          <h2>Login Admin</h2>
-          <p>Gunakan akun admin untuk masuk ke dashboard operasional Rumah Makan Bu Jawa.</p>
+          <span class="section-kicker"><i class="bi bi-shield-lock"></i> Akses Aman</span>
+          <h1 id="login-title">Login Admin</h1>
+          <p>Masuk untuk mengelola katalog, menu harian, dan operasional dashboard.</p>
         </div>
 
         <form id="login-form" class="auth-form" novalidate>
           <div class="login-field">
             <label for="login-username">Username</label>
-            <input id="login-username" type="text" class="form-control" autocomplete="username" required>
+            <input id="login-username" type="text" class="form-control" autocomplete="username" placeholder="Masukkan username" required>
           </div>
 
           <div class="login-field">
             <label for="login-password">Password</label>
-            <input id="login-password" type="password" class="form-control" autocomplete="current-password" required>
+            <input id="login-password" type="password" class="form-control" autocomplete="current-password" placeholder="Masukkan password" required>
           </div>
 
           <p id="login-error" class="login-error" aria-live="polite"></p>
 
-          <button type="submit" class="btn btn-primary-custom w-100">Masuk ke Dashboard</button>
+          <button type="submit" class="btn btn-primary-custom login-submit w-100">Masuk ke Dashboard</button>
         </form>
 
         <div class="login-card-footer">

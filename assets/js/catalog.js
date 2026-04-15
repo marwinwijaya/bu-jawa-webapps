@@ -34,8 +34,8 @@
       grid.innerHTML =
         '<div class="col-12"><div class="catalog-state-box">' +
         '<i class="bi bi-search"></i>' +
-        "<p>Tidak ada menu yang sesuai</p>" +
-        "<span>Coba kata kunci lain atau pilih kategori berbeda.</span>" +
+        "<p>Belum ketemu menu yang kamu cari</p>" +
+        "<span>Coba ganti kata kunci atau pilih kategori lain.</span>" +
         "</div></div>";
       return;
     }
@@ -47,7 +47,7 @@
       const badgeText = !isAktif ? "Nonaktif" : (isHabis ? "Habis" : "Tersedia");
       const buttonDisabled = (!isAktif || isHabis) ? " disabled" : "";
       const imageSrc = normalizeImagePath(item.gambar || FALLBACK_IMAGE);
-      const description = item.deskripsi || "Menu rumahan khas Jawa yang siap menemani makan Anda.";
+      const description = item.deskripsi || "Masakan rumahan yang siap bikin waktu makan terasa lebih nikmat.";
 
       return (
         '<div class="col-12 col-sm-6 col-xl-4">' +
@@ -63,7 +63,7 @@
               '<div class="menu-card-footer">' +
                 '<span class="menu-card-harga">' + formatRupiah(item.harga) + "</span>" +
                 '<button type="button" class="btn-tambah-keranjang" data-id="' + item.id + '"' + buttonDisabled + ">" +
-                  '<i class="bi bi-cart-plus"></i> Tambah' +
+                  '<i class="bi bi-cart-plus"></i> Pilih' +
                 "</button>" +
               "</div>" +
             "</div>" +
@@ -132,8 +132,8 @@
             grid.innerHTML =
               '<div class="col-12"><div class="catalog-state-box">' +
               '<i class="bi bi-journal-x"></i>' +
-              "<p>Menu belum tersedia saat ini</p>" +
-              "<span>Silakan kembali lagi nanti.</span>" +
+              "<p>Menu belum siap ditampilkan</p>" +
+              "<span>Coba cek lagi sebentar lagi, ya.</span>" +
               "</div></div>";
           }
           return;
@@ -147,8 +147,8 @@
           grid.innerHTML =
             '<div class="col-12"><div class="catalog-state-box is-error">' +
             '<i class="bi bi-exclamation-triangle"></i>' +
-            "<p>Gagal memuat data menu</p>" +
-            "<span>Pastikan file data/menu.json tersedia, lalu muat ulang halaman.</span>" +
+            "<p>Menu belum berhasil dimuat</p>" +
+            "<span>Coba muat ulang halaman dan pastikan data menu tersedia.</span>" +
             "</div></div>";
         }
       });
@@ -198,8 +198,8 @@
       listEl.innerHTML =
         '<div class="cart-empty-state">' +
         '<i class="bi bi-cart-x"></i>' +
-        "<p>Keranjang masih kosong</p>" +
-        "<span>Tambahkan menu yang ingin dipesan.</span>" +
+        "<p>Belum ada menu di keranjang</p>" +
+        "<span>Pilih menu favoritmu dulu, lalu lanjut pesan.</span>" +
         "</div>";
       return;
     }
@@ -267,7 +267,7 @@
     if (!button) return;
     button.addEventListener("click", function () {
       if (cart.length === 0) {
-        window.alert("Keranjang masih kosong. Tambahkan menu terlebih dahulu.");
+        window.alert("Keranjang masih kosong. Pilih menu dulu, lalu lanjut pesan.");
         return;
       }
       const message = buildOrderMessage();
