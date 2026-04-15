@@ -1481,8 +1481,11 @@ p {
 }
 
 .admin-sidebar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  bottom: 0;
+  width: 320px;
   height: 100vh;
   padding: 22px;
   background:
@@ -1491,6 +1494,9 @@ p {
   color: rgba(255, 249, 243, 0.92);
   border-right: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 18px 0 40px rgba(30, 18, 11, 0.1);
+  overflow: hidden;
+  z-index: 1050;
+  transition: width 0.24s ease, transform 0.26s ease, box-shadow 0.26s ease;
 }
 
 .admin-sidebar-inner {
@@ -1498,6 +1504,9 @@ p {
   flex-direction: column;
   gap: 18px;
   height: 100%;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
 }
 
 .sidebar-brand {
@@ -1630,6 +1639,7 @@ p {
 
 .admin-main {
   padding: 30px;
+  min-width: 0;
 }
 
 .dashboard-hero {
@@ -1756,6 +1766,53 @@ p {
   font-size: 0.76rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 18, 13, 0.45);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s ease;
+  z-index: 1035;
+}
+
+.sidebar-rail-toggle,
+.sidebar-fab-button {
+  position: fixed;
+  border: none;
+  color: #fff;
+  background: linear-gradient(135deg, #3c2b22 0%, #5c4335 100%);
+  box-shadow: 0 18px 38px rgba(33, 21, 15, 0.22);
+  z-index: 1060;
+  transition: transform 0.22s ease, opacity 0.22s ease, background-color 0.22s ease;
+}
+
+.sidebar-rail-toggle:hover,
+.sidebar-fab-button:hover {
+  transform: translateY(-2px);
+}
+
+.sidebar-rail-toggle {
+  top: 50%;
+  left: 296px;
+  width: 44px;
+  height: 88px;
+  border-radius: 0 18px 18px 0;
+  display: inline-grid;
+  place-items: center;
+}
+
+.sidebar-fab-button {
+  right: 18px;
+  bottom: 18px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 999px;
 }
 
 .admin-section {
@@ -2241,6 +2298,10 @@ textarea.form-control {
   overflow: hidden;
 }
 
+body.sidebar-mobile-open {
+  overflow: hidden;
+}
+
 .is-hidden {
   display: none !important;
 }
@@ -2250,6 +2311,7 @@ body.sidebar-collapsed .admin-shell {
 }
 
 body.sidebar-collapsed .admin-sidebar {
+  width: 108px;
   padding-inline: 14px;
 }
 
@@ -2264,6 +2326,10 @@ body.sidebar-collapsed .sidebar-button span {
 
 body.sidebar-collapsed .sidebar-brand h1 {
   font-size: 1.1rem;
+}
+
+body.sidebar-collapsed .sidebar-rail-toggle {
+  left: 84px;
 }
 
 @media (max-width: 1199.98px) {
@@ -2368,8 +2434,31 @@ body.sidebar-collapsed .sidebar-brand h1 {
   }
 
   .admin-sidebar {
-    position: relative;
-    height: auto;
+    width: min(86vw, 360px);
+    transform: translateX(calc(-100% - 20px));
+    box-shadow: 18px 0 40px rgba(30, 18, 11, 0.18);
+  }
+
+  .sidebar-rail-toggle {
+    display: none;
+  }
+
+  .sidebar-fab-button {
+    display: inline-flex;
+  }
+
+  body.sidebar-mobile-open .admin-sidebar {
+    transform: translateX(0);
+  }
+
+  body.sidebar-mobile-open .sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.sidebar-fab-hidden .sidebar-fab-button {
+    transform: translateY(110px);
+    opacity: 0;
   }
 
   .form-card-grid-basic,
@@ -2453,6 +2542,11 @@ body.sidebar-collapsed .sidebar-brand h1 {
   .hero-actions-row .btn,
   .hero-actions-row .sidebar-toggle-button {
     width: 100%;
+  }
+
+  .sidebar-fab-button {
+    right: 16px;
+    bottom: 16px;
   }
 
   .hero-actions-row {

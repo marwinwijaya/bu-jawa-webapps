@@ -54,6 +54,8 @@
       if (!app.requireLogin()) return;
       app.applySidebarState();
       await app.initDashboard();
+      app.syncSidebarForViewport();
+      app.handleAdminScroll();
       return;
     }
   });

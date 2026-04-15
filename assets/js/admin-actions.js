@@ -16,6 +16,11 @@
     document.querySelector("#close-modal-button")?.addEventListener("click", app.closeModal);
     document.querySelectorAll("[data-close-modal='true']").forEach((node) => node.addEventListener("click", app.closeModal));
     document.addEventListener("keydown", app.onEscape);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && app.isMobileViewport() && app.isMobileSidebarOpen()) {
+        app.closeMobileSidebar();
+      }
+    });
 
     document.querySelector("#menu-form")?.addEventListener("submit", app.onSubmitForm);
     document.querySelector("#reset-form-button")?.addEventListener("click", app.resetForm);
@@ -29,6 +34,17 @@
     document.querySelector("#copy-hari-ini-ke-besok")?.addEventListener("click", app.copyTodayToTomorrow);
     document.querySelector("#save-json-button")?.addEventListener("click", app.saveMainJson);
     document.querySelector("#sidebar-toggle-button")?.addEventListener("click", app.toggleSidebar);
+    document.querySelector("#sidebar-rail-toggle")?.addEventListener("click", app.toggleSidebar);
+    document.querySelector("#sidebar-fab-button")?.addEventListener("click", app.toggleSidebar);
+    document.querySelector("#sidebar-backdrop")?.addEventListener("click", app.closeMobileSidebar);
+    window.addEventListener("resize", app.syncSidebarForViewport);
+    window.addEventListener("scroll", app.handleAdminScroll, { passive: true });
+
+    document.querySelectorAll(".admin-nav a, .nav-sub-item").forEach((link) => {
+      link.addEventListener("click", () => {
+        if (app.isMobileViewport()) app.closeMobileSidebar();
+      });
+    });
 
     document.addEventListener("click", (event) => {
       if (event.target instanceof HTMLElement && event.target.id === "empty-add-button") {

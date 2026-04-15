@@ -13,7 +13,7 @@
 </head>
 <body class="admin-body">
   <div class="admin-shell admin-premium" id="admin-shell">
-    <aside class="admin-sidebar premium-sidebar">
+    <aside class="admin-sidebar premium-sidebar" id="admin-sidebar">
       <div class="admin-sidebar-inner">
         <div class="sidebar-brand">
           <div class="sidebar-brand-mark">
@@ -250,6 +250,15 @@
       </section>
     </main>
   </div>
+
+  <div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
+  <button type="button" id="sidebar-rail-toggle" class="sidebar-rail-toggle" aria-label="Sembunyikan atau tampilkan side menu" aria-expanded="true">
+    <i class="bi bi-layout-sidebar-inset"></i>
+  </button>
+  <button type="button" id="sidebar-fab-button" class="sidebar-fab-button" aria-label="Tampilkan atau sembunyikan side menu" aria-expanded="false">
+    <i class="bi bi-list"></i>
+    <span>Menu Admin</span>
+  </button>
 
   <div class="modal-shell is-hidden" id="menu-modal-shell" aria-hidden="true">
     <div class="modal-backdrop" data-close-modal="true"></div>

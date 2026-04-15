@@ -7,6 +7,7 @@
   app.PUBLIC_PREVIEW_KEY = "rm_bu_jawa_public_preview_v1";
   app.SESSION_KEY = "rm_bu_jawa_admin_session";
   app.SIDEBAR_KEY = "rm_bu_jawa_admin_sidebar_collapsed";
+  app.SIDEBAR_MOBILE_KEY = "rm_bu_jawa_admin_sidebar_mobile_open";
   app.LOGIN_USERNAME = "admin";
   app.LOGIN_PASSWORD = "rmbujawa2026";
   app.CATEGORIES = ["Menu Utama", "Menu Sayur", "Minuman", "Snack"];
@@ -37,6 +38,7 @@
 
   app.initialized = false;
   app.selectedIds = new Set();
+  app.lastScrollY = 0;
   app.pendingImageFile = null;
   app.pendingImagePreviewUrl = "";
   app.pendingImageDataUrl = "";
@@ -122,20 +124,106 @@
     return localStorage.getItem(app.SIDEBAR_KEY) === "true";
   };
 
-  app.applySidebarState = function applySidebarState() {
+  app.isMobileSidebarOpen = function isMobileSidebarOpen() {
+    return localStorage.getItem(app.SIDEBAR_MOBILE_KEY) === "true";
+  };
+
+  app.isMobileViewport = function isMobileViewport() {
+    return window.matchMedia("(max-width: 991.98px)").matches;
+  };
+
+  app.setMobileSidebarState = function setMobileSidebarState(open) {
+    localStorage.setItem(app.SIDEBAR_MOBILE_KEY, open ? "true" : "false");
+  };
+
+  app.updateSidebarButtons = function updateSidebarButtons() {
     const collapsed = app.isSidebarCollapsed();
-    document.body.classList.toggle("sidebar-collapsed", collapsed);
-    const button = document.querySelector("#sidebar-toggle-button");
-    if (button) {
-      button.setAttribute("aria-expanded", collapsed ? "false" : "true");
-      const label = button.querySelector("span");
-      if (label) label.textContent = collapsed ? "Tampilkan Menu" : "Sembunyikan Menu";
+    const mobileOpen = app.isMobileSidebarOpen();
+    const isMobile = app.isMobileViewport();
+
+    const mainButton = document.querySelector("#sidebar-toggle-button");
+    const railButton = document.querySelector("#sidebar-rail-toggle");
+    const fabButton = document.querySelector("#sidebar-fab-button");
+
+    if (mainButton) {
+      mainButton.setAttribute("aria-expanded", isMobile ? String(mobileOpen) : String(!collapsed));
+      const label = mainButton.querySelector("span");
+      if (label) label.textContent = isMobile ? (mobileOpen ? "Tutup Menu" : "Tampilkan Menu") : (collapsed ? "Tampilkan Menu" : "Sembunyikan Menu");
+      const icon = mainButton.querySelector("i");
+      if (icon) icon.className = isMobile ? `bi ${mobileOpen ? "bi-x-lg" : "bi-layout-sidebar-inset"}` : `bi ${collapsed ? "bi-layout-sidebar-inset" : "bi-layout-sidebar"}`;
+    }
+
+    if (railButton) {
+      railButton.setAttribute("aria-expanded", isMobile ? String(mobileOpen) : String(!collapsed));
+      railButton.setAttribute("aria-label", isMobile ? (mobileOpen ? "Tutup side menu" : "Tampilkan side menu") : (collapsed ? "Tampilkan side menu" : "Sembunyikan side menu"));
+      const railIcon = railButton.querySelector("i");
+      if (railIcon) railIcon.className = `bi ${isMobile ? (mobileOpen ? "bi-x-lg" : "bi-list") : (collapsed ? "bi-chevron-right" : "bi-chevron-left")}`;
+    }
+
+    if (fabButton) {
+      fabButton.setAttribute("aria-expanded", String(mobileOpen));
+      const fabLabel = fabButton.querySelector("span");
+      if (fabLabel) fabLabel.textContent = mobileOpen ? "Tutup Menu" : "Menu Admin";
+      const fabIcon = fabButton.querySelector("i");
+      if (fabIcon) fabIcon.className = `bi ${mobileOpen ? "bi-x-lg" : "bi-list"}`;
     }
   };
 
+  app.applySidebarState = function applySidebarState() {
+    const collapsed = app.isSidebarCollapsed();
+    const mobileOpen = app.isMobileSidebarOpen();
+    const isMobile = app.isMobileViewport();
+    const backdrop = document.querySelector("#sidebar-backdrop");
+
+    document.body.classList.toggle("sidebar-collapsed", !isMobile && collapsed);
+    document.body.classList.toggle("sidebar-mobile-open", isMobile && mobileOpen);
+    if (backdrop) {
+      backdrop.hidden = !(isMobile && mobileOpen);
+    }
+    app.updateSidebarButtons();
+  };
+
   app.toggleSidebar = function toggleSidebar() {
+    if (app.isMobileViewport()) {
+      app.setMobileSidebarState(!app.isMobileSidebarOpen());
+      app.applySidebarState();
+      return;
+    }
     localStorage.setItem(app.SIDEBAR_KEY, app.isSidebarCollapsed() ? "false" : "true");
     app.applySidebarState();
+  };
+
+  app.closeMobileSidebar = function closeMobileSidebar() {
+    app.setMobileSidebarState(false);
+    app.applySidebarState();
+  };
+
+  app.openMobileSidebar = function openMobileSidebar() {
+    app.setMobileSidebarState(true);
+    app.applySidebarState();
+  };
+
+  app.syncSidebarForViewport = function syncSidebarForViewport() {
+    if (!app.isMobileViewport()) {
+      app.setMobileSidebarState(false);
+      document.body.classList.remove("sidebar-fab-hidden");
+    }
+    app.applySidebarState();
+  };
+
+  app.handleAdminScroll = function handleAdminScroll() {
+    if (!app.isMobileViewport()) {
+      document.body.classList.remove("sidebar-fab-hidden");
+      app.lastScrollY = window.scrollY;
+      return;
+    }
+
+    const currentScroll = window.scrollY;
+    const goingDown = currentScroll > app.lastScrollY;
+    const farEnough = currentScroll > 120;
+
+    document.body.classList.toggle("sidebar-fab-hidden", goingDown && farEnough && !app.isMobileSidebarOpen());
+    app.lastScrollY = currentScroll;
   };
 
   app.findMaster = function findMaster(id) {
