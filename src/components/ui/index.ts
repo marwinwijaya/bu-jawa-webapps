@@ -5,3 +5,5 @@ export { default as LoadingSkeleton } from './LoadingSkeleton';
 export { default as EmptyState } from './EmptyState';
 export { default as ErrorState } from './ErrorState';
 export { default as Badge } from './Badge';
+export { default as WhatsAppButton } from './WhatsAppButton';
+export { default as FloatingWhatsApp } from './FloatingWhatsApp';
