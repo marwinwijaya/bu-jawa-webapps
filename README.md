@@ -1,115 +1,182 @@
-# Rumah Makan Bu Jawa
+# Rumah Makan Bu Jawa - Web App
 
-Website statis untuk menampilkan menu harian Rumah Makan Bu Jawa, dilengkapi dengan panel admin lokal untuk mengelola data menu dan mempublikasikannya ke GitHub Pages.
+Website modern untuk Rumah Makan Bu Jawa menggunakan React, Vite, TypeScript, Tailwind CSS, dan Firebase.
 
----
+## Tech Stack
 
-## Fitur Utama
+- **Frontend**: React 19 + TypeScript
+- **Build Tool**: Vite 8
+- **Styling**: Tailwind CSS 4
+- **Routing**: React Router (HashRouter for GitHub Pages)
+- **Database**: Firebase Firestore
+- **Deployment**: GitHub Pages
 
-**Halaman Publik**
-- Menampilkan menu hari ini dan preview menu besok secara real-time dari `data/menu.json`
-- Setiap item menu menampilkan foto, nama, kategori, harga, dan status ketersediaan
-- Tampilan responsif berbasis Bootstrap 5, dapat diakses dari perangkat apa pun
+## Getting Started
 
-**Panel Admin**
-- Login berbasis sesi dengan proteksi halaman dashboard
-- Manajemen master menu: tambah, edit, hapus, aktifkan, dan atur ketersediaan menu
-- Penjadwalan menu harian: susun daftar Menu Hari Ini dan Menu Besok secara terpisah
-- Bulk action: pilih beberapa menu sekaligus dan tambahkan ke jadwal
-- Salin Menu Hari Ini ke Menu Besok dengan satu klik
-- Upload gambar menu langsung dari browser; file disimpan ke folder `assets/img`
-- Draft admin tersimpan otomatis di `localStorage` sehingga tidak hilang saat halaman di-refresh
-- Tombol Simpan menulis perubahan langsung ke `data/menu.json` menggunakan File System Access API
+### Prerequisites
 
----
+- Node.js >= 18
+- npm >= 9
+- Firebase project (for database)
 
-## Instalasi dan Menjalankan Proyek
+### Installation
 
-Proyek ini tidak memerlukan instalasi dependensi atau proses build.
-
-**Menjalankan secara lokal**
-
-Buka file `index.html` langsung di browser Chrome atau Edge. Untuk menghindari batasan CORS saat memuat `data/menu.json` via `fetch`, disarankan menggunakan static file server:
-
+1. Clone the repository:
 ```bash
-npx serve .
+git clone https://github.com/your-username/bu-jawa-webapps.git
+cd bu-jawa-webapps
 ```
 
-Kemudian buka `http://localhost:3000` di browser.
-
-**Mengakses panel admin**
-
-1. Buka `login.html`
-2. Masuk dengan kredensial admin
-3. Kelola master menu dan susun jadwal harian
-4. Klik **Simpan** — pada pertama kali, browser akan meminta Anda memilih file `data/menu.json`
-5. Commit dan push perubahan ke GitHub menggunakan GitHub Desktop
-
-> Panel admin memerlukan browser yang mendukung File System Access API (Chrome atau Edge versi terbaru).
-
-**Deploy ke GitHub Pages**
-
-Push repository ke GitHub dan aktifkan GitHub Pages dengan source branch yang sesuai. Halaman utama menggunakan `index.html` sebagai entry point.
-
----
-
-## Struktur Folder
-
-```
-/
-├── index.html              # Halaman publik
-├── login.html              # Halaman login admin
-├── admin.html              # Dashboard admin
-├── data/
-│   └── menu.json           # Sumber data menu untuk halaman publik
-├── assets/
-│   ├── css/
-│   │   └── style.css       # Seluruh styling (publik dan admin)
-│   ├── js/
-│   │   ├── site.js         # Logika halaman publik
-│   │   ├── admin-core.js   # State global, utilitas, File System API
-│   │   ├── admin-auth.js   # Login, logout, pengecekan sesi
-│   │   ├── admin-render.js # Fungsi render DOM (master list, jadwal, ringkasan)
-│   │   ├── admin-actions.js# Event handler dan mutasi data
-│   │   └── admin-main.js   # Entry point inisialisasi admin
-│   ├── img/                # Gambar menu dan aset statis
-│   └── vendor/             # Bootstrap 5 dan Bootstrap Icons (lokal)
-└── forms/                  # Stub form PHP (tidak digunakan)
+2. Install dependencies:
+```bash
+npm install
 ```
 
----
+3. Copy environment variables:
+```bash
+cp .env.example .env
+```
 
-## Teknologi yang Digunakan
+4. Update `.env` with your Firebase credentials:
+   - Go to [Firebase Console](https://console.firebase.google.com/)
+   - Create a new project or use existing one
+   - Go to Project Settings > General > Your apps
+   - Copy the config values to your `.env` file
 
-| Teknologi | Keterangan |
-|---|---|
-| HTML5 | Struktur halaman |
-| CSS3 | Styling kustom di `assets/css/style.css` |
-| JavaScript (ES6+) | Vanilla JS tanpa framework atau bundler |
-| Bootstrap 5 | Layout, grid, dan komponen UI |
-| Bootstrap Icons | Library ikon |
-| Google Fonts | Nunito Sans dan DM Serif Display |
-| File System Access API | Menulis `menu.json` dan menyimpan gambar dari browser |
-| IndexedDB | Menyimpan file handle agar izin browser tidak perlu diminta ulang |
-| localStorage | Auto-save draft admin dan preview publik |
-| sessionStorage | Sesi login admin |
-| GitHub Pages | Platform hosting statis |
+5. Start development server:
+```bash
+npm run dev
+```
 
----
+## Environment Variables
 
-## Format Data Menu
+| Variable | Description |
+|----------|-------------|
+| `VITE_FIREBASE_API_KEY` | Firebase API Key |
+| `VITE_FIREBASE_AUTH_DOMAIN` | Firebase Auth Domain |
+| `VITE_FIREBASE_PROJECT_ID` | Firebase Project ID |
+| `VITE_FIREBASE_STORAGE_BUCKET` | Firebase Storage Bucket |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Firebase Messaging Sender ID |
+| `VITE_FIREBASE_APP_ID` | Firebase App ID |
+| `VITE_RESTAURANT_WHATSAPP` | WhatsApp number (with country code) |
+| `VITE_ADMIN_EMAILS` | Comma-separated admin emails |
 
-File `data/menu.json` memiliki struktur berikut:
+## Firebase Setup
 
-```json
-{
-  "metadata": { "nama_usaha", "telepon", "jam_buka", "maps", "generated_at" },
-  "master_menu": [ /* daftar lengkap semua item menu */ ],
-  "menu_hari_ini": [ /* snapshot menu yang tampil hari ini */ ],
-  "menu_besok": [ /* snapshot menu yang tampil besok */ ]
+1. Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com/)
+2. Enable Firestore Database
+3. Set Firestore security rules (see below)
+4. Run the seed script to populate initial data:
+```bash
+npm run seed
+```
+
+### Firestore Security Rules
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Public read access for menu and gallery
+    match /menu_categories/{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.email in ['admin@example.com'];
+    }
+    
+    match /menu_items/{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.email in ['admin@example.com'];
+    }
+    
+    match /gallery/{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.email in ['admin@example.com'];
+    }
+  }
 }
 ```
 
-Setiap item menu memiliki field: `id`, `nama_menu`, `kategori`, `deskripsi`, `harga`, `gambar`, `aktif`, `status_ketersediaan`.
+## Deployment to GitHub Pages
 
-Kategori yang tersedia: `Menu Utama`, `Menu Sayur`, `Minuman`, `Snack`.
+1. Build the project:
+```bash
+npm run build
+```
+
+2. Deploy to GitHub Pages:
+   - Go to repository Settings > Pages
+   - Source: Deploy from a branch
+   - Branch: `main` / `gh-pages` (or use GitHub Actions)
+   - Folder: `/ (root)` or `/docs`
+
+3. For automatic deployment, create `.github/workflows/deploy.yml`:
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+## Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run seed` | Seed Firestore with initial data |
+| `npm run test` | Run tests |
+| `npm run lint` | Run linter |
+
+## Project Structure
+
+```
+bu-jawa-webapps/
+├── public/              # Static assets
+├── src/
+│   ├── data/           # Seed data and constants
+│   │   └── seed.ts     # Firestore seed script
+│   ├── App.tsx         # Main app component with HashRouter
+│   ├── main.tsx        # Entry point
+│   └── index.css       # Tailwind directives and custom theme
+├── .env.example        # Environment variables template
+├── package.json        # Dependencies and scripts
+├── vite.config.ts      # Vite configuration
+├── tsconfig.json       # TypeScript configuration
+└── README.md           # This file
+```
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file
