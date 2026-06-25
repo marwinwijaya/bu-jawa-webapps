@@ -21,6 +21,11 @@ export default {
           light: '#32CD32',
           dark: '#006400',
         },
+        'red-bata': {
+          DEFAULT: '#C1440E',
+          light: '#E8621A',
+          dark: '#8B3008',
+        },
       },
     },
   },
