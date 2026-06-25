@@ -110,7 +110,7 @@ export default function MenuDetailPage() {
       <div className="container mx-auto px-4 max-w-4xl">
         <BackButton />
 
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        <div className={`bg-white rounded-xl shadow-md overflow-hidden ${!item.isAvailable ? 'opacity-75' : ''}`}>
           {/* Hero Image */}
           <div className="relative h-64 sm:h-80 md:h-96 bg-gray-200">
             {item.imageUrl ? (
