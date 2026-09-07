@@ -11,92 +11,122 @@
     {
       "order": 1,
       "file": "execution-plan-phase-1.md",
-      "status": "WAITING",
+      "status": "REVIEW",
       "tasks": [
         {
           "id": "T1",
           "name": "Project Scaffold + Config + Seed + README",
-          "status": "WAITING"
+          "status": "DONE",
+          "done_sha": "0aea212d749664a1280424c99b28c192fe67424c"
         },
         {
           "id": "T2",
           "name": "Types + Firebase Config + Services",
-          "status": "WAITING",
-          "depends": "T1"
+          "status": "DONE",
+          "depends": "T1",
+          "done_sha": "0acf8ffbcc8f346aea86c23ae49f76952667a80d"
         },
         {
           "id": "T3",
           "name": "UI Components",
-          "status": "WAITING",
-          "depends": "T1"
+          "status": "DONE",
+          "depends": "T1",
+          "done_sha": "d72e6f6a2f5e6d7ed8c87425dc8233621074ed4d"
+        }
+      ],
+      "corrections": [
+        {
+          "sha": "c33a67d",
+          "files": [
+            "src/data/seed.ts"
+          ],
+          "for_task": "T1"
         }
       ]
     },
     {
       "order": 2,
       "file": "execution-plan-phase-2.md",
-      "status": "WAITING",
+      "status": "REVIEW",
       "tasks": [
         {
           "id": "T5",
           "name": "Utils + WhatsApp Component",
-          "status": "WAITING",
-          "depends": "T2"
+          "status": "DONE",
+          "depends": "T2",
+          "done_sha": "9a5252614276e9314f4e579d8e6e49455a7c6262"
         },
         {
           "id": "T8",
           "name": "Gallery Page",
-          "status": "WAITING",
-          "depends": "T2, T3"
+          "status": "DONE",
+          "depends": "T2, T3",
+          "done_sha": "109b4af7f00de51ce8487ec65f5c01c11e3777ec"
         },
         {
           "id": "T10",
           "name": "Admin Auth + Protected Routes",
-          "status": "WAITING",
-          "depends": "T2"
+          "status": "DONE",
+          "depends": "T2",
+          "done_sha": "32c4015a42c534075db802377851b8c96ace3a1b"
         },
         {
           "id": "T4",
           "name": "Layout Components + Routes",
-          "status": "WAITING",
-          "depends": "T3, T5"
+          "status": "DONE",
+          "depends": "T3, T5",
+          "done_sha": "6362cdf2b46a413168eb25b3e6095862b7ab6c37"
         },
         {
           "id": "T6",
           "name": "Public Menu Page + Filter/Search",
-          "status": "WAITING",
-          "depends": "T2, T3, T5"
+          "status": "DONE",
+          "depends": "T2, T3, T5",
+          "done_sha": "2cc117e60a6fa18c9f60c18bb00edaec9991e3b2"
         },
         {
           "id": "T11",
           "name": "Admin CRUD Menu + Categories",
-          "status": "WAITING",
-          "depends": "T10"
+          "status": "DONE",
+          "depends": "T10",
+          "done_sha": "f52671e646d7265883280d89bb2109a24866ff28"
         },
         {
           "id": "T12",
           "name": "Admin CRUD Gallery",
-          "status": "WAITING",
-          "depends": "T10"
+          "status": "DONE",
+          "depends": "T10",
+          "done_sha": "ae33592ed67b1d84864baa77d3be14244b46a820"
         }
       ]
     },
     {
       "order": 3,
       "file": "execution-plan-phase-3.md",
-      "status": "WAITING",
+      "status": "REVIEW",
       "tasks": [
         {
           "id": "T7",
           "name": "Menu Detail Page",
-          "status": "WAITING",
-          "depends": "T6"
+          "status": "DONE",
+          "depends": "T6",
+          "done_sha": "7f7d8998360d0a05b6dbd49cb9d781c0b3d30b31"
         },
         {
           "id": "T9",
           "name": "Home Page",
-          "status": "WAITING",
-          "depends": "T6, T8"
+          "status": "DONE",
+          "depends": "T6, T8",
+          "done_sha": "7d9f0b815b567386f7c9ab9cf628616adde3be4c"
+        }
+      ],
+      "corrections": [
+        {
+          "sha": "5319f62",
+          "files": [
+            "src/pages/MenuDetailPage.tsx"
+          ],
+          "for_task": "T7"
         }
       ]
     }
